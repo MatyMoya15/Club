@@ -1,0 +1,67 @@
+/*Titulo de la seccion*/
+.d-title{
+    margin-top: 15.5em;
+    margin-left: 9.5em;
+}
+
+.title{
+    font-weight: 700;
+    font-size: 1.9em;
+}
+/*Fin titulo de la seccion*/
+/*Mini navbar*/
+.navbar{
+    width: 100% !important;
+    height: 100% !important;
+    margin-top: 1.5em;
+    background: #000 !important;
+    height: 5em !important;
+}
+
+.navbar-nav{
+    margin-left: 5.5em;
+}
+
+.nav-item{
+    margin-left: 2.5em;
+    font-size: 1.12em;
+    font-weight: 500;
+}
+/*End Mini Navbar*/
+
+.con-sport{
+    margin-top: 5em;
+    margin-bottom: 5em !important;
+}
+
+.ttle-sp{
+    color: #DD0A0A;
+    margin-bottom: 1.9em;
+    text-shadow: 0.8px 1px red;
+    font-weight: 500;
+}
+
+.themed-grid-col{
+    padding-top: 5rem;
+    padding-bottom: 0.75rem;
+}
+
+.tx-princ{
+    font-weight: 400;
+    font-size: 1.1em;
+    padding-top: -20px;
+}
+
+img{
+    height: 22em !important;
+    width: 25em !important;
+}
+
+.separador {
+    border-top: 1px solid black;
+    height: 2px;
+    max-width: auto;
+    padding: 0;
+    margin: 20px auto 0 auto;
+    box-shadow: 0.06px 0.06px black;
+  }

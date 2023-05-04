@@ -1,0 +1,127 @@
+/*Titulo de la seccion*/
+.d-title{
+    margin-top: 15.5em;
+    margin-left: 9.5em;
+}
+
+.title{
+    font-weight: 700;
+    font-size: 1.9em;
+}
+/*Fin titulo de la seccion*/
+
+/*Informacion para socios*/
+.con-infos{
+    margin-top: 5em;
+    margin-bottom: 5em !important;
+}
+
+.ttle-sp{
+    color: #DD0A0A;
+    margin-bottom: 1.9em;
+    text-shadow: 0.8px 1px red;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.themed-grid-col{
+    padding-top: 3rem;
+    padding-bottom: 0.75rem;
+}
+
+.titulo-pr{
+    text-align: start;
+    margin-left: 6.4em;
+    margin-bottom: 0.8em;
+    font-size: 1.3em;
+}
+
+.tx-princ{
+    font-weight: 400;
+    font-size: 1.1em;
+    margin: 0 7em;
+    text-align: start;
+    font-size: 1.2em;
+    font-weight: 400;
+    letter-spacing: 0.8px;
+    margin-top: 0.5em;
+}
+
+img{
+    height: 30em !important;
+    width: 20em !important;
+    margin-top: 3em;
+    margin-right: 5em;
+}
+
+.sbt-ben{
+    text-align: start;
+    margin-left: 8.5em;
+}
+
+.list-group{
+    width: 25em;
+    margin-left: 8.4em;
+    text-align: start;
+    font-weight:400;
+}
+
+.separador {
+    border-top: 1px solid black;
+    height: 2px;
+    max-width: auto;
+    padding: 0;
+    margin: 20px auto 0 auto;
+    box-shadow: 0.06px 0.06px black;
+}
+
+/*Información para socios*/
+
+.subt-is{
+    font-size: 1.15em !important;
+    font-weight: 600;
+    margin-left: 8em;
+    margin-right: 8em;
+    text-align: center !important ;
+}
+
+.subt-is-2{
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.btn-danger{
+    width: 10em;
+    height: 3em;
+    align-items: center !important;
+    color: #000;
+    background-color: #DD0A0A;
+    font-weight: bold;
+    font-size: 1em;
+    text-shadow: 0.5px 1px red;
+}
+
+strong{
+    font-size: 1.19em;
+    font-weight: 800;
+}
+
+/*end Info socios*/
+/*Start ya soy*/
+
+.fan{
+    font-size: 1em;
+}
+
+.subt-is-3{
+    font-size: 1.3em !important;
+    font-weight: 700;
+    margin-top: 3em !important;
+}
+
+.fa-heart{
+    color: #DD0A0A;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+}
+/*End ya soy*/

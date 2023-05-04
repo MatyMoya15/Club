@@ -35,6 +35,34 @@
 
 /*End Jumbotron*/
 
+/*Noticia Principal*/
+.text-bg-dark{
+    background-color: #D9D9D9 !important;
+    color: #000 !important;
+    max-height: 25em;
+    overflow: hidden;
+}
+
+.news-text{
+    margin-top: 2.5em;
+}
+
+.btn-news{
+    background: #DD0A0A !important;
+    border-radius: 0.9em;
+    border: none;
+}
+
+.text-dark{
+    text-decoration: none;
+}
+
+.img-news{
+    max-height: 25em;
+    max-width: 100%;
+}
+
+/*Tarjetas Noticias*/
 h3 {
     font-weight: 300 !important;
     font-size: 25px !important;
