@@ -1,0 +1,117 @@
+/*Titulo de la seccion*/
+.d-title {
+    margin-top: 15.5em;
+    margin-left: 9.5em;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 1.9em;
+    color: #DD0A0A;
+}
+
+/*Fin titulo de la seccion*/
+/*Contenedor*/
+.themed-grid-col {
+    margin-top: 1.5em;
+    margin-bottom: 2em;
+}
+
+.subtitle {
+    font-weight: 600;
+    font-size: 1.5em !important;
+    text-align: start;
+    color: #000 !important;
+    margin-left: 1.3em;
+}
+
+.page-header {
+    padding-bottom: 9px;
+    margin: 40px 0 20px;
+}
+
+/*Lista Personas*/
+.list-unstyled {
+    padding-left: 0;
+    margin-bottom: 1rem;
+    list-style: none;
+    align-items: start;
+
+    margin-top: 1rem;
+}
+
+h2,
+h2 a,
+h4,
+h4 a {
+    color: #DD0A0A;
+}
+
+h4,
+.h4,
+.tt-4 {
+    font-size: 1.5rem;
+}
+
+.font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.text-muted {
+    color: #aaa99e !important;
+}
+
+.tt-8 {
+    font-size: 0.8rem;
+}
+
+.tt-6 {
+    margin-top: 1rem;
+}
+
+
+/*Lateral*/
+.banner-lateral {
+    background-color: #000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    height: 900px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    margin-left: 5em;
+}
+
+.content {
+    text-align: center;
+    margin-top: 3em;
+}
+
+.text {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.subtext {
+    color: #D9D9D9 !important;
+}
+
+.text-2 {
+    margin-top: 7em;
+}
+
+.button-bn {
+    background-color: #dd0a0a;
+    color: #fff;
+    padding: 20px 30px;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 9em;
+    text-align: start;
+    box-shadow: 2px 2px red;
+}
+
+i {
+    font-size: 18px;
+}
