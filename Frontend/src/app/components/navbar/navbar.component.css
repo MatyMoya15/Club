@@ -203,3 +203,24 @@ i{
     margin-left: 5px;
     margin-right: 5px;
 }
+
+
+/*Dropdown Menu*/
+.dropdown-toggle::after {
+    display: none !important;
+  }
+  
+.dropdown-menu{
+    background: #DD0A0A;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu :hover{
+    background-color: red;
+}
+
+.dropdown-item{
+    font-weight: 600;
+}
+
+
