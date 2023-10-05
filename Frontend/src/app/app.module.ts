@@ -13,6 +13,9 @@ import { HistoriaComponent } from './components/historia/historia.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { LoginComponent } from './components/access _fan/login/login.component';
+import { RegisterComponent } from './components/access _fan/register/register.component';
+import { ProfileComponent } from './components/access _fan/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { FooterComponent } from './components/footer/footer.component';
     HistoriaComponent,
     FaqComponent,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    LoginComponent,
+    RegisterComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

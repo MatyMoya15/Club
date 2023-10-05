@@ -9,6 +9,10 @@ import { FaqComponent } from './components/faq/faq.component';
 import { HistoriaComponent } from './components/historia/historia.component';
 import { NoticiaComponent } from './components/noticia/noticia.component';
 import { SociosInfoComponent } from './components/socios-info/socios-info.component';
+//Access Fan
+import { LoginComponent } from './components/access _fan/login/login.component';
+import { RegisterComponent } from './components/access _fan/register/register.component';
+import { ProfileComponent } from './components/access _fan/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -34,6 +38,15 @@ const routes: Routes = [
   },
   {
     path:'socio-info', component: SociosInfoComponent
+  },
+  {
+    path:'login', component: LoginComponent
+  },
+  {
+    path:'register', component: RegisterComponent 
+  },
+  {
+    path:'profile', component: ProfileComponent
   }
 ];
 
