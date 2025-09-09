@@ -1,5 +1,5 @@
 <header>
-<nav  *ngIf="showNavbar">
+<nav *ngIf="showNavbar">
     <div class="banner-container bg-white rojo-fg">
 
         <div class="container flex a-center j-between">
@@ -41,7 +41,11 @@
 
     <div class="navbar navbar-container bg-red" id="main-navbar">
         <div class="data container flex a-center j-between">
-            <nav class="main-navigation" id="navigation">
+            <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+                <i [class]="mobileMenuIcon"></i>
+            </button>
+
+            <nav class="main-navigation" id="navigation" [class.mobile-active]="isMobileMenuOpen">
 
                 <div class="menu-cabecera-container">
                     <ul id="menu-cabecera" class="menu">
@@ -56,25 +60,25 @@
                             <a href="./deportes">DEPORTES</a>
                         </li>
 
-                        <li>
-                            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" (click)="toggleDropdown($event, 'socios')">
                                 SOCIOS
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="">
-                                <a class="dropdown-item" href="./socio-info">Quiero Información</a>
-                                <a class="dropdown-item" href="#">Quiero ser parte</a>
-                                <a class="dropdown-item" href="#">Access Fan</a>
+                            <div class="dropdown-menu" [style.display]="isMobile() && dropdowns.socios ? 'block' : (isMobile() ? 'none' : '')" aria-labelledby="">
+                                <a class="dropdown-item" href="./socio-info" (click)="closeMobileMenuOnLinkClick()">Quiero Información</a>
+                                <a class="dropdown-item" href="#" (click)="closeMobileMenuOnLinkClick()">Quiero ser parte</a>
+                                <a class="dropdown-item" href="#" (click)="closeMobileMenuOnLinkClick()">Access Fan</a>
                             </div>
                         </li>
 
-                        <li>
-                            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" (click)="toggleDropdown($event, 'elclub')">
                                 EL CLUB
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="">
-                                <a class="dropdown-item" href="./contacto">Contacto</a>
-                                <a class="dropdown-item" href="./comision">Comision</a>
-                                <a class="dropdown-item" href="./historia">Historia</a>
+                            <div class="dropdown-menu" [style.display]="isMobile() && dropdowns.elclub ? 'block' : (isMobile() ? 'none' : '')" aria-labelledby="">
+                                <a class="dropdown-item" href="./contacto" (click)="closeMobileMenuOnLinkClick()">Contacto</a>
+                                <a class="dropdown-item" href="./comision" (click)="closeMobileMenuOnLinkClick()">Comision</a>
+                                <a class="dropdown-item" href="./historia" (click)="closeMobileMenuOnLinkClick()">Historia</a>
                             </div>
                         </li>
                     </ul>
