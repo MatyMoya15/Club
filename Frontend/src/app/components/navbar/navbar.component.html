@@ -1,100 +1,97 @@
 <header>
-<nav *ngIf="showNavbar">
-    <div class="banner-container bg-white rojo-fg">
-
-        <div class="container flex a-center j-between">
-            <div class="titulo-principal">
-                <span class="black-fg">CLUB SOCIAL Y DEPORTIVO</span>
-                VILLA MANZANO
-            </div>
-
-            <div class="enlaces-externos flex a-center">
-                <div class="enlace over-yellow flex a-center">
-
-                    <a href="" class="text">
-                        <i class="fa-brands fa-facebook"></i>
-                        VILLA MANZANO
-                        <b>ME GUSTA</b>
-                    </a>
-
+    <nav *ngIf="showNavbar">
+        <div class="banner-container bg-white rojo-fg">
+            <div class="container flex a-center j-between">
+                <div class="titulo-principal">
+                    <span class="black-fg">CLUB SOCIAL Y DEPORTIVO</span>
+                    VILLA MANZANO
                 </div>
 
-                <div class="enlace over-yellow flex a-center">
-                    <a href="./profile" class="text" target="_blank">
-                        <i class="fa-solid fa-globe"></i>
-                        <span class="secondary">SEDE </span>
-                        <b>ONLINE </b>
-                    </a>
+                <div class="enlaces-externos flex a-center">
+                    <div class="enlace over-yellow flex a-center">
+                        <a href="" class="text">
+                            <i class="fa-brands fa-facebook"></i>
+                            VILLA MANZANO
+                            <b>ME GUSTA</b>
+                        </a>
+                    </div>
+
+                    <div class="enlace over-yellow flex a-center">
+                        <a href="./access-fan" class="text" target="_blank">
+                            <i class="fa-solid fa-globe"></i>
+                            <span class="secondary">SEDE </span>
+                            <b>ONLINE </b>
+                        </a>
+                    </div>
                 </div>
 
+                <a href="" id="main-escudo" class="main-escudo">
+                    <img src="./../../../assets/Fondo Club.png" alt="Escudo">
+                </a>
             </div>
-
-            <a href="" id="main-escudo" class="main-escudo">
-                <img src="./../../../assets/Fondo Club.png" alt="Escudo">
-            </a>
         </div>
 
+        <!--Navbar Principal-->
+        <div class="navbar navbar-container bg-red" id="main-navbar">
+            <div class="data container flex a-center j-between">
+                <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+                    <i [class]="mobileMenuIcon"></i>
+                </button>
 
-    </div>
+                <nav class="main-navigation" id="navigation" [class.mobile-active]="isMobileMenuOpen">
+                    <div class="menu-cabecera-container">
+                        <ul id="menu-cabecera" class="menu">
 
-    <!--Navbar Principal-->
+                            <li
+                                class="menu-item menu-item-custom menu-item-object-custom menu-item-has-children menu-item-559">
+                                <a href="">NOTICIAS</a>
+                            </li>
 
-    <div class="navbar navbar-container bg-red" id="main-navbar">
-        <div class="data container flex a-center j-between">
-            <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
-                <i [class]="mobileMenuIcon"></i>
-            </button>
+                            <li
+                                class="menu-item menu-item-custom menu-item-object-custom menu-item-has-children menu-item-559">
+                                <a href="./deportes">DEPORTES</a>
+                            </li>
 
-            <nav class="main-navigation" id="navigation" [class.mobile-active]="isMobileMenuOpen">
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" href="#" (click)="toggleDropdown($event, 'socios')">
+                                    SOCIOS
+                                </a>
+                                <div class="dropdown-menu" [class.show]="dropdowns.socios"
+                                    [style.display]="isMobile() && dropdowns.socios ? 'block' : (isMobile() ? 'none' : '')">
+                                    <a class="dropdown-item" href="./socio-info"
+                                        (click)="closeMobileMenuOnLinkClick()">Quiero Información</a>
+                                    <a class="dropdown-item" href="./asociarme" (click)="closeMobileMenuOnLinkClick()">Quiero ser
+                                        parte</a>
+                                    <a class="dropdown-item" href="./access-fan" (click)="closeMobileMenuOnLinkClick()">Access
+                                        Fan</a>
+                                </div>
+                            </li>
 
-                <div class="menu-cabecera-container">
-                    <ul id="menu-cabecera" class="menu">
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" href="#" (click)="toggleDropdown($event, 'elclub')">
+                                    EL CLUB
+                                </a>
+                                <div class="dropdown-menu" [class.show]="dropdowns.elclub"
+                                    [style.display]="isMobile() && dropdowns.elclub ? 'block' : (isMobile() ? 'none' : '')">
+                                    <a class="dropdown-item" href="./contacto"
+                                        (click)="closeMobileMenuOnLinkClick()">Contacto</a>
+                                    <a class="dropdown-item" href="./comision"
+                                        (click)="closeMobileMenuOnLinkClick()">Comision</a>
+                                    <a class="dropdown-item" href="./historia"
+                                        (click)="closeMobileMenuOnLinkClick()">Historia</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
 
-                        <li
-                            class="menu-item menu-item-custom menu-item-object-custom menu-item-has-children menu-item-559">
-                            <a href="">NOTICIAS</a>
-                        </li>
-
-                        <li
-                            class="menu-item menu-item-custom menu-item-object-custom menu-item-has-children menu-item-559">
-                            <a href="./deportes">DEPORTES</a>
-                        </li>
-
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" (click)="toggleDropdown($event, 'socios')">
-                                SOCIOS
-                            </a>
-                            <div class="dropdown-menu" [style.display]="isMobile() && dropdowns.socios ? 'block' : (isMobile() ? 'none' : '')" aria-labelledby="">
-                                <a class="dropdown-item" href="./socio-info" (click)="closeMobileMenuOnLinkClick()">Quiero Información</a>
-                                <a class="dropdown-item" href="#" (click)="closeMobileMenuOnLinkClick()">Quiero ser parte</a>
-                                <a class="dropdown-item" href="#" (click)="closeMobileMenuOnLinkClick()">Access Fan</a>
-                            </div>
-                        </li>
-
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" (click)="toggleDropdown($event, 'elclub')">
-                                EL CLUB
-                            </a>
-                            <div class="dropdown-menu" [style.display]="isMobile() && dropdowns.elclub ? 'block' : (isMobile() ? 'none' : '')" aria-labelledby="">
-                                <a class="dropdown-item" href="./contacto" (click)="closeMobileMenuOnLinkClick()">Contacto</a>
-                                <a class="dropdown-item" href="./comision" (click)="closeMobileMenuOnLinkClick()">Comision</a>
-                                <a class="dropdown-item" href="./historia" (click)="closeMobileMenuOnLinkClick()">Historia</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-            </nav>
-
-            <a href="" class="asociate-texto radius-button gt-xs pointer bold" target="_blank">
-                Quiero Asociarme
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-
+                <a href="./asociarme" class="asociate-texto radius-button gt-xs pointer bold">
+                    Quiero Asociarme
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
-    </div>
-</nav>
-
+    </nav>
 </header>
 
 <div class="header-separator"></div>

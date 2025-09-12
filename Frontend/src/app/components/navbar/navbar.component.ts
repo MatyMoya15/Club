@@ -3,33 +3,40 @@ import { Component, HostListener } from '@angular/core';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-
   showNavbar: boolean = true;
   isMobileMenuOpen: boolean = false;
   mobileMenuIcon: string = 'fas fa-bars';
 
   dropdowns = {
     socios: false,
-    elclub: false
+    elclub: false,
   };
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    this.mobileMenuIcon = this.isMobileMenuOpen ? 'fas fa-times' : 'fas fa-bars';
-    
+    this.mobileMenuIcon = this.isMobileMenuOpen
+      ? 'fas fa-times'
+      : 'fas fa-bars';
+
     if (!this.isMobileMenuOpen) {
       this.closeAllDropdowns();
     }
   }
 
   toggleDropdown(event: Event, dropdownName: string): void {
+    event.preventDefault();
+
     if (this.isMobile()) {
-      event.preventDefault();
-      this.dropdowns[dropdownName as keyof typeof this.dropdowns] = 
+      this.dropdowns[dropdownName as keyof typeof this.dropdowns] =
         !this.dropdowns[dropdownName as keyof typeof this.dropdowns];
+    } else {
+      const wasOpen =
+        this.dropdowns[dropdownName as keyof typeof this.dropdowns];
+      this.closeAllDropdowns();
+      this.dropdowns[dropdownName as keyof typeof this.dropdowns] = !wasOpen;
     }
   }
 
@@ -66,5 +73,4 @@ export class NavbarComponent {
       this.closeAllDropdowns();
     }
   }
-
 }
