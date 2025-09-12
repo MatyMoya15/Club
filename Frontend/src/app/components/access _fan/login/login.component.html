@@ -1,1 +1,235 @@
-<p>login works!</p>
+<div class="login-container">
+    <!-- Header -->
+    <div class="login-header">
+        <div class="club-logo">
+            <i class="fas fa-futbol"></i>
+        </div>
+        <h1 class="login-title">¡Bienvenido!</h1>
+        <p class="login-subtitle">Ingresá a tu cuenta del club</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="login-form">
+        <div id="loginForm" *ngIf="!showResetForm">
+
+            <!-- Alert Messages -->
+            <div id="alertContainer" *ngIf="alerts.length > 0">
+                <div 
+                    *ngFor="let alert of alerts" 
+                    class="alert alert-{{ alert.type }}" 
+                    [class.alert-success]="alert.type === 'success'"
+                    [class.alert-danger]="alert.type === 'error'"
+                    [class.alert-info]="alert.type === 'info'"
+                    [class.alert-warning]="alert.type === 'warning'">
+                    <i class="fas fa-check-circle" *ngIf="alert.type === 'success'"></i>
+                    <i class="fas fa-exclamation-circle" *ngIf="alert.type === 'error'"></i>
+                    <i class="fas fa-info-circle" *ngIf="alert.type === 'info'"></i>
+                    <i class="fas fa-exclamation-triangle" *ngIf="alert.type === 'warning'"></i>
+                    {{ alert.message }}
+                    <button type="button" class="btn-close" (click)="clearAlerts()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" novalidate>
+                <!-- Existing Member Fields -->
+                <div id="existingMemberFields" *ngIf="!showNewMemberFields">
+                    <div class="form-group">
+                        <label class="form-label">DNI/Documento</label>
+                        <div class="input-group">
+                            <i class="fas fa-id-card input-group-icon"></i>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                formControlName="dni"
+                                placeholder="12345678" 
+                                maxlength="8"
+                                [class.is-invalid]="isFieldInvalid('dni')"
+                                [disabled]="isLoading">
+                        </div>
+                        <div class="invalid-feedback" *ngIf="isFieldInvalid('dni')">
+                            {{ getFieldError('dni') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña o Número de Socio</label>
+                        <div class="input-group">
+                            <i class="fas fa-key input-group-icon"></i>
+                            <input 
+                                [type]="memberPasswordVisible ? 'text' : 'password'" 
+                                class="form-control" 
+                                formControlName="passwordOrMember"
+                                placeholder="Contraseña o N° de Socio"
+                                [class.is-invalid]="isFieldInvalid('passwordOrMember')"
+                                [disabled]="isLoading">
+                            <button 
+                                type="button" 
+                                class="toggle-password"
+                                (click)="togglePasswordVisibility('memberPassword')"
+                                [disabled]="isLoading">
+                                <i class="fas" [class.fa-eye]="!memberPasswordVisible" [class.fa-eye-slash]="memberPasswordVisible"></i>
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">Si es tu primer login, usá tu número de socio</small>
+                        <div class="invalid-feedback" *ngIf="isFieldInvalid('passwordOrMember')">
+                            {{ getFieldError('passwordOrMember') }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Member Fields -->
+                <div id="newMemberFields" *ngIf="showNewMemberFields">
+                    <!-- Still show DNI field for reference -->
+                    <div class="form-group">
+                        <label class="form-label">DNI/Documento</label>
+                        <div class="input-group">
+                            <i class="fas fa-id-card input-group-icon"></i>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                formControlName="dni"
+                                placeholder="12345678" 
+                                maxlength="8"
+                                readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <div class="input-group">
+                            <i class="fas fa-envelope input-group-icon"></i>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                formControlName="email" 
+                                placeholder="tu@email.com"
+                                [class.is-invalid]="isFieldInvalid('email')"
+                                [disabled]="isLoading">
+                        </div>
+                        <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                            {{ getFieldError('email') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nueva Contraseña</label>
+                        <div class="input-group">
+                            <i class="fas fa-lock input-group-icon"></i>
+                            <input 
+                                [type]="passwordVisible ? 'text' : 'password'" 
+                                class="form-control" 
+                                formControlName="password" 
+                                placeholder="Tu nueva contraseña"
+                                [class.is-invalid]="isFieldInvalid('password')"
+                                [disabled]="isLoading">
+                            <button 
+                                type="button" 
+                                class="toggle-password"
+                                (click)="togglePasswordVisibility('password')"
+                                [disabled]="isLoading">
+                                <i class="fas" [class.fa-eye]="!passwordVisible" [class.fa-eye-slash]="passwordVisible"></i>
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">Mínimo 6 caracteres</small>
+                        <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
+                            {{ getFieldError('password') }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Options -->
+                <div class="login-options">
+                    <div class="forgot-password" *ngIf="!showNewMemberFields">
+                        <a href="#" (click)="showPasswordReset(); $event.preventDefault()">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="btn-login" 
+                        [disabled]="isLoginButtonDisabled">
+                        <span id="loginBtnText">{{ loginButtonText }}</span>
+                        <i class="fas fa-arrow-right" *ngIf="!isLoading"></i>
+                        <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Register Link -->
+            <div class="register-link" *ngIf="!showNewMemberFields">
+                <p>¿No tenés cuenta?</p>
+                <a href="/asociarme">Registrate como socio</a>
+            </div>
+
+            <!-- Back to login (for new member fields) -->
+            <div class="back-to-login" *ngIf="showNewMemberFields">
+                <a href="#" (click)="showLoginForm(); $event.preventDefault()">
+                    <i class="fas fa-arrow-left"></i> Volver al login
+                </a>
+            </div>
+        </div>
+
+        <!-- Password Reset Form -->
+        <div id="passwordResetForm" class="password-reset-form" *ngIf="showResetForm">
+            <h3 style="color: var(--dark-bg); margin-bottom: 1.5rem; font-weight: 700;">Recuperar Contraseña</h3>
+
+            <!-- Alert Messages for Reset -->
+            <div *ngIf="alerts.length > 0">
+                <div 
+                    *ngFor="let alert of alerts" 
+                    class="alert alert-{{ alert.type }}" 
+                    [class.alert-success]="alert.type === 'success'"
+                    [class.alert-danger]="alert.type === 'error'"
+                    [class.alert-info]="alert.type === 'info'"
+                    [class.alert-warning]="alert.type === 'warning'">
+                    <i class="fas fa-check-circle" *ngIf="alert.type === 'success'"></i>
+                    <i class="fas fa-exclamation-circle" *ngIf="alert.type === 'error'"></i>
+                    <i class="fas fa-info-circle" *ngIf="alert.type === 'info'"></i>
+                    <i class="fas fa-exclamation-triangle" *ngIf="alert.type === 'warning'"></i>
+                    {{ alert.message }}
+                </div>
+            </div>
+
+            <div class="alert alert-info" *ngIf="alerts.length === 0">
+                <i class="fas fa-info-circle"></i>
+                Ingresá tu DNI o email y te enviaremos las instrucciones para restablecer tu contraseña.
+            </div>
+
+            <form [formGroup]="resetForm" (ngSubmit)="onPasswordReset()" novalidate>
+                <div class="form-group">
+                    <label class="form-label">DNI o Email</label>
+                    <div class="input-group">
+                        <i class="fas fa-search input-group-icon"></i>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            formControlName="resetField" 
+                            placeholder="12345678 o tu@email.com"
+                            [class.is-invalid]="isFieldInvalid('resetField', resetForm)"
+                            [disabled]="isLoading">
+                    </div>
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid('resetField', resetForm)">
+                        {{ getFieldError('resetField', resetForm) }}
+                    </div>
+                </div>
+
+                <button 
+                    type="submit" 
+                    class="btn-login" 
+                    [disabled]="isResetButtonDisabled">
+                    <span id="resetBtnText">{{ resetButtonText }}</span>
+                    <i class="fas fa-paper-plane" *ngIf="!isLoading"></i>
+                    <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+                </button>
+            </form>
+
+            <div class="back-to-login">
+                <a href="#" (click)="showLoginForm(); $event.preventDefault()">
+                    <i class="fas fa-arrow-left"></i> Volver al login
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
