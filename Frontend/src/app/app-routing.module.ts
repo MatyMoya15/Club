@@ -40,10 +40,10 @@ const routes: Routes = [
     path:'socio-info', component: SociosInfoComponent
   },
   {
-    path:'login', component: LoginComponent
+    path:'access-fan', component: LoginComponent
   },
   {
-    path:'register', component: RegisterComponent 
+    path:'asociarme', component: RegisterComponent 
   },
   {
     path:'profile', component: ProfileComponent
