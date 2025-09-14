@@ -7,6 +7,7 @@
     box-shadow: var(--shadow-lg);
     overflow: hidden;
     position: relative;
+    margin-top: 3%;
 }
 .login-header {
     background: linear-gradient(135deg, var(--dark-bg) 0%, var(--principal) 100%);

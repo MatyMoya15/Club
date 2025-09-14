@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router'; // ✅ Importar Router
 
 interface User {
   dni: string;
@@ -52,7 +53,11 @@ export class LoginComponent {
     }
   ];
 
-  constructor(private fb: FormBuilder) {
+  // ✅ Inyectar Router correctamente en el constructor
+  constructor(
+    private fb: FormBuilder,
+    private router: Router
+  ) {
     this.initializeForms();
   }
 
@@ -69,6 +74,12 @@ export class LoginComponent {
     this.resetForm = this.fb.group({
       resetField: ['', [Validators.required]]
     });
+  }
+
+  // ✅ Método para manejar el evento de la navbar
+  redirectToHome(): void {
+    console.log('Redirecting to home...'); // Para debug
+    this.router.navigate(['/']); // Cambiado a '/' que es la ruta típica del home
   }
 
   // Alert methods
@@ -210,25 +221,25 @@ export class LoginComponent {
     // Mark user as not first login anymore
     user.isFirstLogin = false;
     
-    // In a real app, you'd navigate to dashboard or save token
+    // ✅ Ahora sí puede navegar correctamente
     console.log('Login successful:', user);
     
     // Simulate navigation after 2 seconds
     setTimeout(() => {
-      // this.router.navigate(['/dashboard']);
+      this.router.navigate(['/dashboard']); // o la ruta que tengas para el área de socios
       console.log('Redirecting to dashboard...');
     }, 2000);
   }
 
   // Password reset
-showPasswordReset(): void {
-  this.showResetForm = true;
-  this.showNewMemberFields = false;
-  this.clearAlerts();
-  if (this.resetForm) {
-    this.resetForm.reset();
+  showPasswordReset(): void {
+    this.showResetForm = true;
+    this.showNewMemberFields = false;
+    this.clearAlerts();
+    if (this.resetForm) {
+      this.resetForm.reset();
+    }
   }
-}
 
   showLoginForm(): void {
     this.showResetForm = false;
