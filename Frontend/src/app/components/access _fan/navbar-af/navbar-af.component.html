@@ -1,0 +1,57 @@
+<nav class="fan-navbar">
+  <div class="navbar-container">
+    
+    <!-- Left Section -->
+    <div class="navbar-left">
+      <button 
+        *ngIf="showBackButton" 
+        class="nav-btn back-btn" 
+        (click)="onGoBack()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      
+      <div class="brand" (click)="onGoHome()">
+        <div class="brand-icon">
+          <i class="fas fa-futbol"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Villa Manzano</span>
+          <span class="brand-subtitle">Zona Socio</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="navbar-right">
+      <div class="user-section" *ngIf="isLoggedIn && userName">
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-details">
+            <span class="user-name">{{ userName }}</span>
+            <span class="user-status">Socio activo</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="nav-actions">
+        <button 
+          *ngIf="isLoggedIn" 
+          class="nav-btn logout-btn" 
+          (click)="onLogout()">
+          <i class="fas fa-power-off"></i>
+          <span>Cerrar sesión</span>
+        </button>
+        
+        <button 
+          *ngIf="!isLoggedIn" 
+          class="nav-btn home-btn" 
+          (click)="onGoHome()">
+          <i class="fas fa-home"></i>
+          <span>Volver al inicio</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
