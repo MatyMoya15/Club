@@ -17,6 +17,7 @@ import { LoginComponent } from './components/access _fan/login/login.component';
 import { RegisterComponent } from './components/access _fan/register/register.component';
 import { ProfileComponent } from './components/access _fan/profile/profile.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NavbarAfComponent } from './components/access _fan/navbar-af/navbar-af.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FooterComponent,
     LoginComponent,
     RegisterComponent,
-    ProfileComponent
+    ProfileComponent,
+    NavbarAfComponent
   ],
   imports: [
     BrowserModule,
