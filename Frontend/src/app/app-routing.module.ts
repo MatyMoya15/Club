@@ -12,41 +12,70 @@ import { SociosInfoComponent } from './components/socios-info/socios-info.compon
 //Access Fan
 import { LoginComponent } from './components/access _fan/login/login.component';
 import { RegisterComponent } from './components/access _fan/register/register.component';
-import { ProfileComponent } from './components/access _fan/profile/profile.component';
+import { PerfilComponent } from './components/access _fan/socio/perfil/perfil.component';
+import { SocioComponent } from './components/access _fan/socio/socio.component';
 
 const routes: Routes = [
   {
-    path:'', component: HomeComponent
+    path: '', component: HomeComponent
   },
   {
-    path:'comision', component: ComisionComponent
+    path: 'comision', component: ComisionComponent
   },
   {
-    path:'contacto', component: ContactoComponent
+    path: 'contacto', component: ContactoComponent
   },
   {
-    path:'deportes', component: DeportesComponent
+    path: 'deportes', component: DeportesComponent
   },
   {
-    path:'faq', component: FaqComponent
+    path: 'faq', component: FaqComponent
   },
   {
-    path:'historia', component: HistoriaComponent
+    path: 'historia', component: HistoriaComponent
   },
   {
-    path:'noticia', component: NoticiaComponent
+    path: 'noticia', component: NoticiaComponent
   },
   {
-    path:'socio-info', component: SociosInfoComponent
+    path: 'socio-info', component: SociosInfoComponent
   },
   {
-    path:'access-fan', component: LoginComponent
+    path: 'access-fan', component: LoginComponent
   },
   {
-    path:'asociarme', component: RegisterComponent 
+    path: 'asociarme', component: RegisterComponent 
   },
   {
-    path:'profile', component: ProfileComponent
+    path: 'socio', 
+    component: SocioComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'perfil',
+        pathMatch: 'full'
+      },
+      {
+        path: 'perfil', 
+        component: PerfilComponent
+      },
+      // {
+      //   path: 'cuotas', 
+      //   component: CuotasComponent
+      // },
+      // {
+      //   path: 'carnet', 
+      //   component: CarnetComponent
+      // },
+      // {
+      //   path: 'administracion', 
+      //   component: AdministracionComponent
+      // }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 

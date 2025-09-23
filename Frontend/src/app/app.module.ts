@@ -18,6 +18,9 @@ import { RegisterComponent } from './components/access _fan/register/register.co
 import { ProfileComponent } from './components/access _fan/profile/profile.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavbarAfComponent } from './components/access _fan/navbar-af/navbar-af.component';
+import { SocioComponent } from './components/access _fan/socio/socio.component';
+import { PerfilComponent } from './components/access _fan/socio/perfil/perfil.component';
+import { AdminComponent } from './components/access _fan/socio/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,10 @@ import { NavbarAfComponent } from './components/access _fan/navbar-af/navbar-af.
     LoginComponent,
     RegisterComponent,
     ProfileComponent,
-    NavbarAfComponent
+    NavbarAfComponent,
+    SocioComponent,
+    PerfilComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
