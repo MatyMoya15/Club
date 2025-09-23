@@ -1,153 +1,199 @@
-<!--Titulo de la seccion-->
-<div class="d-title">
-    <h3 class="mt-5 title">Deportes</h3>
-</div>
-<!--End Title-->
-
-<!--Mini Navbar-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed">
-    <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Futbol Juvenil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Futbol Senior</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Hockey</a>
-                </li>
-            </ul>
-        </div>
+<!-- Header de la sección -->
+<div class="section-header">
+    <div class="container">
+        <h1><i class="fas fa-futbol me-3"></i>Deportes</h1>
     </div>
-</nav>
-<!--End mini Navbar-->
+</div>
 
-<!--Info categorias-->
+<!-- Navegación de deportes -->
 <div class="container">
-
-    <div class="row mb-3 text-center con-sport">
-        <h4 class="ttle-sp">Futbol Juvenil</h4>
-        <div class="col-md-8 themed-grid-col">
-            <div class="pb-3">
-                <h5 class="tx-princ">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus velit obcaecati corporis ipsum
-                    inventore omnis ratione, sint quia, exercitationem sed nam sequi doloribus, non neque illum
-                    accusamus asperiores eligendi aspernatur atque tenetur ab commodi? Cupiditate, quo repudiandae iure
-                    laborum cum autem, similique at architecto voluptates corporis cumque. Natus, veritatis tenetur?
-                </h5>
-            </div>
-            <div class="row">
-                <div class="col-md-6 themed-grid-col">
-                    <h6>+ Información</h6>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"></li>
-                        <li class="list-group-item">Dias: .. y ..</li>
-                        <li class="list-group-item">Horarios: de .. a ..</li>
-                        <li class="list-group-item">Predio: Lorem, ipsum.</li>
-                        <li class="list-group-item">Dirección: Lorem, ipsum dolor.</li>
-                      </ul>
-                </div>
-                <div class="col-md-6 themed-grid-col">
-                    <h6>Valores Cuotas</h6>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"></li>
-                        <li class="list-group-item">Dias: .. y ..</li>
-                        <li class="list-group-item">Horarios: de .. a ..</li>
-                        <li class="list-group-item">Predio: Lorem, ipsum.</li>
-                        <li class="list-group-item">Dirección: Lorem, ipsum dolor.</li>
-                      </ul>
-                </div>
+    <nav class="navbar navbar-expand-lg sports-nav">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#juvenil">
+                            <i class="fas fa-child me-2"></i>Fútbol Juvenil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#senior">
+                            <i class="fas fa-users me-2"></i>Fútbol Senior
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#hockey">
+                            <i class="fas fa-hockey-puck me-2"></i>Hockey
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="col-md-4">
-            <img src="https://www.ole.com.ar/images/2023/05/03/qf_vmgf-O_400x400__1.jpg" alt="">
+    </nav>
+
+    <!-- Fútbol Juvenil -->
+    <div class="sport-card" id="juvenil">
+        <div class="container p-4">
+            <h2 class="sport-title">Fútbol Juvenil</h2>
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <p class="sport-description">
+                        Desarrollamos el talento de los jóvenes futbolistas con programas de entrenamiento
+                        especializados.
+                        Nuestro enfoque integral combina técnica, táctica y valores deportivos para formar no solo
+                        mejores
+                        jugadores, sino también mejores personas. Con instalaciones de primer nivel y entrenadores
+                        certificados.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="info-section">
+                                <h6><i class="fas fa-info-circle"></i>Información</h6>
+                                <ul class="list-group info-list">
+                                    <li class="list-group-item">Detalles del programa</li>
+                                    <li class="list-group-item"><i class="fas fa-calendar me-2"></i>Días: Martes y
+                                        Jueves</li>
+                                    <li class="list-group-item"><i class="fas fa-clock me-2"></i>Horarios: 16:00 a 18:00
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-map-marker-alt me-2"></i>Predio: Campo
+                                        Norte</li>
+                                    <li class="list-group-item"><i class="fas fa-location-arrow me-2"></i>Dirección: Av.
+                                        Deportiva 123</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="info-section">
+                                <h6><i class="fas fa-dollar-sign"></i>Valores</h6>
+                                <ul class="list-group info-list">
+                                    <li class="list-group-item">Cuotas mensuales</li>
+                                    <li class="list-group-item"><i class="fas fa-tag me-2"></i>Matrícula: $15.000</li>
+                                    <li class="list-group-item"><i class="fas fa-credit-card me-2"></i>Mensual: $8.500
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-gift me-2"></i>Descuento hermanos: 10%
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-shield-alt me-2"></i>Seguro incluido
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <img src="https://www.ole.com.ar/images/2023/05/03/qf_vmgf-O_400x400__1.jpg" alt="Fútbol Juvenil"
+                        class="sport-image">
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="separador"></div>
+    <div class="section-divider"></div>
 
-    <div class="row mb-3 text-center con-sport">
-        <h4 class="ttle-sp">Futbol Senior</h4>
-        <div class="col-md-4">
-            <img src="https://www.ole.com.ar/images/2023/05/03/qf_vmgf-O_400x400__1.jpg" alt="">
-        </div>
-        <div class="col-md-8 themed-grid-col">
-            <div class="pb-3">
-                <h5 class="tx-princ">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus velit obcaecati corporis ipsum
-                    inventore omnis ratione, sint quia, exercitationem sed nam sequi doloribus, non neque illum
-                    accusamus asperiores eligendi aspernatur atque tenetur ab commodi? Cupiditate, quo repudiandae iure
-                    laborum cum autem, similique at architecto voluptates corporis cumque. Natus, veritatis tenetur?
-                </h5>
-            </div>
-            <div class="row">
-                <div class="col-md-6 themed-grid-col">
-                    <h6>+ Información</h6>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"></li>
-                        <li class="list-group-item">Dias: .. y ..</li>
-                        <li class="list-group-item">Horarios: de .. a ..</li>
-                        <li class="list-group-item">Predio: Lorem, ipsum.</li>
-                        <li class="list-group-item">Dirección: Lorem, ipsum dolor.</li>
-                      </ul>
+    <!-- Fútbol Senior -->
+    <div class="sport-card" id="senior">
+        <div class="container p-4">
+            <h2 class="sport-title">Fútbol Senior</h2>
+            <div class="row align-items-center">
+                <div class="col-lg-4 text-center order-lg-1 mb-4">
+                    <img src="https://www.ole.com.ar/images/2023/05/03/qf_vmgf-O_400x400__1.jpg" alt="Fútbol Senior"
+                        class="sport-image">
                 </div>
-                <div class="col-md-6 themed-grid-col">
-                    <h6>Valores Cuotas</h6>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"></li>
-                        <li class="list-group-item">Dias: .. y ..</li>
-                        <li class="list-group-item">Horarios: de .. a ..</li>
-                        <li class="list-group-item">Predio: Lorem, ipsum.</li>
-                        <li class="list-group-item">Dirección: Lorem, ipsum dolor.</li>
-                      </ul>
+                <div class="col-lg-8 order-lg-2">
+                    <p class="sport-description">
+                        Para jugadores adultos que buscan mantener su pasión por el fútbol. Entrenamientos adaptados
+                        a diferentes niveles de experiencia, desde principiantes hasta jugadores avanzados.
+                        Participación en torneos locales y regionales con un ambiente competitivo pero amigable.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="info-section">
+                                <h6><i class="fas fa-info-circle"></i>Información</h6>
+                                <ul class="list-group info-list">
+                                    <li class="list-group-item">Detalles del programa</li>
+                                    <li class="list-group-item"><i class="fas fa-calendar me-2"></i>Días: Lunes y
+                                        Miércoles</li>
+                                    <li class="list-group-item"><i class="fas fa-clock me-2"></i>Horarios: 19:00 a 21:00
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-map-marker-alt me-2"></i>Predio: Campo
+                                        Principal</li>
+                                    <li class="list-group-item"><i class="fas fa-location-arrow me-2"></i>Dirección: Av.
+                                        Deportiva 123</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="info-section">
+                                <h6><i class="fas fa-dollar-sign"></i>Valores</h6>
+                                <ul class="list-group info-list">
+                                    <li class="list-group-item">Cuotas mensuales</li>
+                                    <li class="list-group-item"><i class="fas fa-tag me-2"></i>Matrícula: $20.000</li>
+                                    <li class="list-group-item"><i class="fas fa-credit-card me-2"></i>Mensual: $12.000
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-trophy me-2"></i>Torneos: Incluidos
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-shield-alt me-2"></i>Seguro incluido
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="separador"></div>
+    <div class="section-divider"></div>
 
-    <div class="row mb-3 text-center con-sport">
-        <h4 class="ttle-sp">Hockey Libre</h4>
-        <div class="col-md-8 themed-grid-col">
-            <div class="pb-3">
-                <h5 class="tx-princ">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus velit obcaecati corporis ipsum
-                    inventore omnis ratione, sint quia, exercitationem sed nam sequi doloribus, non neque illum
-                    accusamus asperiores eligendi aspernatur atque tenetur ab commodi? Cupiditate, quo repudiandae iure
-                    laborum cum autem, similique at architecto voluptates corporis cumque. Natus, veritatis tenetur?
-                </h5>
-            </div>
-            <div class="row">
-                <div class="col-md-6 themed-grid-col">
-                    <h6>+ Información</h6>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"></li>
-                        <li class="list-group-item">Dias: .. y ..</li>
-                        <li class="list-group-item">Horarios: de .. a ..</li>
-                        <li class="list-group-item">Predio: Lorem, ipsum.</li>
-                        <li class="list-group-item">Dirección: Lorem, ipsum dolor.</li>
-                      </ul>
+    <!-- Hockey -->
+    <div class="sport-card" id="hockey">
+        <div class="container p-4">
+            <h2 class="sport-title">Hockey Libre</h2>
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <p class="sport-description">
+                        Sumate a nuestro equipo de hockey sobre césped. Modalidad libre para todas las edades y niveles.
+                        Entrenamiento técnico y táctico con énfasis en el trabajo en equipo y la diversión.
+                        Equipamiento de calidad disponible para préstamo y cancha de hockey profesional.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="info-section">
+                                <h6><i class="fas fa-info-circle"></i>Información</h6>
+                                <ul class="list-group info-list">
+                                    <li class="list-group-item">Detalles del programa</li>
+                                    <li class="list-group-item"><i class="fas fa-calendar me-2"></i>Días: Viernes y
+                                        Sábados</li>
+                                    <li class="list-group-item"><i class="fas fa-clock me-2"></i>Horarios: 17:00 a 19:00
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-map-marker-alt me-2"></i>Predio: Cancha
+                                        Hockey</li>
+                                    <li class="list-group-item"><i class="fas fa-location-arrow me-2"></i>Dirección: Av.
+                                        Deportiva 125</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="info-section">
+                                <h6><i class="fas fa-dollar-sign"></i>Valores</h6>
+                                <ul class="list-group info-list">
+                                    <li class="list-group-item">Cuotas mensuales</li>
+                                    <li class="list-group-item"><i class="fas fa-tag me-2"></i>Matrícula: $18.000</li>
+                                    <li class="list-group-item"><i class="fas fa-credit-card me-2"></i>Mensual: $10.500
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-hockey-puck me-2"></i>Equipos: Préstamo
+                                    </li>
+                                    <li class="list-group-item"><i class="fas fa-shield-alt me-2"></i>Seguro incluido
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 themed-grid-col">
-                    <h6>Valores Cuotas</h6>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"></li>
-                        <li class="list-group-item">Dias: .. y ..</li>
-                        <li class="list-group-item">Horarios: de .. a ..</li>
-                        <li class="list-group-item">Predio: Lorem, ipsum.</li>
-                        <li class="list-group-item">Dirección: Lorem, ipsum dolor.</li>
-                      </ul>
+                <div class="col-lg-4 text-center">
+                    <img src="https://resizer.glanacion.com/resizer/CGbzHz_vrsSwwHJf6FAKNhobRH4=/768x0/filters:format(webp):quality(80)/cloudfront-us-east-1.images.arcpublishing.com/lanacionar/RP7UJUY5HFBN3IUWBV67NMQ5HI.jfif"
+                        alt="Hockey" class="sport-image">
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <img src="https://resizer.glanacion.com/resizer/CGbzHz_vrsSwwHJf6FAKNhobRH4=/768x0/filters:format(webp):quality(80)/cloudfront-us-east-1.images.arcpublishing.com/lanacionar/RP7UJUY5HFBN3IUWBV67NMQ5HI.jfif" alt="">
         </div>
     </div>
-
 </div>
-
-<br><br><br>
