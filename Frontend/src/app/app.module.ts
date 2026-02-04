@@ -21,6 +21,17 @@ import { NavbarAfComponent } from './components/access _fan/navbar-af/navbar-af.
 import { SocioComponent } from './components/access _fan/socio/socio.component';
 import { PerfilComponent } from './components/access _fan/socio/perfil/perfil.component';
 import { AdminComponent } from './components/access _fan/socio/admin/admin.component';
+import { CuotasComponent } from './components/access _fan/socio/cuotas/cuotas.component';
+import { CarnetComponent } from './components/access _fan/socio/carnet/carnet.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthService } from './service/auth.service';
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AdminNoticiasComponent } from './components/access _fan/socio/admin/admin-noticias/admin-noticias.component';
+import { AdminSociosComponent } from './components/access _fan/socio/admin/admin-socios/admin-socios.component';
+import { AdminCuotasComponent } from './components/access _fan/socio/admin/admin-cuotas/admin-cuotas.component';
+import { FooterAfComponent } from './components/access _fan/footer-af/footer-af.component';
 
 @NgModule({
   declarations: [
@@ -41,14 +52,27 @@ import { AdminComponent } from './components/access _fan/socio/admin/admin.compo
     NavbarAfComponent,
     SocioComponent,
     PerfilComponent,
-    AdminComponent
+    CuotasComponent,
+    CarnetComponent, 
+    AdminComponent, AdminNoticiasComponent, AdminSociosComponent, AdminCuotasComponent, FooterAfComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    AuthGuard,
+    AdminGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -8,13 +8,19 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'CSYDVM';
-
   mostrarLayout = true;
 
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.mostrarLayout = !['/asociarme', '/access-fan'].includes(event.url);
+        const url = event.url;
+        
+        // Ocultar layout en rutas de autenticación y área de socio
+        this.mostrarLayout = !(
+          url === '/asociarme' || 
+          url === '/access-fan' ||
+          url.startsWith('/socio') // Todas las rutas que empiecen con /socio
+        );
       }
     });
   }
