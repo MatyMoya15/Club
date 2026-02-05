@@ -2,7 +2,7 @@
 .main-header {
     background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 50%, var(--dark-red) 100%);
     color: white;
-    padding: 5rem 0 3rem;
+    padding: 5rem 0 0 0;
     margin-bottom: 4rem;
     position: relative;
     overflow: hidden;
@@ -23,20 +23,21 @@
     margin: 0;
     position: relative;
     z-index: 2;
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-    background: linear-gradient(45deg, #fff, #fecaca);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, var(--primary-red), var(--secondary-red), var(--gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: var(--primary-red);
 }
 .main-header .subtitle {
     text-align: center;
     font-size: 1.3rem;
-    font-weight: 300;
+    font-weight: 400;
     margin-top: 1rem;
-    opacity: 0.9;
     position: relative;
     z-index: 2;
+    color: var(--text-dark);
 }
 /* Contenedor principal */
 .main-container {

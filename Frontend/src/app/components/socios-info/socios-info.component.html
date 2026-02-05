@@ -2,7 +2,7 @@
 <div class="main-header">
     <div class="container">
         <h1><i class="fas fa-users me-3"></i>Quiero ser Parte</h1>
-        <p class="subtitle">Unite a la familia albirroja y forma parte de nuestra historia</p>
+        <p class="subtitle">Unite a esta familia y forma parte de nuestra historia</p>
     </div>
 </div>
 
@@ -33,17 +33,15 @@
                             <li>Participar activamente en las asambleas</li>
                             <li>Practicar cualquier disciplina, abonando además su respectiva cuota</li>
                             <li>Descuentos en alquiler de salón para eventos</li>
-                            <li>Acceso preferencial a eventos especiales</li>
                         </ul>
                     </div>
 
                     <div class="info-card">
                         <h6><i class="fas fa-money-bill-wave"></i>Valores de Cuota Social</h6>
                         <ul class="benefits-list">
-                            <li>Menores: $8.500 por mes</li>
-                            <li>Activo (mayor de 18 años): $12.000 por mes</li>
-                            <li>Grupo familiar: $18.000 por mes</li>
-                            <li>Descuentos por pago anual disponibles</li>
+                            <li>Activo: $5.000 por mes</li>
+                            <li>Grupo familiar: Consultar por grupo familiar</li>
+                            <!-- <li>Descuentos por pago anual disponibles</li> -->
                         </ul>
                     </div>
                 </div>
@@ -71,8 +69,8 @@
                         <i class="fas fa-building me-2"></i>En la Sede
                     </h4>
                     <p class="process-text">
-                        Acercate de <strong>Lunes a Viernes, de 15:00hs a 20:00hs</strong>, a la sede del Club,
-                        ubicada en <strong>calle Levalle al 000</strong>. Solo tenés que traer tu D.N.I.
+                        Acercate de <strong>Lunes a Viernes, de 17:30hs a 21:00hs</strong>, a la sede del Club,
+                        ubicada en <strong>General Nicolás Levalle 291</strong>. Solo tenés que traer tu D.N.I.
                     </p>
                 </div>
             </div>
@@ -86,7 +84,7 @@
                         Completá el formulario de inscripción Online haciendo click en el siguiente botón.
                     </p>
                     <div class="text-center">
-                        <button type="button" class="cta-button">
+                        <button type="button" class="cta-button" [routerLink]="['/asociarme']">
                             <i class="fas fa-user-plus me-2"></i>Asociarme
                         </button>
                     </div>
@@ -104,11 +102,11 @@
 
             <div class="info-highlight">
                 <h5><i class="fas fa-phone me-2"></i><strong>Contacto</strong></h5>
-                <p><strong>WhatsApp:</strong> <a href="tel:000000000" style="color: var(--primary-red);">000000000</a>
+                <p><strong>WhatsApp:</strong> <a href="tel:2995870707" style="color: var(--primary-red);"> 2995870707</a>
                     (No se atienden llamados)</p>
-                <p><strong>Email:</strong> <a href="mailto:xxxxxxxx@gmail.com"
-                        style="color: var(--primary-red);">xxxxxxxx@gmail.com</a></p>
-                <p><strong>Sede:</strong> Levalle al 000, de 15:00hs a 20:00hs</p>
+                <p><strong>Email:</strong> <a href="mailto:csydvm@gmail.com"
+                        style="color: var(--primary-red);"> csydvm@gmail.com</a></p>
+                <p><strong>Sede:</strong> General Nicolás Levalle 291, de 17:30hs a 21:00hs</p>
             </div>
         </div>
     </div>
@@ -127,12 +125,11 @@
                     <strong>Ya soy Albirrojo:</strong> Si ya estás asociado al Club, podés ingresar a
                     <strong class="access-fan">Access Fan</strong> para pagar tu cuota, ya que disponemos de pagos
                     Online,
-                    consultar si adeudas cuotas, ver tu credencial virtual, cambiar tu información, inscribirte a alguna
-                    disciplina, etc.
+                    consultar si adeudas cuotas, ver tu credencial virtual, cambiar tu información, etc.
                 </p>
 
                 <div class="text-center mb-4">
-                    <button type="button" class="cta-button">
+                    <button type="button" class="cta-button" [routerLink]="['/access-fan']">
                         <i class="fas fa-sign-in-alt me-2"></i>Access Fan
                     </button>
                 </div>
