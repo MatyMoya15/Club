@@ -37,6 +37,16 @@ export class NoticiaService {
 
   constructor(private http: HttpClient) {}
 
+  uploadImage(file: File): Observable<{ url: string; public_id: string; message: string }> {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    
+    return this.http.post<{ url: string; public_id: string; message: string }>(
+      `${this.apiUrl}/upload-image`, 
+      formData
+    );
+  }
+
   // GET /api/noticias - Con cache inteligente
   getAllNoticias(forceRefresh: boolean = false): Observable<Noticia[]> {
     const now = Date.now();

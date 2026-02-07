@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 
 export interface LoginRequest {
-  email: string;
+  identifier: string;
   password: string;
 }
 
@@ -24,6 +24,7 @@ export interface AuthResponse {
   message: string;
   token: string;
   user: User;
+  primerLogin?: boolean;
 }
 
 export interface User {
@@ -33,11 +34,12 @@ export interface User {
   nombre: string;
   apellido: string;
   telefono?: string;
-  email: string;
+  email?: string; 
   direccion?: string;
   fecha_alta?: string;
   activo: boolean;
   rol: string;
+  primer_login?: boolean;
 }
 
 @Injectable({
@@ -144,4 +146,13 @@ export class AuthService {
     console.error('Error en AuthService:', errorMessage, error);
     return throwError(() => error);
   }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<{ message: string }> {
+  return this.http.post<{ message: string }>(`${this.apiUrl}/change-password`, {
+    currentPassword,
+    newPassword
+  }).pipe(
+    catchError(this.handleError)
+  );
+}
 }
