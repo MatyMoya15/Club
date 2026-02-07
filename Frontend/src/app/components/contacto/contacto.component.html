@@ -33,11 +33,11 @@
                             Dirección Sede
                         </h5>
                         <p>
-                            <strong>Tuki tuki tuki 625</strong><br>
+                            <strong>General, Nicolás Levalle 291</strong><br>
                             Villa Manzano, Río Negro<br>
                             Argentina<br><br>
                             📅 <strong>Horarios de atención:</strong><br>
-                            Lunes a Viernes de 15:00 a 20:00 hs<br><br>
+                            Lunes a Viernes de 17:30 a 21:00 hs<br><br>
                             <strong style="font-size: 1.2rem; color: var(--primary-red);">¡Te esperamos!</strong>
                         </p>
                     </div>
@@ -65,11 +65,11 @@
                             WhatsApp
                         </h5>
                         <p>
-                            <a href="tel:2990000000"
+                            <a href="tel:2995870707"
                                 style="color: var(--primary-red); text-decoration: none; font-size: 1.2rem; font-weight: 600;">
-                                📱 2990000000
+                                📱 2995870707
                             </a><br>
-                            <small>Lunes a Viernes de 10:00hs a 18:00hs<br>Solo WhatsApp (no llamadas)</small>
+                            <small>Lunes a Viernes de 10:00hs a 21:00hs<br>Solo WhatsApp (no llamadas)</small>
                         </p>
                     </div>
 
@@ -84,7 +84,7 @@
                             Escribinos a:<br>
                             <a href="mailto:examplecorreo@gmail.com"
                                 style="color: var(--primary-red); font-weight: 600;">
-                                📧 examplecorreo@gmail.com
+                                csydvm@gmail.com
                             </a>
                         </p>
                     </div>
@@ -106,7 +106,7 @@
             <div class="form-intro">
                 <h6><i class="fas fa-info-circle me-2"></i>Para contactarse con nosotros</h6>
                 <p>Complete el siguiente formulario o escriba directamente a:
-                    <a href="mailto:asjdnabsdh@gmail.com">asjdnabsdh@gmail.com</a>
+                    <a href="mailto:asjdnabsdh@gmail.com">csydvm@gmail.com</a>
                 </p>
             </div>
 
@@ -120,7 +120,17 @@
                 Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.
             </div>
 
-            <form id="contactForm" novalidate>
+            <div class="form-success" id="successMessage" [class.show]="showSuccess">
+                <i class="fas fa-check-circle me-2"></i>
+                ¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.
+            </div>
+
+            <div class="form-error" id="errorMessage" [class.show]="showError">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.
+            </div>
+
+            <form id="contactForm" (ngSubmit)="onSubmit($event)" novalidate>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -128,8 +138,8 @@
                                 <i class="fas fa-user"></i>
                                 Nombre *
                             </label>
-                            <input type="text" class="form-control" name="name" placeholder="Ingresa tu nombre"
-                                required>
+                            <input type="text" class="form-control" name="name" 
+                                placeholder="Ingresa tu nombre" required>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -138,8 +148,8 @@
                                 <i class="fas fa-user"></i>
                                 Apellido *
                             </label>
-                            <input type="text" class="form-control" name="lastname" placeholder="Ingresa tu apellido"
-                                required>
+                            <input type="text" class="form-control" name="lastname" 
+                                placeholder="Ingresa tu apellido" required>
                         </div>
                     </div>
                 </div>
@@ -151,7 +161,8 @@
                                 <i class="fas fa-envelope"></i>
                                 Email *
                             </label>
-                            <input type="email" class="form-control" name="email" placeholder="tu@email.com" required>
+                            <input type="email" class="form-control" name="email" 
+                                placeholder="tu@email.com" required>
                         </div>
                     </div>
                 </div>
@@ -177,16 +188,17 @@
                                 Mensaje *
                             </label>
                             <textarea class="form-control" name="message"
-                                placeholder="Escribe tu mensaje o duda aquí..." required></textarea>
+                                    placeholder="Escribe tu mensaje o duda aquí..." required></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-12">
-                        <button type="submit" class="submit-button pulse-effect">
+                        <button type="submit" class="submit-button pulse-effect" 
+                                [disabled]="isSubmitting">
                             <i class="fas fa-paper-plane me-2"></i>
-                            Enviar Mensaje
+                            {{ isSubmitting ? 'Enviando...' : 'Enviar Mensaje' }}
                         </button>
                     </div>
                 </div>
