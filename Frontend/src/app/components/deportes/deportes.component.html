@@ -5,25 +5,35 @@
     </div>
 </div>
 
+<!-- Loading State -->
+<div *ngIf="isLoading" class="container text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando información de deportes...</p>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !isLoading" class="container">
+    <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ error }}
+    </div>
+</div>
+
 <!-- Navegación de deportes -->
-<div class="container">
+<div class="container" *ngIf="!isLoading && deportes.length > 0">
     <nav class="navbar navbar-expand-lg sports-nav">
         <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#juvenil">
-                            <i class="fas fa-child me-2"></i>Fútbol Juvenil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#senior">
-                            <i class="fas fa-users me-2"></i>Fútbol Senior
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#hockey">
-                            <i class="fas fa-hockey-puck me-2"></i>Hockey
+                    <li class="nav-item" *ngFor="let deporteData of deportes">
+                        <a class="nav-link" [routerLink]="[]" 
+                           [fragment]="generarIdDeporte(deporteData.deporte.nombre)">
+                            <i class="fas fa-futbol me-2"></i>{{ deporteData.deporte.nombre }}
                         </a>
                     </li>
                 </ul>
@@ -31,169 +41,114 @@
         </div>
     </nav>
 
-    <!-- Fútbol Juvenil -->
-    <div class="sport-card" id="juvenil">
-        <div class="container p-4">
-            <h2 class="sport-title">Fútbol Juvenil</h2>
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <p class="sport-description">
-                        Desarrollamos el talento de los jóvenes futbolistas con programas de entrenamiento
-                        especializados.
-                        Nuestro enfoque integral combina técnica, táctica y valores deportivos para formar no solo
-                        mejores
-                        jugadores, sino también mejores personas. Con instalaciones de primer nivel y entrenadores
-                        certificados.
-                    </p>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="info-section">
-                                <h6><i class="fas fa-info-circle"></i>Información</h6>
-                                <ul class="list-group info-list">
-                                    <li class="list-group-item">Detalles del programa</li>
-                                    <li class="list-group-item"><i class="fas fa-calendar me-2"></i>Días: Martes y
-                                        Jueves</li>
-                                    <li class="list-group-item"><i class="fas fa-clock me-2"></i>Horarios: 16:00 a 18:00
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-map-marker-alt me-2"></i>Predio: Campo
-                                        Norte</li>
-                                    <li class="list-group-item"><i class="fas fa-location-arrow me-2"></i>Dirección: Av.
-                                        Deportiva 123</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="info-section">
-                                <h6><i class="fas fa-dollar-sign"></i>Valores</h6>
-                                <ul class="list-group info-list">
-                                    <li class="list-group-item">Cuotas mensuales</li>
-                                    <li class="list-group-item"><i class="fas fa-tag me-2"></i>Matrícula: $15.000</li>
-                                    <li class="list-group-item"><i class="fas fa-credit-card me-2"></i>Mensual: $8.500
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-gift me-2"></i>Descuento hermanos: 10%
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-shield-alt me-2"></i>Seguro incluido
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+    <!-- Lista de Deportes -->
+    <div *ngFor="let deporteData of deportes; let isLast = last">
+        
+        <!-- Card de Deporte -->
+        <div class="sport-card" [id]="generarIdDeporte(deporteData.deporte.nombre)">
+            <div class="container p-4">
+                <h2 class="sport-title">{{ deporteData.deporte.nombre }}</h2>
+                
+                <!-- Descripción del Deporte -->
+                <div class="row align-items-start mb-4" *ngIf="deporteData.deporte.descripcion">
+                    <div class="col-12">
+                        <p class="sport-description">
+                            {{ deporteData.deporte.descripcion }}
+                        </p>
                     </div>
                 </div>
-                <div class="col-lg-4 text-center">
-                    <img src="https://www.ole.com.ar/images/2023/05/03/qf_vmgf-O_400x400__1.jpg" alt="Fútbol Juvenil"
-                        class="sport-image">
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="section-divider"></div>
+                <!-- Información de Clases por Categoría -->
+                <div class="row" *ngIf="tieneClases(deporteData)">
+                    
+                    <!-- Iterar por cada categoría -->
+                    <div class="col-md-6 mb-4" 
+                         *ngFor="let categoria of getCategorias(deporteData)">
+                        <div class="info-section">
+                            <h6>
+                                <i class="fas fa-info-circle"></i>
+                                {{ categoria }}
+                            </h6>
+                            <ul class="list-group info-list">
+                                <!-- Categoría (placeholder por ahora) -->
+                                <li class="list-group-item category-item">
+                                    <strong>{{ categoria }}</strong>
+                                </li>
 
-    <!-- Fútbol Senior -->
-    <div class="sport-card" id="senior">
-        <div class="container p-4">
-            <h2 class="sport-title">Fútbol Senior</h2>
-            <div class="row align-items-center">
-                <div class="col-lg-4 text-center order-lg-1 mb-4">
-                    <img src="https://www.ole.com.ar/images/2023/05/03/qf_vmgf-O_400x400__1.jpg" alt="Fútbol Senior"
-                        class="sport-image">
-                </div>
-                <div class="col-lg-8 order-lg-2">
-                    <p class="sport-description">
-                        Para jugadores adultos que buscan mantener su pasión por el fútbol. Entrenamientos adaptados
-                        a diferentes niveles de experiencia, desde principiantes hasta jugadores avanzados.
-                        Participación en torneos locales y regionales con un ambiente competitivo pero amigable.
-                    </p>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="info-section">
-                                <h6><i class="fas fa-info-circle"></i>Información</h6>
-                                <ul class="list-group info-list">
-                                    <li class="list-group-item">Detalles del programa</li>
-                                    <li class="list-group-item"><i class="fas fa-calendar me-2"></i>Días: Lunes y
-                                        Miércoles</li>
-                                    <li class="list-group-item"><i class="fas fa-clock me-2"></i>Horarios: 19:00 a 21:00
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-map-marker-alt me-2"></i>Predio: Campo
-                                        Principal</li>
-                                    <li class="list-group-item"><i class="fas fa-location-arrow me-2"></i>Dirección: Av.
-                                        Deportiva 123</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="info-section">
-                                <h6><i class="fas fa-dollar-sign"></i>Valores</h6>
-                                <ul class="list-group info-list">
-                                    <li class="list-group-item">Cuotas mensuales</li>
-                                    <li class="list-group-item"><i class="fas fa-tag me-2"></i>Matrícula: $20.000</li>
-                                    <li class="list-group-item"><i class="fas fa-credit-card me-2"></i>Mensual: $12.000
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-trophy me-2"></i>Torneos: Incluidos
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-shield-alt me-2"></i>Seguro incluido
-                                    </li>
-                                </ul>
-                            </div>
+                                <!-- Días -->
+                                <li class="list-group-item">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    <strong>Días:</strong> 
+                                    {{ getDiasClase(deporteData.clasesPorCategoria[categoria]) }}
+                                </li>
+
+                                <!-- Horarios -->
+                                <li class="list-group-item">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Horarios:</strong> 
+                                    {{ getHorariosClase(deporteData.clasesPorCategoria[categoria]) }}
+                                </li>
+
+                                <!-- Predio -->
+                                <li class="list-group-item">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    <strong>Predio:</strong> Sede del Club
+                                </li>
+
+                                <!-- Instructor(es) -->
+                                <li class="list-group-item" 
+                                    *ngFor="let clase of deporteData.clasesPorCategoria[categoria]">
+                                    <i class="fas fa-user-tie me-2"></i>
+                                    <strong>Instructor:</strong> 
+                                    {{ getInstructorNombre(clase.id_instructor) }}
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="section-divider"></div>
-
-    <!-- Hockey -->
-    <div class="sport-card" id="hockey">
-        <div class="container p-4">
-            <h2 class="sport-title">Hockey Libre</h2>
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <p class="sport-description">
-                        Sumate a nuestro equipo de hockey sobre césped. Modalidad libre para todas las edades y niveles.
-                        Entrenamiento técnico y táctico con énfasis en el trabajo en equipo y la diversión.
-                        Equipamiento de calidad disponible para préstamo y cancha de hockey profesional.
-                    </p>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="info-section">
-                                <h6><i class="fas fa-info-circle"></i>Información</h6>
-                                <ul class="list-group info-list">
-                                    <li class="list-group-item">Detalles del programa</li>
-                                    <li class="list-group-item"><i class="fas fa-calendar me-2"></i>Días: Viernes y
-                                        Sábados</li>
-                                    <li class="list-group-item"><i class="fas fa-clock me-2"></i>Horarios: 17:00 a 19:00
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-map-marker-alt me-2"></i>Predio: Cancha
-                                        Hockey</li>
-                                    <li class="list-group-item"><i class="fas fa-location-arrow me-2"></i>Dirección: Av.
-                                        Deportiva 125</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="info-section">
-                                <h6><i class="fas fa-dollar-sign"></i>Valores</h6>
-                                <ul class="list-group info-list">
-                                    <li class="list-group-item">Cuotas mensuales</li>
-                                    <li class="list-group-item"><i class="fas fa-tag me-2"></i>Matrícula: $18.000</li>
-                                    <li class="list-group-item"><i class="fas fa-credit-card me-2"></i>Mensual: $10.500
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-hockey-puck me-2"></i>Equipos: Préstamo
-                                    </li>
-                                    <li class="list-group-item"><i class="fas fa-shield-alt me-2"></i>Seguro incluido
-                                    </li>
-                                </ul>
-                            </div>
+                    <!-- Sección de Valores (si hay monto) -->
+                    <div class="col-md-6 mb-4" *ngIf="deporteData.deporte.monto_mensual > 0">
+                        <div class="info-section valores-section">
+                            <h6>
+                                <i class="fas fa-dollar-sign"></i>
+                                Información de Pago
+                            </h6>
+                            <ul class="list-group info-list">
+                                <li class="list-group-item">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    <strong>Cuota Mensual:</strong> 
+                                    {{ formatearMonto(deporteData.deporte.monto_mensual) }}
+                                </li>
+                                <li class="list-group-item">El pago debe hacerse presencial</li>
+                                <li class="list-group-item text-success">
+                                    <i class="fas fa-shield-alt me-2"></i>
+                                    Seguro incluido
+                                </li>
+                            </ul>
                         </div>
                     </div>
+
                 </div>
-                <div class="col-lg-4 text-center">
-                    <img src="https://resizer.glanacion.com/resizer/CGbzHz_vrsSwwHJf6FAKNhobRH4=/768x0/filters:format(webp):quality(80)/cloudfront-us-east-1.images.arcpublishing.com/lanacionar/RP7UJUY5HFBN3IUWBV67NMQ5HI.jfif"
-                        alt="Hockey" class="sport-image">
+
+                <!-- Sin Clases Disponibles -->
+                <div class="alert alert-info" *ngIf="!tieneClases(deporteData)">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No hay clases programadas para este deporte en este momento.
+                    Consultá por próximas fechas de inicio.
                 </div>
+
             </div>
         </div>
+
+        <!-- Separador entre deportes -->
+        <div class="section-divider" *ngIf="!isLast"></div>
     </div>
+
+    <!-- Empty State -->
+    <div class="text-center py-5" *ngIf="deportes.length === 0 && !isLoading && !error">
+        <i class="fas fa-futbol fa-4x text-muted mb-3"></i>
+        <h3 class="text-muted">No hay deportes disponibles</h3>
+        <p class="text-muted">Pronto agregaremos más actividades deportivas.</p>
+    </div>
+
 </div>
