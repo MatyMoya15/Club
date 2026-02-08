@@ -1,14 +1,8 @@
-import { Component } from '@angular/core';
+// src/app/components/access _fan/login/login.component.ts
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router'; // ✅ Importar Router
-
-interface User {
-  dni: string;
-  memberNumber: string;
-  email: string;
-  name: string;
-  isFirstLogin: boolean;
-}
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/service/auth.service';
 
 interface Alert {
   type: 'success' | 'error' | 'info' | 'warning';
@@ -20,73 +14,48 @@ interface Alert {
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   // Forms
   loginForm!: FormGroup;
   resetForm!: FormGroup;
   
   // UI State
   showResetForm: boolean = false;
-  showNewMemberFields: boolean = false;
   isLoading: boolean = false;
   alerts: Alert[] = [];
+  returnUrl: string = '';
   
   // Password visibility
   passwordVisible: boolean = false;
-  memberPasswordVisible: boolean = false;
-  
-  // Mock database - En producción esto vendría del backend
-  private mockUsers: User[] = [
-    {
-      dni: '12345678',
-      memberNumber: '001',
-      email: 'socio1@club.com',
-      name: 'Juan Pérez',
-      isFirstLogin: true
-    },
-    {
-      dni: '87654321',
-      memberNumber: '002',
-      email: 'socio2@club.com',
-      name: 'María González',
-      isFirstLogin: false
-    }
-  ];
 
-  // ✅ Inyectar Router correctamente en el constructor
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {
+    // Si ya está logueado, redirigir
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/socio']);
+    }
+  }
+
+  ngOnInit(): void {
     this.initializeForms();
+    
+    // Obtener la URL de retorno o usar /socio por defecto
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/socio';
   }
 
-  private initializeForms(): void {
-    // Login form
-    this.loginForm = this.fb.group({
-      dni: ['', [Validators.required, Validators.pattern(/^\d{7,8}$/)]],
-      passwordOrMember: ['', [Validators.required, Validators.minLength(3)]],
-      email: [''],
-      password: ['']
-    });
-
-    // Reset form
-    this.resetForm = this.fb.group({
-      resetField: ['', [Validators.required]]
-    });
-  }
-
-  // ✅ Método para manejar el evento de la navbar
+  // ✅ Método para redirigir al home
   redirectToHome(): void {
-    console.log('Redirecting to home...'); // Para debug
-    this.router.navigate(['/']); // Cambiado a '/' que es la ruta típica del home
+    this.router.navigate(['/']);
   }
 
   // Alert methods
   showAlert(type: Alert['type'], message: string): void {
     this.alerts = [{ type, message }];
     
-    // Auto-hide success and info alerts after 5 seconds
     if (type === 'success' || type === 'info') {
       setTimeout(() => {
         this.clearAlerts();
@@ -99,12 +68,8 @@ export class LoginComponent {
   }
 
   // Password visibility toggle
-  togglePasswordVisibility(field: 'password' | 'memberPassword'): void {
-    if (field === 'password') {
-      this.passwordVisible = !this.passwordVisible;
-    } else {
-      this.memberPasswordVisible = !this.memberPasswordVisible;
-    }
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
   }
 
   // Form validation helpers
@@ -113,128 +78,102 @@ export class LoginComponent {
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
-  getFieldError(fieldName: string, form: FormGroup = this.loginForm): string {
-    const field = form.get(fieldName);
-    if (!field || !field.errors) return '';
 
-    if (field.errors['required']) {
-      return `${this.getFieldLabel(fieldName)} es requerido`;
-    }
-    if (field.errors['pattern'] && fieldName === 'dni') {
-      return 'DNI debe tener 7 u 8 dígitos';
-    }
-    if (field.errors['email']) {
-      return 'Email debe tener un formato válido';
-    }
-    if (field.errors['minlength']) {
-      return `${this.getFieldLabel(fieldName)} debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
-    }
+private initializeForms(): void {
+  // Login form - adaptado para DNI o Email
+  this.loginForm = this.fb.group({
+    identifier: ['', [Validators.required]], // ✅ Cambio aquí
+    password: ['', [Validators.required, Validators.minLength(6)]]
+  });
 
-    return 'Campo inválido';
+  // Reset form
+  this.resetForm = this.fb.group({
+    resetField: ['', [Validators.required]]
+  });
+}
+
+// ✅ Actualizar labels
+private getFieldLabel(fieldName: string): string {
+  const labels: { [key: string]: string } = {
+    'identifier': 'DNI o Email', // ✅ Cambio aquí
+    'password': 'Contraseña',
+    'resetField': 'Email o DNI'
+  };
+  return labels[fieldName] || fieldName;
+}
+
+// ✅ Actualizar validación de email
+getFieldError(fieldName: string, form: FormGroup = this.loginForm): string {
+  const field = form.get(fieldName);
+  if (!field || !field.errors) return '';
+
+  if (field.errors['required']) {
+    return `${this.getFieldLabel(fieldName)} es requerido`;
+  }
+  // ❌ Remover validación de email ya que ahora acepta DNI también
+  if (field.errors['minlength']) {
+    return `${this.getFieldLabel(fieldName)} debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
   }
 
-  private getFieldLabel(fieldName: string): string {
-    const labels: { [key: string]: string } = {
-      'dni': 'DNI',
-      'passwordOrMember': 'Contraseña o N° de Socio',
-      'email': 'Email',
-      'password': 'Contraseña',
-      'resetField': 'DNI o Email'
-    };
-    return labels[fieldName] || fieldName;
+  return 'Campo inválido';
+}
+
+// ✅ Actualizar onLogin
+onLogin(): void {
+  this.clearAlerts();
+  
+  if (this.loginForm.invalid) {
+    this.markFormGroupTouched(this.loginForm);
+    this.showAlert('error', 'Por favor, completá todos los campos correctamente');
+    return;
   }
 
-  // Login logic
-  onLogin(): void {
-    this.clearAlerts();
-    
-    if (this.loginForm.invalid) {
-      this.markFormGroupTouched(this.loginForm);
-      this.showAlert('error', 'Por favor, completá todos los campos correctamente');
-      return;
-    }
+  this.isLoading = true;
+  
+  const credentials = {
+    identifier: this.loginForm.get('identifier')?.value, // ✅ Cambio aquí
+    password: this.loginForm.get('password')?.value
+  };
 
-    this.isLoading = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-      this.processLogin();
-    }, 1500);
-  }
-
-  private processLogin(): void {
-    const dni = this.loginForm.get('dni')?.value;
-    const passwordOrMember = this.loginForm.get('passwordOrMember')?.value;
-    const email = this.loginForm.get('email')?.value;
-    const password = this.loginForm.get('password')?.value;
-
-    // Find user by DNI
-    const user = this.mockUsers.find(u => u.dni === dni);
-
-    if (!user) {
+  this.authService.login(credentials).subscribe({
+    next: (response) => {
       this.isLoading = false;
-      this.showAlert('error', 'DNI no encontrado. Verificá el número ingresado.');
-      return;
-    }
-
-    // Check if it's first login (using member number) or regular login
-    if (this.showNewMemberFields) {
-      // New member login with email and password
-      if (this.validateNewMemberLogin(user, email, password)) {
-        this.loginSuccess(user);
-      } else {
-        this.isLoading = false;
-        this.showAlert('error', 'Email o contraseña incorrectos');
+      console.log('Login exitoso:', response);
+      
+      // ✅ Verificar si es primer login
+      if (response.primerLogin) {
+        this.showAlert('info', 'Por seguridad, debés cambiar tu contraseña');
+        setTimeout(() => {
+          this.router.navigate(['/cambiar-password']); // Ruta para cambiar password
+        }, 2000);
+        return;
       }
-    } else {
-      // Existing member login
-      if (this.validateExistingMemberLogin(user, passwordOrMember)) {
-        if (user.isFirstLogin && passwordOrMember === user.memberNumber) {
-          // First login with member number - show new member fields
-          this.showNewMemberFields = true;
-          this.isLoading = false;
-          this.showAlert('info', 'Primer ingreso detectado. Por favor, completá tu email y nueva contraseña.');
-          return;
-        }
-        this.loginSuccess(user);
+      
+      this.showAlert('success', `¡Bienvenido, ${response.user.nombre} ${response.user.apellido}!`);
+      
+      setTimeout(() => {
+        this.router.navigate([this.returnUrl]);
+      }, 1000);
+    },
+    error: (error) => {
+      this.isLoading = false;
+      console.error('Error en login:', error);
+      
+      if (error.status === 401) {
+        this.showAlert('error', 'DNI/Email o contraseña incorrectos');
+      } else if (error.status === 403) {
+        this.showAlert('error', error.error?.error || 'Cuenta desactivada. Contactá al administrador');
+      } else if (error.status === 0) {
+        this.showAlert('error', 'No se pudo conectar con el servidor. Verificá tu conexión.');
       } else {
-        this.isLoading = false;
-        this.showAlert('error', 'Contraseña o número de socio incorrecto');
+        this.showAlert('error', error.error?.error || 'Error al iniciar sesión. Intentá nuevamente.');
       }
     }
-  }
-
-  private validateExistingMemberLogin(user: User, passwordOrMember: string): boolean {
-    // In a real app, you'd hash and compare passwords
-    return passwordOrMember === user.memberNumber || 
-           passwordOrMember === 'password123'; // Mock password
-  }
-
-  private validateNewMemberLogin(user: User, email: string, password: string): boolean {
-    return email === user.email && password.length >= 6;
-  }
-
-  private loginSuccess(user: User): void {
-    this.isLoading = false;
-    this.showAlert('success', `¡Bienvenido, ${user.name}!`);
-    
-    // Mark user as not first login anymore
-    user.isFirstLogin = false;
-    
-    // ✅ Ahora sí puede navegar correctamente
-    console.log('Login successful:', user);
-    
-    // Simulate navigation after 2 seconds
-    setTimeout(() => {
-      this.router.navigate(['/dashboard']); // o la ruta que tengas para el área de socios
-      console.log('Redirecting to dashboard...');
-    }, 2000);
-  }
-
+  });
+}
   // Password reset
   showPasswordReset(): void {
     this.showResetForm = true;
-    this.showNewMemberFields = false;
     this.clearAlerts();
     if (this.resetForm) {
       this.resetForm.reset();
@@ -243,7 +182,6 @@ export class LoginComponent {
 
   showLoginForm(): void {
     this.showResetForm = false;
-    this.showNewMemberFields = false;
     this.clearAlerts();
   }
 
@@ -252,26 +190,23 @@ export class LoginComponent {
     
     if (this.resetForm.invalid) {
       this.markFormGroupTouched(this.resetForm);
-      this.showAlert('error', 'Por favor, ingresá un DNI o email válido');
+      this.showAlert('error', 'Por favor, ingresá un email válido');
       return;
     }
 
     this.isLoading = true;
     
+    // TODO: Implementar endpoint de reset password en el backend
+    // Por ahora solo simulamos
     setTimeout(() => {
-      const resetField = this.resetForm.get('resetField')?.value;
-      const user = this.mockUsers.find(u => 
-        u.dni === resetField || u.email.toLowerCase() === resetField.toLowerCase()
-      );
-
       this.isLoading = false;
-
-      if (user) {
-        this.showAlert('success', 'Se han enviado las instrucciones para restablecer tu contraseña al email registrado.');
-        this.resetForm.reset();
-      } else {
-        this.showAlert('error', 'No se encontró ninguna cuenta con ese DNI o email.');
-      }
+      this.showAlert('success', 'Se han enviado las instrucciones para restablecer tu contraseña al email registrado.');
+      this.resetForm.reset();
+      
+      // Volver al login después de 3 segundos
+      setTimeout(() => {
+        this.showLoginForm();
+      }, 3000);
     }, 1500);
   }
 
@@ -283,7 +218,7 @@ export class LoginComponent {
     });
   }
 
-  // Getters for template
+  // Getters para el template
   get isLoginButtonDisabled(): boolean {
     return this.isLoading || this.loginForm.invalid;
   }

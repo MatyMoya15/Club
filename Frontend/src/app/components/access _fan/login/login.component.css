@@ -1,3 +1,8 @@
+.login-content {
+    min-height: calc(100vh - 316px);
+
+}
+
 .login-container {
     max-width: 480px;
     width: 100%;
@@ -9,6 +14,7 @@
     position: relative;
     margin-top: 3%;
 }
+
 .login-header {
     background: linear-gradient(135deg, var(--dark-bg) 0%, var(--principal) 100%);
     color: white;
@@ -17,6 +23,7 @@
     position: relative;
     overflow: hidden;
 }
+
 .login-header::before {
     content: '';
     position: absolute;
@@ -31,20 +38,24 @@
             rgba(255, 255, 255, 0.03) 20px);
     animation: slide 20s linear infinite;
 }
+
 @keyframes slide {
     0% {
         transform: translateX(-50px);
     }
+
     100% {
         transform: translateX(50px);
     }
 }
+
 .club-logo {
     font-size: 4rem;
     margin-bottom: 1rem;
     position: relative;
     z-index: 2;
 }
+
 .login-title {
     font-size: 2.2rem;
     font-weight: 900;
@@ -52,24 +63,29 @@
     position: relative;
     z-index: 2;
 }
+
 .login-subtitle {
     font-size: 1.1rem;
     opacity: 0.9;
     position: relative;
     z-index: 2;
 }
+
 .login-form {
     padding: 3rem 2.5rem;
 }
+
 .user-type-selector {
     margin-bottom: 2rem;
 }
+
 .user-type-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
+
 .user-type-option {
     padding: 1rem;
     border: 2px solid #e9ecef;
@@ -81,6 +97,7 @@
     position: relative;
     overflow: hidden;
 }
+
 .user-type-option::before {
     content: '';
     position: absolute;
@@ -91,38 +108,46 @@
     background: linear-gradient(90deg, transparent, rgba(221, 10, 10, 0.1), transparent);
     transition: left 0.5s;
 }
+
 .user-type-option:hover::before {
     left: 100%;
 }
+
 .user-type-option:hover {
     border-color: var(--principal);
     transform: translateY(-2px);
     box-shadow: var(--shadow);
 }
+
 .user-type-option.selected {
     border-color: var(--principal);
     background: rgba(221, 10, 10, 0.05);
     transform: scale(1.02);
 }
+
 .user-type-icon {
     font-size: 2rem;
     margin-bottom: 0.5rem;
     color: var(--principal);
 }
+
 .user-type-title {
     font-weight: 700;
     color: var(--dark-bg);
     font-size: 1rem;
     margin-bottom: 0.3rem;
 }
+
 .user-type-desc {
     font-size: 0.85rem;
     color: #6c757d;
     line-height: 1.3;
 }
+
 .form-group {
     margin-bottom: 1.8rem;
 }
+
 .form-label {
     font-weight: 700;
     color: var(--dark-bg);
@@ -130,6 +155,7 @@
     display: block;
     font-size: 1rem;
 }
+
 .form-control {
     border: 2px solid #e9ecef;
     border-radius: 12px;
@@ -138,16 +164,19 @@
     transition: all 0.3s ease;
     background: #fafbfc;
 }
+
 .form-control:focus {
     border-color: var(--principal);
     box-shadow: 0 0 0 0.25rem rgba(221, 10, 10, 0.15);
     background: white;
     transform: translateY(-1px);
 }
+
 .form-control.is-invalid {
     border-color: var(--principal);
     box-shadow: 0 0 0 0.25rem rgba(221, 10, 10, 0.25);
 }
+
 .invalid-feedback {
     display: block;
     color: var(--principal);
@@ -155,13 +184,16 @@
     margin-top: 0.5rem;
     font-weight: 600;
 }
+
 .login-options {
     margin: 2rem 0;
 }
+
 .forgot-password {
     text-align: center;
     margin-bottom: 1.5rem;
 }
+
 .forgot-password a {
     color: var(--principal);
     text-decoration: none;
@@ -169,10 +201,12 @@
     font-size: 0.95rem;
     transition: all 0.3s ease;
 }
+
 .forgot-password a:hover {
     color: var(--secondary-red);
     text-decoration: underline;
 }
+
 .btn-login {
     width: 100%;
     padding: 1rem 2rem;
@@ -188,6 +222,7 @@
     color: white;
     margin-bottom: 1.5rem;
 }
+
 .btn-login::before {
     content: '';
     position: absolute;
@@ -198,52 +233,63 @@
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s;
 }
+
 .btn-login:hover::before {
     left: 100%;
 }
+
 .btn-login:hover {
     background: linear-gradient(135deg, var(--secondary-red), #c20808);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
+
 .btn-login:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
 }
+
 .register-link {
     text-align: center;
     padding: 1.5rem 0;
     border-top: 1px solid #e9ecef;
     margin-top: 1rem;
 }
+
 .register-link p {
     margin-bottom: 0.5rem;
     color: #6c757d;
 }
+
 .register-link a {
     color: var(--principal);
     font-weight: 700;
     text-decoration: none;
     transition: all 0.3s ease;
 }
+
 .register-link a:hover {
     color: var(--secondary-red);
     text-decoration: underline;
 }
+
 .loading-spinner {
     display: inline-block;
     margin-right: 0.5rem;
     animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
 }
+
 .alert {
     border-radius: 12px;
     border: none;
@@ -251,71 +297,86 @@
     margin-bottom: 1.5rem;
     font-weight: 600;
 }
+
 .alert-success {
     background: rgba(40, 167, 69, 0.1);
     color: var(--green);
     border-left: 4px solid var(--green);
 }
+
 .alert-danger {
     background: rgba(221, 10, 10, 0.1);
     color: var(--principal);
     border-left: 4px solid var(--principal);
 }
+
 .alert-info {
     background: rgba(0, 123, 255, 0.1);
     color: var(--blue);
     border-left: 4px solid var(--blue);
 }
+
 .password-reset-form {
-  background: white;
-  color: black;
-  padding: 2rem;
+    background: white;
+    color: black;
+    padding: 2rem;
 }
 
 .back-to-login {
     text-align: center;
     margin-top: 1rem;
 }
+
 .back-to-login a {
     color: var(--principal);
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
 }
+
 .back-to-login a:hover {
     text-decoration: underline;
 }
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
+
 @media (max-width: 576px) {
     .login-container {
         margin: 1rem;
         border-radius: 16px;
     }
+
     .login-header {
         padding: 2rem 1.5rem 1.5rem;
     }
+
     .login-form {
         padding: 2rem 1.5rem;
     }
+
     .user-type-options {
         grid-template-columns: 1fr;
     }
+
     .login-title {
         font-size: 1.8rem;
     }
 }
+
 .input-group {
     position: relative;
 }
+
 .input-group-icon {
     position: absolute;
     left: 1rem;
@@ -324,9 +385,11 @@
     color: #6c757d;
     z-index: 3;
 }
+
 .input-group .form-control {
     padding-left: 3rem;
 }
+
 .toggle-password {
     position: absolute;
     right: 1rem;
@@ -339,6 +402,48 @@
     z-index: 3;
     padding: 0.25rem;
 }
+
 .toggle-password:hover {
     color: var(--principal);
+}
+
+.content-header {
+    height: 40%;
+    background-image: url(https://portalsocios.estudiantesdelaplata.com/template_edelp/css/../imgs/socios.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #de1d22;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+    top: 100px;
+    left: 0;
+
+    /* Esto genera el borde diagonal */
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+}
+
+
+.content-header:before {
+    height: 35px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    opacity: 0.12;
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+    background: -webkit-linear-gradient(top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.triangle-bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-left: 100vw solid transparent;
+    border-bottom: 50px solid #ededed;
 }
