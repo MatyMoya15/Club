@@ -1,0 +1,401 @@
+<!-- src/app/components/access_fan/socio/admin/admin-socios/admin-socios.component.html -->
+<div class="admin-socios-container">
+  
+  <!-- Header -->
+  <div class="seccion-header">
+    <div class="header-content">
+      <div>
+        <h2>Listado de Socios</h2>
+        <p class="text-muted">Gestión y administración de socios del club</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline-primary" (click)="exportarSocios()">
+          <i class="fas fa-download"></i> Exportar
+        </button>
+        <button class="btn btn-primary" (click)="cargarSocios()">
+          <i class="fas fa-sync"></i> Actualizar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle"></i> {{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle"></i> {{ error }}
+    <button type="button" class="btn-close" (click)="error = ''"></button>
+  </div>
+
+  <!-- Estadísticas Rápidas -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon bg-primary">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalSocios }}</h3>
+          <p>Total Socios</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon bg-success">
+          <i class="fas fa-user-check"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ sociosActivos }}</h3>
+          <p>Activos</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon bg-warning">
+          <i class="fas fa-user-times"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ sociosInactivos }}</h3>
+          <p>Inactivos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label">
+            <i class="fas fa-search"></i> Buscar
+          </label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="busquedaSocio"
+            (keyup.enter)="filtrarSocios()"
+            placeholder="Buscar por nombre, apellido o DNI"
+            [disabled]="isLoading">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">
+            <i class="fas fa-filter"></i> Estado
+          </label>
+          <select 
+            class="form-select" 
+            [(ngModel)]="filtroEstado"
+            (change)="filtrarSocios()"
+            [disabled]="isLoading">
+            <option value="todos">Todos</option>
+            <option value="activo">Activos</option>
+            <option value="inactivo">Inactivos</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-2">
+            <button 
+              class="btn btn-primary flex-fill" 
+              (click)="filtrarSocios()"
+              [disabled]="isLoading">
+              <i class="fas fa-search"></i> Buscar
+            </button>
+            <button 
+              class="btn btn-outline-secondary" 
+              (click)="limpiarFiltros()"
+              [disabled]="isLoading">
+              <i class="fas fa-times"></i> Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando socios...</p>
+  </div>
+
+  <!-- Tabla de Socios -->
+  <div class="card" *ngIf="!isLoading">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>N° Socio</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Fecha Alta</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let socio of sociosFiltrados" [class.table-secondary]="!socio.activo">
+            <td><strong>#{{ socio.numero_socio }}</strong></td>
+            <td>{{ socio.nombre }}</td>
+            <td>{{ socio.apellido }}</td>
+            <td>{{ socio.dni }}</td>
+            <td>{{ socio.email }}</td>
+            <td>{{ socio.telefono || '-' }}</td>
+            <td>{{ formatearFecha(socio.fecha_alta) }}</td>
+            <td>
+              <span 
+                class="badge" 
+                [class.bg-success]="socio.activo"
+                [class.bg-danger]="!socio.activo">
+                {{ socio.activo ? 'ACTIVO' : 'INACTIVO' }}
+              </span>
+            </td>
+            <td>
+              <div class="btn-group" role="group">
+                <button 
+                  class="btn btn-sm btn-outline-primary" 
+                  (click)="verDetalle(socio)"
+                  title="Ver detalle">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-secondary" 
+                  (click)="editarSocio(socio)"
+                  title="Editar">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button 
+                  *ngIf="socio.activo"
+                  class="btn btn-sm btn-outline-danger" 
+                  (click)="desactivarSocio(socio)"
+                  title="Desactivar">
+                  <i class="fas fa-user-times"></i>
+                </button>
+                <button 
+                  *ngIf="!socio.activo"
+                  class="btn btn-sm btn-outline-success" 
+                  (click)="activarSocio(socio)"
+                  title="Activar">
+                  <i class="fas fa-user-check"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Empty State -->
+          <tr *ngIf="sociosFiltrados.length === 0">
+            <td colspan="9" class="text-center py-5">
+              <i class="fas fa-users fa-3x text-muted mb-3"></i>
+              <p class="text-muted mb-0">No se encontraron socios con los filtros aplicados</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer con Total -->
+  <div class="mt-3 d-flex justify-content-between align-items-center" *ngIf="!isLoading">
+    <div class="text-muted">
+      <i class="fas fa-info-circle"></i>
+      Mostrando <strong>{{ sociosFiltrados.length }}</strong> socio(s)
+    </div>
+    <div>
+      <small class="text-muted">Última actualización: {{ 'now' | date:'dd/MM/yyyy HH:mm' }}</small>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal de Edición -->
+<div class="modal fade" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" *ngIf="socioEnEdicion">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-edit"></i> Editar Socio
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()" 
+                [disabled]="isSubmitting"></button>
+      </div>
+      
+      <!-- Body -->
+      <div class="modal-body">
+        
+        <!-- Info del Socio -->
+        <div class="alert alert-info mb-4">
+          <div class="row">
+            <div class="col-md-6">
+              <strong>N° Socio:</strong> #{{ socioEnEdicion.numero_socio }}
+            </div>
+            <div class="col-md-6">
+              <strong>DNI:</strong> {{ socioEnEdicion.dni }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario -->
+        <form>
+          
+          <div class="row">
+            <!-- Nombre -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="fas fa-user"></i> Nombre <span class="text-danger">*</span>
+              </label>
+              <input 
+                type="text" 
+                class="form-control"
+                [class.is-invalid]="formErrors.nombre"
+                [(ngModel)]="editForm.nombre"
+                name="nombre"
+                placeholder="Ingrese el nombre"
+                [disabled]="isSubmitting"
+                maxlength="100">
+              <div class="invalid-feedback" *ngIf="formErrors.nombre">
+                {{ formErrors.nombre }}
+              </div>
+            </div>
+
+            <!-- Apellido -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="fas fa-user"></i> Apellido <span class="text-danger">*</span>
+              </label>
+              <input 
+                type="text" 
+                class="form-control"
+                [class.is-invalid]="formErrors.apellido"
+                [(ngModel)]="editForm.apellido"
+                name="apellido"
+                placeholder="Ingrese el apellido"
+                [disabled]="isSubmitting"
+                maxlength="100">
+              <div class="invalid-feedback" *ngIf="formErrors.apellido">
+                {{ formErrors.apellido }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="email" 
+              class="form-control"
+              [class.is-invalid]="formErrors.email"
+              [(ngModel)]="editForm.email"
+              name="email"
+              placeholder="ejemplo@correo.com"
+              [disabled]="isSubmitting"
+              maxlength="255">
+            <div class="invalid-feedback" *ngIf="formErrors.email">
+              {{ formErrors.email }}
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Teléfono -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="fas fa-phone"></i> Teléfono
+              </label>
+              <input 
+                type="tel" 
+                class="form-control"
+                [(ngModel)]="editForm.telefono"
+                name="telefono"
+                placeholder="Ingrese el teléfono"
+                [disabled]="isSubmitting"
+                maxlength="20">
+            </div>
+
+            <!-- Dirección -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="fas fa-map-marker-alt"></i> Dirección
+              </label>
+              <input 
+                type="text" 
+                class="form-control"
+                [(ngModel)]="editForm.direccion"
+                name="direccion"
+                placeholder="Ingrese la dirección"
+                [disabled]="isSubmitting"
+                maxlength="255">
+            </div>
+          </div>
+
+          <!-- Password (opcional) -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="fas fa-lock"></i> Nueva Contraseña (opcional)
+            </label>
+            <input 
+              type="password" 
+              class="form-control"
+              [class.is-invalid]="formErrors.password"
+              [(ngModel)]="editForm.password"
+              name="password"
+              placeholder="Dejar en blanco para no cambiar"
+              [disabled]="isSubmitting"
+              autocomplete="new-password">
+            <div class="invalid-feedback" *ngIf="formErrors.password">
+              {{ formErrors.password }}
+            </div>
+            <small class="form-text text-muted">
+              Solo complete este campo si desea cambiar la contraseña del socio
+            </small>
+          </div>
+
+          <div class="alert alert-warning mt-3">
+            <i class="fas fa-info-circle"></i>
+            <strong>Nota:</strong> Los campos marcados con <span class="text-danger">*</span> son obligatorios
+          </div>
+
+        </form>
+      </div>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="cerrarModal()"
+          [disabled]="isSubmitting">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="guardarCambios()"
+          [disabled]="isSubmitting">
+          <span *ngIf="!isSubmitting">
+            <i class="fas fa-save"></i> Guardar Cambios
+          </span>
+          <span *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Guardando...
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade" [class.show]="showEditModal" *ngIf="showEditModal"></div>
