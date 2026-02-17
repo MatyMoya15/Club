@@ -1,0 +1,187 @@
+<!-- cuotas.component.html - Versión Mejorada -->
+<div class="cuotas-container">
+  
+  <!-- Header Compacto -->
+  <div class="perfil-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">Estado de Cuotas</h1>
+        <p class="page-subtitle">Gestiona tus pagos y mantente al día</p>
+      </div>
+      <button class="btn-edit">
+        <i class="fas fa-download"></i>
+        Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- Estadísticas Compactas -->
+  <div class="stats-grid compact-row">
+    <div class="stat-card">
+      <div class="stat-icon success">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Total Pagado</p>
+        <h3 class="stat-value">{{ estadoCuenta.totalPagado | currency }}</h3>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card">
+      <div class="stat-icon danger">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Deuda Pendiente</p>
+        <h3 class="stat-value">{{ estadoCuenta.totalDeuda | currency }}</h3>
+      </div>
+    </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon primary">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Estado Actual</p>
+        <div class="stat-badge">
+          <span *ngIf="estadoCuenta.cuotasAlDia" class="badge badge-success">
+            Al día
+          </span>
+          <span *ngIf="!estadoCuenta.cuotasAlDia" class="badge badge-danger">
+            Con deuda
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon gold">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Cuota Mensual</p>
+        <h3 class="stat-value">{{ montoCuota | currency }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerta Mejorada -->
+  <div class="alert-compact danger" *ngIf="!estadoCuenta.cuotasAlDia">
+    <div class="alert-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <div class="alert-content">
+      <strong>Atención:</strong> Tienes cuotas vencidas. Regulariza tu situación para mantener tus beneficios.
+    </div>
+  </div>
+
+  <!-- Historial de Pagos Compacto -->
+  <div class="section-card compact-card">
+    <div class="section-header">
+      <h5 class="section-title">
+        <i class="fas fa-history"></i>
+        Historial de Pagos
+      </h5>
+    </div>
+
+    <div class="payments-table">
+      <div class="table-header">
+        <div class="col-period">Período</div>
+        <div class="col-amount">Monto</div>
+        <div class="col-status">Estado</div>
+        <div class="col-date">Fecha</div>
+        <div class="col-actions">Acciones</div>
+      </div>
+
+      <div class="table-body">
+        <div class="payment-row" *ngFor="let pago of historialPagos" 
+             [class.row-paid]="pago.estado === 'pagado'"
+             [class.row-pending]="pago.estado === 'pendiente'"
+             [class.row-overdue]="pago.estado === 'vencido'">
+          
+          <div class="col-period">
+            <strong>{{ pago.mes }} {{ pago.anio }}</strong>
+          </div>
+          
+          <div class="col-amount">
+            {{ pago.monto | currency }}
+          </div>
+          
+          <div class="col-status">
+            <span class="status-badge" [ngClass]="{
+              'status-success': pago.estado === 'pagado',
+              'status-warning': pago.estado === 'pendiente',
+              'status-danger': pago.estado === 'vencido'
+            }">
+              <i class="fas" [ngClass]="{
+                'fa-check-circle': pago.estado === 'pagado',
+                'fa-clock': pago.estado === 'pendiente',
+                'fa-exclamation-circle': pago.estado === 'vencido'
+              }"></i>
+              {{ pago.estado | titlecase }}
+            </span>
+          </div>
+          
+          <div class="col-date">
+            <span *ngIf="pago.fechaPago" class="date-text">
+              {{ pago.fechaPago | date:'dd/MM/yyyy' }}
+            </span>
+            <span *ngIf="!pago.fechaPago" class="date-text due">
+              Vence 10/{{ obtenerNumeroMes(pago.mes) + 1 | number:'2.0-0' }}/{{ pago.anio }}
+            </span>
+          </div>
+          
+          <div class="col-actions">
+            <button *ngIf="pago.estado === 'pagado'" 
+                    class="btn-icon-sm" 
+                    (click)="descargarComprobante(pago)"
+                    title="Descargar comprobante">
+              <i class="fas fa-download"></i>
+            </button>
+            <button *ngIf="pago.estado === 'pendiente' || pago.estado === 'vencido'" 
+                    class="btn-pay-sm"
+                    (click)="pagarCuota(pago)">
+              Pagar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Información Adicional Compacta -->
+  <div class="info-grid compact-row">
+    <div class="info-card compact-card">
+      <div class="card-header-sm">
+        <h5><i class="fas fa-university"></i> Información de Pago</h5>
+      </div>
+      <div class="info-list">
+        <div class="info-item-sm">
+          <span class="label">CBU / Alias:</span>
+          <span class="value highlight">VILLMANZANO.CUOTAS</span>
+        </div>
+        <div class="info-item-sm">
+          <span class="label">Horario Tesorería:</span>
+          <span class="value">Lun-Vie 18:00-21:00hs</span>
+        </div>
+        <div class="info-item-sm">
+          <span class="label">Contacto:</span>
+          <span class="value">tesoreria@villmanzano.com.ar</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card compact-card highlight">
+      <div class="card-header-sm">
+        <h5><i class="fas fa-lightbulb"></i> Recordatorio</h5>
+      </div>
+      <div class="reminder-content">
+        <p>Las cuotas vencen el <strong>día 10 de cada mes</strong>. 
+        Envía el comprobante de transferencia para un registro rápido.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
