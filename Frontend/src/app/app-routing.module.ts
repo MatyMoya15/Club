@@ -37,7 +37,7 @@ const routes: Routes = [
   { path: 'deportes', component: DeportesComponent },
   { path: 'faq', component: FaqComponent },
   { path: 'historia', component: HistoriaComponent },
-  { path: 'noticia', component: NoticiaComponent },
+  { path: 'noticia/:id', component: NoticiaComponent }, // ⬅️ CAMBIADO
   { path: 'info-socios', component: SociosInfoComponent },
   
   // Rutas de autenticación
