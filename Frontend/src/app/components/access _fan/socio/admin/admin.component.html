@@ -1,0 +1,225 @@
+<div class="admin-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Panel Admin</h3>
+    </div>
+    <nav class="sidebar-nav">
+      <button 
+        class="nav-item" 
+        [class.active]="seccionActiva === 'noticias'"
+        (click)="cambiarSeccion('noticias')">
+        <i class="bi bi-newspaper"></i>
+        <span>Noticias</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="seccionActiva === 'socios'"
+        (click)="cambiarSeccion('socios')">
+        <i class="bi bi-people"></i>
+        <span>Socios</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="seccionActiva === 'cuotas'"
+        (click)="cambiarSeccion('cuotas')">
+        <i class="bi bi-cash-coin"></i>
+        <span>Cuotas</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div class="main-content">
+    
+    <!-- Sección Noticias -->
+    <div *ngIf="seccionActiva === 'noticias'" class="seccion">
+      <div class="seccion-header">
+        <h2>Gestión de Noticias</h2>
+        <button class="btn btn-primary" (click)="agregarNoticia()" *ngIf="!modoEdicion">
+          <i class="bi bi-plus-circle"></i> Nueva Noticia
+        </button>
+      </div>
+
+      <!-- Formulario de Nueva/Editar Noticia -->
+      <div class="card mb-4" *ngIf="modoEdicion">
+        <div class="card-header">
+          <h5>{{ noticiaEditando ? 'Editar Noticia' : 'Nueva Noticia' }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Título</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Ingrese el título de la noticia">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contenido</label>
+            <textarea 
+              class="form-control" 
+              rows="5"
+              placeholder="Escriba el contenido de la noticia"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">URL de Imagen (opcional)</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="https://ejemplo.com/imagen.jpg">
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-success" (click)="guardarNoticia()">
+              <i class="bi bi-check-circle"></i> Guardar
+            </button>
+            <button class="btn btn-secondary" (click)="cancelarEdicionNoticia()">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Noticias -->
+      <div class="noticias-grid">
+        <div class="card noticia-card" *ngFor="let noticia of noticias">
+          <div class="card-body">
+            <div class="noticia-header">
+              <h5 class="card-title">{{ noticia.titulo }}</h5>
+              <span class="badge bg-secondary">{{ noticia.fecha | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <p class="card-text">{{ noticia.contenido }}</p>
+            <div class="noticia-actions">
+              <button class="btn btn-sm btn-warning" (click)="editarNoticia(noticia)">
+                <i class="bi bi-pencil"></i> Editar
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="eliminarNoticia(noticia.id)">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Socios -->
+    <div *ngIf="seccionActiva === 'socios'" class="seccion">
+      <div class="seccion-header">
+        <h2>Listado de Socios</h2>
+      </div>
+
+      <!-- Filtros -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Buscar</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="busquedaSocio"
+                (input)="filtrarSocios()"
+                placeholder="Buscar por nombre, apellido o DNI">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Estado</label>
+              <select 
+                class="form-select" 
+                [(ngModel)]="filtroEstado"
+                (change)="filtrarSocios()">
+                <option value="todos">Todos</option>
+                <option value="activo">Activos</option>
+                <option value="inactivo">Inactivos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Socios -->
+      <div class="card">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>DNI</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Fecha Alta</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let socio of sociosFiltrados">
+                <td>{{ socio.id }}</td>
+                <td>{{ socio.nombre }}</td>
+                <td>{{ socio.apellido }}</td>
+                <td>{{ socio.dni }}</td>
+                <td>{{ socio.email }}</td>
+                <td>{{ socio.telefono }}</td>
+                <td>{{ socio.fechaAlta | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                  <span 
+                    class="badge" 
+                    [class.bg-success]="socio.estado === 'activo'"
+                    [class.bg-danger]="socio.estado === 'inactivo'">
+                    {{ socio.estado | uppercase }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-3 text-muted">
+        Total: {{ sociosFiltrados.length }} socios
+      </div>
+    </div>
+
+    <!-- Sección Cuotas -->
+    <div *ngIf="seccionActiva === 'cuotas'" class="seccion">
+      <div class="seccion-header">
+        <h2>Gestión de Cuotas</h2>
+      </div>
+
+      <div class="cuotas-grid">
+        <div class="card cuota-card" *ngFor="let cuota of cuotas">
+          <div class="card-body">
+            <div *ngIf="cuotaEditando?.id !== cuota.id">
+              <h5 class="card-title">{{ cuota.categoria }}</h5>
+              <div class="precio">
+                ${{ cuota.precio | number: '1.0-0' }}
+              </div>
+              <button class="btn btn-warning btn-sm mt-3" (click)="editarCuota(cuota)">
+                <i class="bi bi-pencil"></i> Editar Precio
+              </button>
+            </div>
+
+            <div *ngIf="cuotaEditando?.id === cuota.id">
+              <h5 class="card-title">{{ cuota.categoria }}</h5>
+              <div class="mb-3">
+                <label class="form-label">Nuevo Precio</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  [(ngModel)]="cuotaEditando!.precio">
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-success btn-sm" (click)="guardarCuota()">
+                  <i class="bi bi-check-circle"></i> Guardar
+                </button>
+                <button class="btn btn-secondary btn-sm" (click)="cancelarEdicionCuota()">
+                  <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
