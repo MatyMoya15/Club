@@ -1,0 +1,235 @@
+<div class="admin-container">
+
+  <!-- Alerts -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+    <i class="fas fa-check-circle"></i> {{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+    <i class="fas fa-exclamation-circle"></i> {{ error }}
+    <button type="button" class="btn-close" (click)="error = ''"></button>
+  </div>
+
+  <!-- Header -->
+  <div class="perfil-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">Gestión de Noticias</h1>
+        <p class="page-subtitle">Crea y administra las noticias del club</p>
+      </div>
+      <button class="btn-edit" (click)="agregarNoticia()" *ngIf="!modoEdicion">
+        <i class="fas fa-plus"></i>
+        Nueva Noticia
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando noticias...</p>
+  </div>
+
+  <!-- Formulario de Noticia -->
+  <div class="form-section" *ngIf="modoEdicion && !isLoading">
+    <div class="form-card compact-card">
+      <div class="card-header-main">
+        <h3>{{ noticiaEditando ? 'Editar Noticia' : 'Crear Nueva Noticia' }}</h3>
+      </div>
+
+      <form (ngSubmit)="guardarNoticia()" class="noticia-form">
+        <div class="form-grid">
+
+          <!-- Información Básica -->
+          <div class="form-group">
+            <label class="form-label">Título *</label>
+            <input type="text" class="form-input" [(ngModel)]="noticiaForm.titulo" name="titulo"
+              placeholder="Título principal de la noticia" [disabled]="isSaving" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subtítulo</label>
+            <input type="text" class="form-input" [(ngModel)]="noticiaForm.subtitulo" name="subtitulo"
+              [disabled]="isSaving" placeholder="Subtítulo opcional">
+          </div>
+
+          <!-- Carga de Imagen -->
+<div class="form-group full-width">
+  <label class="form-label">Imagen de la Noticia</label>
+  <div class="image-upload-container">
+    <div class="image-preview" *ngIf="noticiaForm.imagenPreview || noticiaForm.imagen">
+      <img [src]="noticiaForm.imagenPreview || noticiaForm.imagen" alt="Vista previa">
+      <button type="button" class="btn-remove-image" (click)="removerImagen()"
+        [disabled]="isSaving || isUploadingImage">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="upload-area" *ngIf="!noticiaForm.imagenPreview && !noticiaForm.imagen"
+         (click)="fileInput.click()"
+         [class.uploading]="isUploadingImage">
+      <input type="file" 
+             #fileInput 
+             (change)="onImageSelected($event)" 
+             accept="image/*" 
+             class="file-input"
+             [disabled]="isSaving || isUploadingImage" 
+             hidden>
+      <div class="upload-placeholder">
+        <i class="fas" 
+           [class.fa-cloud-upload-alt]="!isUploadingImage" 
+           [class.fa-spinner]="isUploadingImage"
+           [class.fa-spin]="isUploadingImage"></i>
+        <p>{{ isUploadingImage ? 'Subiendo imagen...' : 'Haz clic para subir una imagen' }}</p>
+        <small *ngIf="!isUploadingImage">Formatos: JPG, PNG, WEBP (Máx. 5MB)</small>
+      </div>
+    </div>
+  </div>
+</div>
+          <!-- Contenido -->
+          <div class="form-group full-width">
+            <label class="form-label">Contenido *</label>
+            <textarea class="form-textarea" [(ngModel)]="noticiaForm.cuerpo" name="cuerpo" rows="8"
+              [disabled]="isSaving" placeholder="Escribe el contenido completo de la noticia..." required></textarea>
+          </div>
+
+        </div>
+
+        <!-- Acciones del Formulario -->
+        <div class="form-actions">
+          <div class="action-left">
+            <label class="checkbox-label" *ngIf="!noticiaEditando || !noticiaForm.publicada">
+              <input type="checkbox" [(ngModel)]="noticiaForm.publicarAhora" name="publicarAhora" [disabled]="isSaving">
+              <span class="checkmark"></span>
+              Publicar inmediatamente
+            </label>
+          </div>
+
+          <div class="action-right">
+            <button type="button" class="btn-cancel" (click)="cancelarEdicion()" [disabled]="isSaving">
+              <i class="fas fa-times"></i>
+              Cancelar
+            </button>
+            <button type="submit" class="btn-save" [disabled]="!noticiaForm.titulo || !noticiaForm.cuerpo || isSaving">
+              <i class="fas" [class.fa-save]="!isSaving" [class.fa-spinner]="isSaving" [class.fa-spin]="isSaving"></i>
+              {{ isSaving ? 'Guardando...' : (noticiaEditando ? 'Actualizar' : 'Guardar') }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de Noticias -->
+  <div class="noticias-section" *ngIf="!modoEdicion && !isLoading">
+
+    <!-- Filtros y Estadísticas -->
+    <div class="filters-row">
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <div class="stat-content">
+            <p class="stat-label">Total Noticias</p>
+            <h3 class="stat-value">{{ noticias.length }}</h3>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon success">
+            <i class="fas fa-eye"></i>
+          </div>
+          <div class="stat-content">
+            <p class="stat-label">Publicadas</p>
+            <h3 class="stat-value">{{ getNoticiasPublicadas().length }}</h3>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <p class="stat-label">Borradores</p>
+            <h3 class="stat-value">{{ getNoticiasBorrador().length }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid de Noticias -->
+    <div class="noticias-grid">
+      <div class="noticia-card compact-card" *ngFor="let noticia of noticias"
+        [class.noticia-published]="noticia.publicada">
+
+        <!-- Header de la Noticia -->
+        <div class="noticia-header">
+          <div class="noticia-title-section">
+            <h4 class="noticia-title">{{ noticia.titulo }}</h4>
+            <div class="noticia-badges">
+              <span class="badge" [class.badge-success]="noticia.publicada"
+                [class.badge-secondary]="!noticia.publicada">
+                <i class="fas" [class.fa-eye]="noticia.publicada" [class.fa-clock]="!noticia.publicada"></i>
+                {{ noticia.publicada ? 'Publicada' : 'Borrador' }}
+              </span>
+              <span class="badge badge-outline">
+                {{ noticia.fecha | date:'dd/MM/yyyy' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contenido de la Noticia -->
+        <div class="noticia-content">
+          <p class="noticia-subtitulo" *ngIf="noticia.subtitulo">{{ noticia.subtitulo }}</p>
+          <p class="noticia-cuerpo">{{ truncateText(noticia.cuerpo, 200) }}</p>
+
+          <div class="noticia-image" *ngIf="noticia.imagen">
+            <img [src]="noticia.imagen" alt="Imagen noticia">
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="noticia-actions">
+          <button class="btn-action btn-edit" (click)="editarNoticia(noticia)" title="Editar">
+            <i class="fas fa-edit"></i>
+          </button>
+
+          <button *ngIf="!noticia.publicada" class="btn-action btn-publish" (click)="publicarNoticia(noticia.id)"
+            title="Publicar">
+            <i class="fas fa-eye"></i>
+          </button>
+
+          <button *ngIf="noticia.publicada" class="btn-action btn-unpublish" (click)="despublicarNoticia(noticia.id)"
+            title="Despublicar">
+            <i class="fas fa-eye-slash"></i>
+          </button>
+
+          <button class="btn-action btn-delete" (click)="eliminarNoticia(noticia.id)" title="Eliminar">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Estado Vacío -->
+    <div class="empty-state" *ngIf="noticias.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-newspaper"></i>
+      </div>
+      <h3>No hay noticias</h3>
+      <p>Crea la primera noticia para compartir novedades con los socios.</p>
+      <button class="btn-edit" (click)="agregarNoticia()">
+        <i class="fas fa-plus"></i>
+        Crear Noticia
+      </button>
+    </div>
+
+  </div>
+
+</div>
