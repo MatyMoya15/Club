@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, RegisterRequest } from 'src/app/service/auth.service';
 
 interface RegistrationData {
   // Paso 1
@@ -38,6 +40,7 @@ export class RegisterComponent implements OnInit {
   showMercadopagoOptions: boolean = false;
   isSubmitting: boolean = false;
   registrationComplete: boolean = false;
+  errorMessage: string = '';
 
   // Opciones para los selects
   provinces: string[] = [
@@ -56,7 +59,11 @@ export class RegisterComponent implements OnInit {
     { value: 'otro', label: 'Otro' }
   ];
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.createForm();
   }
 
@@ -337,47 +344,95 @@ export class RegisterComponent implements OnInit {
     return this.isLastStep ? 'fas fa-check' : 'fas fa-arrow-right';
   }
 
-  // Envío del formulario
+  // MÉTODO PRINCIPAL: Envío del formulario al backend
   async submitForm(): Promise<void> {
     if (!this.validateCurrentStep()) {
       return;
     }
 
     this.isSubmitting = true;
+    this.errorMessage = '';
 
     try {
-      const formData = this.collectFormData();
-      console.log('Datos del formulario:', formData);
+      // Mapear datos del formulario al formato del backend
+      const registerData = this.mapFormDataToBackend();
       
-      // Simular petición HTTP
-      await this.simulateRegistrationRequest(formData);
+      console.log('Enviando datos al backend:', registerData);
       
-      this.registrationComplete = true;
-      this.updateProgress(); // Completar barra de progreso
-      
+      // Llamar al servicio de autenticación
+      this.authService.register(registerData).subscribe({
+        next: (response) => {
+          console.log('Registro exitoso:', response);
+          
+          // Marcar registro como completo
+          this.registrationComplete = true;
+          this.updateProgress();
+          
+          setTimeout(() => {
+            this.router.navigate(['/socio']);
+          }, 3000);
+        },
+        error: (error) => {
+          console.error('Error en el registro:', error);
+          
+          // Manejar diferentes tipos de errores
+          if (error.status === 409) {
+            this.errorMessage = 'El email o DNI ya está registrado';
+          } else if (error.status === 400) {
+            this.errorMessage = 'Datos inválidos. Por favor verifica la información';
+          } else {
+            this.errorMessage = 'Hubo un error al procesar tu registro. Por favor intenta nuevamente.';
+          }
+          
+          alert(this.errorMessage);
+          this.isSubmitting = false;
+        },
+        complete: () => {
+          this.isSubmitting = false;
+        }
+      });
+
     } catch (error) {
-      console.error('Error en el registro:', error);
-      alert('Hubo un error al procesar tu registro. Por favor intenta nuevamente.');
-    } finally {
+      console.error('Error inesperado:', error);
+      alert('Hubo un error inesperado. Por favor intenta nuevamente.');
       this.isSubmitting = false;
     }
   }
 
-  private collectFormData(): RegistrationData {
+  // Mapear datos del formulario al formato que espera el backend
+  private mapFormDataToBackend(): RegisterRequest {
     const formValue = this.registrationForm.value;
+    
+    // Generar número de socio (puedes ajustar esta lógica)
+    const numeroSocio = this.generateNumeroSocio();
+    
+    // Construir dirección completa
+    const direccionCompleta = `${formValue.address}, ${formValue.city}, ${formValue.province}`;
+    
     return {
-      ...formValue,
-      paymentMethod: this.selectedPaymentMethod
+      numero_socio: numeroSocio,
+      dni: formValue.document,
+      nombre: formValue.firstName,
+      apellido: formValue.lastName,
+      telefono: formValue.phone || '',
+      email: formValue.email,
+      password: formValue.password,
+      direccion: direccionCompleta
     };
   }
 
-  private async simulateRegistrationRequest(data: RegistrationData): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('Registro enviado:', data);
-        resolve();
-      }, 2000);
-    });
+  // Generar número de socio (ajusta según tu lógica de negocio)
+  private generateNumeroSocio(): string {
+    // Opción 1: Generar automáticamente con timestamp
+    const timestamp = Date.now();
+    return `SOC${timestamp.toString().slice(-8)}`;
+    
+    // Opción 2: Si el backend lo genera automáticamente, 
+    // puedes enviar un valor temporal que el backend reemplazará
+    // return 'TEMP';
+    
+    // Opción 3: Solicitar al usuario que ingrese su número de socio
+    // en el formulario
   }
 
   // Reiniciar formulario
@@ -388,12 +443,12 @@ export class RegisterComponent implements OnInit {
     this.showMercadopagoOptions = false;
     this.registrationComplete = false;
     this.isSubmitting = false;
+    this.errorMessage = '';
     this.updateStep();
   }
 
   goHome(): void {
     // Navegar a la página principal
-    // this.router.navigate(['/']);
-    window.location.href = '/';
+    this.router.navigate(['/']);
   }
 }

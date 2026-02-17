@@ -1,6 +1,10 @@
-     .registration-container {
+.container{
+    min-height: calc(100vh - 254px);
+}
+
+.registration-container {
             max-width: 900px;
-            margin: 0 auto;
+            margin: 15px auto;
             background: white;
             border-radius: 24px;
             box-shadow: var(--shadow-lg);
@@ -11,7 +15,7 @@
         .registration-header {
             background: linear-gradient(135deg, var(--dark-bg) 0%, var(--principal) 100%);
             color: white;
-            padding: 3rem 2rem;
+            padding: 3rem 2rem 0rem 2rem;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -34,7 +38,7 @@
         }
 
         .header-title {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 900;
             margin-bottom: 0.5rem;
             position: relative;
@@ -42,14 +46,14 @@
         }
 
         .header-subtitle {
-            font-size: 1.3rem;
+            font-size: 1rem;
             opacity: 0.9;
             position: relative;
             z-index: 1;
         }
 
         .progress-container {
-            padding: 2.5rem;
+            padding: 1.5rem;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-bottom: 1px solid #dee2e6;
         }
@@ -58,8 +62,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 1.5rem;
-            gap: 2rem;
+            margin-bottom: 1rem;
+            gap: 1.5rem;
         }
 
         .step {
@@ -69,8 +73,8 @@
         }
 
         .step-number {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: #dee2e6;
             color: #6c757d;
@@ -78,7 +82,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             z-index: 2;
             position: relative;
             transition: all 0.3s ease;
@@ -163,7 +167,7 @@
         }
 
         .form-container {
-            padding: 3rem;
+            padding: 2rem;
         }
 
         .form-step {
@@ -189,7 +193,7 @@
         }
 
         .step-title {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--dark-bg);
             margin-bottom: 0.5rem;
@@ -209,27 +213,27 @@
 
         .step-description {
             color: #6c757d;
-            margin-bottom: 2.5rem;
-            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
         }
 
         .form-group {
-            margin-bottom: 2rem;
+            margin-bottom: 1.2rem;
         }
 
         .form-label {
             font-weight: 700;
             color: var(--dark-bg);
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             display: block;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .form-control, .form-select {
             border: 2px solid #e9ecef;
             border-radius: 12px;
-            padding: 1rem 1.2rem;
-            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
             background: #fafbfc;
         }
@@ -251,7 +255,7 @@
         .payment-option {
             border: 2px solid #e9ecef;
             border-radius: 20px;
-            padding: 2.5rem 2rem;
+            padding: 1.5rem 1rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -289,9 +293,9 @@
         }
 
         .payment-icon {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--principal);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             transition: transform 0.3s ease;
         }
 
@@ -302,8 +306,8 @@
         .payment-title {
             font-weight: 800;
             color: var(--dark-bg);
-            margin-bottom: 0.8rem;
-            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
         }
 
         .payment-description {
@@ -372,16 +376,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
             border-top: 2px solid #e9ecef;
         }
 
         .btn-custom {
-            padding: 1rem 3rem;
+            padding: 0.75rem 2rem;
             border-radius: 50px;
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             cursor: pointer;
@@ -443,8 +447,8 @@
         .summary-title {
             font-weight: 800;
             color: var(--dark-bg);
-            margin-bottom: 1.5rem;
-            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
         }
 
         .summary-item {
@@ -556,3 +560,44 @@
                 font-size: 1.8rem;
             }
         }
+
+        .content-header {
+    height: 40%;
+    background-image: url(https://portalsocios.estudiantesdelaplata.com/template_edelp/css/../imgs/socios.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #de1d22;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+    top: 100px;
+    left: 0;
+
+    /* Esto genera el borde diagonal */
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+}
+
+
+.content-header:before {
+    height: 35px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    opacity: 0.12;
+    background: -moz-linear-gradient(top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+    background: -webkit-linear-gradient(top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.triangle-bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-left: 100vw solid transparent;
+    border-bottom: 50px solid #ededed;
+}
