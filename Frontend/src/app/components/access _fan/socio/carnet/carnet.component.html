@@ -1,0 +1,197 @@
+<!-- carnet.component.html -->
+<div class="carnet-container">
+  
+  <!-- Header Compacto -->
+  <div class="perfil-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">Carnet Digital</h1>
+        <p class="page-subtitle">Tu credencial de socio siempre disponible</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-edit" (click)="descargarCarnet()">
+          <i class="fas fa-download"></i>
+          Descargar
+        </button>
+        <button class="btn-edit btn-secondary" (click)="compartirCarnet()">
+          <i class="fas fa-share-alt"></i>
+          Compartir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor Principal del Carnet -->
+  <div class="carnet-content">
+    
+    <!-- Carnet Principal -->
+    <div class="carnet-card">
+      
+      <!-- Encabezado del Carnet -->
+      <div class="carnet-header">
+        <div class="club-badge">
+          <div class="badge-icon">
+            <img src="assets/Fondo Club.png" alt="Escudo Club" class="escudo-img">
+          </div>
+          <div class="badge-text">
+            <h2>CLUB SOCIAL Y DEPORTIVO</h2>
+            <h3>VILLA MANZANO</h3>
+          </div>
+        </div>
+        <div class="carnet-type">
+          <span class="type-badge">SOCIO ACTIVO</span>
+        </div>
+      </div>
+
+      <!-- Cuerpo del Carnet -->
+      <div class="carnet-body">
+        
+        <!-- Información del Socio -->
+        <div class="socio-info">
+          <div class="socio-avatar">
+            <div class="avatar-iniciales-large">
+              {{ getIniciales() }}
+            </div>
+          </div>
+          
+          <div class="socio-details">
+            <h3 class="socio-name">{{ socioData.nombreCompleto }}</h3>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">N° DE SOCIO</span>
+                <span class="info-value">{{ socioData.numeroSocio }}</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="info-label">DNI</span>
+                <span class="info-value">{{ socioData.dni }}</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="info-label">AFILIACIÓN</span>
+                <span class="info-value">{{ socioData.fechaAfiliacion }}</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="info-label">VENCIMIENTO</span>
+                <span class="info-value">{{ getFechaVencimiento() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Código QR -->
+        <div class="qr-section">
+          <div class="qr-container">
+            <!-- Aquí iría tu componente QR real -->
+            <div class="qr-placeholder">
+              <i class="fas fa-qrcode"></i>
+              <span>Código QR</span>
+            </div>
+          </div>
+          <p class="qr-note">Escanear para verificar membresía</p>
+        </div>
+
+      </div>
+
+      <!-- Pie del Carnet -->
+      <div class="carnet-footer">
+        <div class="footer-seal">
+          <div class="seal-text">VÁLIDO</div>
+          <div class="seal-year">{{ currentYear }}</div>
+        </div>
+        <div class="footer-contact">
+          <p>www.clubvillamanzano.com.ar</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Información Adicional -->
+    <div class="info-sidebar">
+      
+      <!-- Estado de Validez -->
+      <div class="status-card compact-card">
+        <div class="card-header-sm">
+          <h5><i class="fas fa-info-circle"></i> Estado del Carnet</h5>
+        </div>
+        <div class="status-content">
+          <div class="status-indicator" [class.valid]="socioData.estaActivo" 
+               [class.expired]="!socioData.estaActivo">
+            <i class="fas" [class.fa-check-circle]="socioData.estaActivo" 
+               [class.fa-exclamation-circle]="!socioData.estaActivo"></i>
+            <span>{{ socioData.estaActivo ? 'VÁLIDO' : 'VENCIDO' }}</span>
+          </div>
+          <p class="status-note" *ngIf="socioData.estaActivo">
+            Tu carnet está activo y es válido para acceder a las instalaciones del club.
+          </p>
+          <p class="status-note expired" *ngIf="!socioData.estaActivo">
+            Regulariza tu situación para activar el carnet.
+          </p>
+        </div>
+      </div>
+
+      <!-- Instrucciones de Uso -->
+      <div class="instructions-card compact-card">
+        <div class="card-header-sm">
+          <h5><i class="fas fa-mobile-alt"></i> Cómo Usar</h5>
+        </div>
+        <div class="instructions-list">
+          <div class="instruction-item">
+            <div class="instruction-icon">
+              <i class="fas fa-download"></i>
+            </div>
+            <div class="instruction-text">
+              <strong>Descarga el carnet</strong> y guárdalo en tu dispositivo
+            </div>
+          </div>
+          <div class="instruction-item">
+            <div class="instruction-icon">
+              <i class="fas fa-qrcode"></i>
+            </div>
+            <div class="instruction-text">
+              <strong>Muestra el código QR</strong> al ingresar al club
+            </div>
+          </div>
+          <div class="instruction-item">
+            <div class="instruction-icon">
+              <i class="fas fa-sync-alt"></i>
+            </div>
+            <div class="instruction-text">
+              <strong>Mantén tus cuotas al día</strong> para conservar la validez
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones Rápidas -->
+      <div class="actions-card compact-card">
+        <div class="card-header-sm">
+          <h5><i class="fas fa-bolt"></i> Acciones</h5>
+        </div>
+        <div class="actions-grid-sm">
+          <button class="action-btn-sm" (click)="descargarCarnet()">
+            <i class="fas fa-download"></i>
+            <span>Descargar</span>
+          </button>
+          <button class="action-btn-sm" (click)="compartirCarnet()">
+            <i class="fas fa-share-alt"></i>
+            <span>Compartir</span>
+          </button>
+          <button class="action-btn-sm" (click)="imprimirCarnet()">
+            <i class="fas fa-print"></i>
+            <span>Imprimir</span>
+          </button>
+          <button class="action-btn-sm" (click)="verificarCarnet()">
+            <i class="fas fa-check-circle"></i>
+            <span>Verificar</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

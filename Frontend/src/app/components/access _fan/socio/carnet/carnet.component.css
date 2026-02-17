@@ -1,0 +1,468 @@
+.carnet-container {
+  padding: 0;
+  background: #f8fafc;
+  max-height: calc(100vh - 224px);
+  min-height: calc(100vh - 224px);
+}
+
+/* Header (reutilizado del perfil) */
+.perfil-header {
+  background: white;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-secondary {
+  background: #64748b;
+}
+
+.btn-secondary:hover {
+  background: #475569;
+}
+
+/* Contenido Principal */
+.carnet-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+}
+
+/* Carnet Principal */
+.carnet-card {
+  background: linear-gradient(135deg, #1e293b 0%, #374151 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #334155;
+  position: relative;
+  overflow: hidden;
+}
+
+.carnet-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* Encabezado del Carnet */
+.carnet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.club-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.badge-icon {
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.escudo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.badge-text h2 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fbbf24;
+  letter-spacing: 1px;
+}
+
+.badge-text h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0.25rem 0 0 0;
+  color: white;
+}
+
+.type-badge {
+  background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Cuerpo del Carnet */
+.carnet-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.socio-info {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.socio-avatar {
+  flex-shrink: 0;
+}
+
+.avatar-iniciales-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--principal) 0%, var(--secondary-red) 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.socio-details {
+  flex: 1;
+}
+
+.socio-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  color: white;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Sección QR */
+.qr-section {
+  text-align: center;
+}
+
+.qr-container {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.qr-placeholder {
+  width: 120px;
+  height: 120px;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 0.8rem;
+  gap: 0.5rem;
+}
+
+.qr-placeholder i {
+  font-size: 2rem;
+  color: #94a3b8;
+}
+
+.qr-note {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Pie del Carnet */
+.carnet-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #374151;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-seal {
+  text-align: center;
+}
+
+.seal-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fbbf24;
+  letter-spacing: 1px;
+}
+
+.seal-year {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
+}
+
+.footer-contact p {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Sidebar de Información */
+.info-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Tarjetas Compactas (reutilizadas) */
+.compact-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+}
+
+.card-header-sm h5 {
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Estado de Validez */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.status-indicator.valid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-indicator.expired {
+  background: #fecaca;
+  color: #dc2626;
+}
+
+.status-note {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.status-note.expired {
+  color: #dc2626;
+}
+
+/* Instrucciones */
+.instructions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.instruction-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.instruction-icon {
+  width: 32px;
+  height: 32px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--principal);
+  flex-shrink: 0;
+}
+
+.instruction-text {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #475569;
+  line-height: 1.4;
+}
+
+/* Acciones Rápidas */
+.actions-grid-sm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.action-btn-sm {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #475569;
+}
+
+.action-btn-sm:hover {
+  border-color: var(--principal);
+  color: var(--principal);
+  transform: translateY(-1px);
+}
+
+.action-btn-sm i {
+  font-size: 1.25rem;
+}
+
+.action-btn-sm span {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .carnet-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .info-sidebar {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .carnet-body {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .socio-info {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    align-self: stretch;
+    justify-content: flex-start;
+  }
+  
+  .carnet-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .carnet-footer {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .actions-grid-sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .carnet-card {
+    padding: 1.5rem;
+  }
+  
+  .socio-name {
+    font-size: 1.25rem;
+  }
+  
+  .avatar-iniciales-large {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
