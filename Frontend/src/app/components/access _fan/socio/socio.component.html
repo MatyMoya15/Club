@@ -1,0 +1,113 @@
+<app-navbar-af 
+  [isLoggedIn]="true"
+  [currentPage]="'profile'"
+  [userName]="'Matías Moyano'"
+  (logout)="logout()">
+</app-navbar-af>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 col-lg-2 sidebar">
+      
+      <!-- Club Header -->
+      <div class="sidebar-header">
+        <div class="club-logo">
+          <div class="logo-circle">
+            <img src="assets/Fondo Club.png" alt="">
+          </div>
+          <div>
+            <div class="club-name">Club Social y Deportivo Villa Manzano</div>
+            <small style="color: #9ca3af; font-size: 0.75rem;">Portal del Socio</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="nav-menu">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" 
+              routerLink="/socio/perfil" 
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-user-circle"></i>
+              <span>Mi Perfil</span>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" 
+              routerLink="/socio/cuotas" 
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-credit-card"></i>
+              <span>Estado de Cuotas</span>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" 
+              routerLink="/socio/carnet" 
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-id-badge"></i>
+              <span>Carnet Digital</span>
+            </a>
+          </li>
+
+          <!-- 🔥 Sección Admin (solo visible para admins) -->
+          <ng-container *ngIf="isAdmin">
+            <li class="nav-divider">
+              <hr>
+              <small class="text-muted px-3">ADMINISTRACIÓN</small>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" 
+                routerLink="/socio/admin/noticias" 
+                routerLinkActive="active">
+                <i class="fas fa-newspaper"></i>
+                <span>Noticias</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" 
+                routerLink="/socio/admin/socios" 
+                routerLinkActive="active">
+                <i class="fas fa-users"></i>
+                <span>Socios</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" 
+                routerLink="/socio/admin/cuotas" 
+                routerLinkActive="active">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Gestión de Cuotas</span>
+              </a>
+            </li>
+          </ng-container>
+        </ul>
+      </nav>
+
+      <!-- Logout Button -->
+      <div class="sidebar-footer">
+        <button class="btn btn-logout" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+      
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9 col-lg-10 main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<app-footer-af >
+</app-footer-af>

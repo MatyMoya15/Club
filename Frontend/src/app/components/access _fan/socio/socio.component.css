@@ -1,0 +1,330 @@
+.container-fluid {
+  padding: 0;
+}
+
+.row {
+  margin: 0;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+  color: white;
+  padding: 0;
+  min-height: calc(100vh - 224px);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  left: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.club-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.logo-circle {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.club-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+img{
+  height: 75px;
+  width: auto;
+}
+
+
+/* Navigation Menu */
+.nav-menu {
+  padding: 1.5rem 0;
+  flex: 1;
+}
+
+.nav-item {
+  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  color: #d1d5db;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  transition: left 0.6s ease;
+}
+
+.nav-link:hover::before {
+  left: 100%;
+}
+
+.nav-link:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+  color: white;
+  transform: translateX(8px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.nav-link.active {
+  background: linear-gradient(135deg, var(--principal, #3b82f6) 0%, var(--secondary-red, #ef4444) 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  transform: translateX(4px);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  background: var(--gold, #fbbf24);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 2px 4px rgba(251, 191, 36, 0.4);
+}
+
+.nav-link i {
+  width: 20px;
+  font-size: 1.1rem;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover i {
+  transform: scale(1.1);
+}
+
+.nav-link.active i {
+  transform: scale(1.15);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+  background: rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.btn-logout {
+  width: 100%;
+  background: transparent;
+  border: 2px solid var(--principal, #3b82f6);
+  color: var(--principal, #3b82f6);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.95rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-logout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--principal, #3b82f6) 0%, var(--secondary-red, #ef4444) 100%);
+  transition: left 0.4s ease;
+  z-index: -1;
+}
+
+.btn-logout:hover::before {
+  left: 0;
+}
+
+.btn-logout:hover {
+  color: white;
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.btn-logout i {
+  transition: transform 0.3s ease;
+}
+
+.btn-logout:hover i {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: auto;
+  position: relative;
+}
+
+.main-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.3) 50%, transparent 100%);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .main-content {
+    margin-left: 25%;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-content {
+    margin-left: 16.66667%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 300px;
+    z-index: 1050;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .sidebar.show {
+    left: 0;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .nav-item {
+    padding: 0 0.5rem;
+  }
+  
+  .nav-link {
+    padding: 0.75rem 1rem;
+  }
+  
+  .user-profile-card {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+}
+
+/* Scrollbar Styling para WebKit */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--principal, #3b82f6) 0%, var(--secondary-red, #ef4444) 100%);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563eb 0%, #dc2626 100%);
+}
+
+/* Animaciones adicionales */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.nav-item {
+  animation: slideInLeft 0.5s ease forwards;
+}
+
+.nav-item:nth-child(1) { animation-delay: 0.1s; }
+.nav-item:nth-child(2) { animation-delay: 0.2s; }
+.nav-item:nth-child(3) { animation-delay: 0.3s; }
+.nav-item:nth-child(4) { animation-delay: 0.4s; }
+
+.nav-divider {
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.nav-divider hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0.5rem 1rem;
+}
+
+.nav-divider small {
+  display: block;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+}
