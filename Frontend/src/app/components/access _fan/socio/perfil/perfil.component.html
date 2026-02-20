@@ -1,0 +1,448 @@
+<div class="perfil-container">
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando información del perfil...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error }}
+    <button type="button" class="btn-close" (click)="error = ''"></button>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle"></i> {{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+  </div>
+
+  <!-- User Profile Content -->
+  <div *ngIf="!isLoading && currentUser">
+    
+    <!-- Header compacto -->
+    <div class="perfil-header">
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Mi Perfil</h1>
+          <p class="page-subtitle">Gestiona tu información y membresía</p>
+        </div>
+        <button class="btn-edit" (click)="editarPerfil()">
+          <i class="fas fa-edit"></i>
+          Editar
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenido Principal Compacto -->
+    <div class="main-content">
+      
+      <!-- Primera Fila: Resumen y Estado -->
+      <div class="row compact-row">
+        
+        <!-- Tarjeta de Resumen Compacta -->
+        <div class="col-md-4">
+          <div class="profile-card compact-card">
+            <div class="avatar-section">
+              <div class="avatar-wrapper">
+                <div class="avatar-iniciales" [class.active]="socioData.estaActivo">
+                  {{ getIniciales() }}
+                </div>
+              </div>
+              <div class="profile-info">
+                <h3 class="user-name">{{ socioData.nombreCompleto }}</h3>
+                <div class="badge-container">
+                  <span class="badge" [class.badge-success]="socioData.estaActivo" 
+                        [class.badge-secondary]="!socioData.estaActivo">
+                    {{ socioData.estaActivo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                  <span class="badge badge-outline">
+                    #{{ socioData.numeroSocio }}
+                  </span>
+                  <span class="badge badge-info" *ngIf="isAdmin">
+                    <i class="fas fa-crown"></i> Admin
+                  </span>
+                </div>
+                <div class="member-since">
+                  <i class="fas fa-calendar-alt"></i>
+                  Socio desde {{ socioData.fechaAfiliacion }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado de Cuotas Compacto -->
+        <div class="col-md-8">
+          <div class="status-card compact-card">
+            <div class="status-header">
+              <h4><i class="fas fa-credit-card"></i> Estado de Cuotas</h4>
+            </div>
+            <div class="status-body">
+              <div class="payment-status" [class.payment-pending]="socioData.debeCuotas">
+                <i class="fas" [class.fa-exclamation-triangle]="socioData.debeCuotas" 
+                   [class.fa-check-circle]="!socioData.debeCuotas"></i>
+                <span class="status-text">
+                  {{ socioData.debeCuotas ? 'Cuotas Pendientes' : 'Al Día' }}
+                </span>
+                <span *ngIf="socioData.debeCuotas" class="amount">
+                  {{ formatearMonto(socioData.montoPendiente) }}
+                </span>
+              </div>
+              <div class="status-actions" *ngIf="socioData.debeCuotas">
+                <button class="btn-sm btn-primary">
+                  <i class="fas fa-credit-card"></i> Pagar
+                </button>
+                <button class="btn-sm btn-outline">
+                  <i class="fas fa-list"></i> Detalle
+                </button>
+              </div>
+              <div class="status-message" *ngIf="!socioData.debeCuotas">
+                <p class="text-success">
+                  <i class="fas fa-check-circle"></i>
+                  ¡Excelente! No tenés cuotas pendientes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Segunda Fila: Información Personal y Membresía -->
+      <div class="row compact-row">
+        
+        <!-- Información Personal -->
+        <div class="col-md-6">
+          <div class="info-card compact-card">
+            <div class="card-header-sm">
+              <h5><i class="fas fa-user"></i> Información Personal</h5>
+            </div>
+            <div class="info-list">
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-envelope"></i> Email:</span>
+                <span class="value">{{ socioData.email }}</span>
+              </div>
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-phone"></i> Teléfono:</span>
+                <span class="value">{{ socioData.telefono }}</span>
+              </div>
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-map-marker-alt"></i> Dirección:</span>
+                <span class="value">{{ socioData.direccion }}</span>
+              </div>
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-id-card"></i> DNI:</span>
+                <span class="value">{{ socioData.dni }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información de Membresía -->
+        <div class="col-md-6">
+          <div class="info-card compact-card">
+            <div class="card-header-sm">
+              <h5><i class="fas fa-id-badge"></i> Membresía</h5>
+            </div>
+            <div class="info-list">
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-hashtag"></i> Número:</span>
+                <span class="value highlight">{{ socioData.numeroSocio }}</span>
+              </div>
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-calendar-alt"></i> Afiliación:</span>
+                <span class="value">{{ socioData.fechaAfiliacion }}</span>
+              </div>
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-star"></i> Categoría:</span>
+                <span class="value">{{ socioData.estaActivo ? 'Socio Activo' : 'Socio Inactivo' }}</span>
+              </div>
+              <div class="info-item-sm">
+                <span class="label"><i class="fas fa-shield-alt"></i> Rol:</span>
+                <span class="value">{{ socioData.rol === 'admin' ? 'Administrador' : 'Socio' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones Rápidas Compactas -->
+      <div class="row">
+        <div class="col-12">
+          <div class="actions-card compact-card">
+            <div class="card-header-sm">
+              <h5><i class="fas fa-bolt"></i> Acciones Rápidas</h5>
+            </div>
+            <div class="actions-grid-sm">
+              <button class="action-btn-sm" routerLink="/socio/carnet">
+                <i class="fas fa-id-card"></i>
+                <span>Carnet</span>
+              </button>
+              <button class="action-btn-sm" routerLink="/socio/cuotas">
+                <i class="fas fa-file-invoice"></i>
+                <span>Mis Cuotas</span>
+              </button>
+              <button class="action-btn-sm" (click)="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Edición de Perfil -->
+<div class="modal fade" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" *ngIf="currentUser">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-user-edit"></i> Editar Mi Perfil
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()" 
+                [disabled]="isSubmitting"></button>
+      </div>
+      
+      <!-- Body -->
+      <div class="modal-body">
+        
+        <!-- Info del Usuario -->
+        <div class="alert alert-info mb-4">
+          <div class="row">
+            <div class="col-md-6">
+              <strong>N° Socio:</strong> #{{ currentUser.numero_socio }}
+            </div>
+            <div class="col-md-6">
+              <strong>DNI:</strong> {{ currentUser.dni }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario -->
+        <form>
+          
+          <!-- Sección: Datos Personales -->
+          <div class="form-section">
+            <h6 class="section-title">
+              <i class="fas fa-user"></i> Datos Personales
+            </h6>
+            
+            <div class="row">
+              <!-- Nombre -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">
+                  Nombre <span class="text-danger">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  class="form-control"
+                  [class.is-invalid]="formErrors.nombre"
+                  [(ngModel)]="editForm.nombre"
+                  name="nombre"
+                  placeholder="Ingrese su nombre"
+                  [disabled]="isSubmitting"
+                  maxlength="100">
+                <div class="invalid-feedback" *ngIf="formErrors.nombre">
+                  {{ formErrors.nombre }}
+                </div>
+              </div>
+
+              <!-- Apellido -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">
+                  Apellido <span class="text-danger">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  class="form-control"
+                  [class.is-invalid]="formErrors.apellido"
+                  [(ngModel)]="editForm.apellido"
+                  name="apellido"
+                  placeholder="Ingrese su apellido"
+                  [disabled]="isSubmitting"
+                  maxlength="100">
+                <div class="invalid-feedback" *ngIf="formErrors.apellido">
+                  {{ formErrors.apellido }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">
+                <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
+              </label>
+              <input 
+                type="email" 
+                class="form-control"
+                [class.is-invalid]="formErrors.email"
+                [(ngModel)]="editForm.email"
+                name="email"
+                placeholder="ejemplo@correo.com"
+                [disabled]="isSubmitting"
+                maxlength="255">
+              <div class="invalid-feedback" *ngIf="formErrors.email">
+                {{ formErrors.email }}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Teléfono -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">
+                  <i class="fas fa-phone"></i> Teléfono
+                </label>
+                <input 
+                  type="tel" 
+                  class="form-control"
+                  [(ngModel)]="editForm.telefono"
+                  name="telefono"
+                  placeholder="Ingrese su teléfono"
+                  [disabled]="isSubmitting"
+                  maxlength="20">
+              </div>
+
+              <!-- Dirección -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">
+                  <i class="fas fa-map-marker-alt"></i> Dirección
+                </label>
+                <input 
+                  type="text" 
+                  class="form-control"
+                  [(ngModel)]="editForm.direccion"
+                  name="direccion"
+                  placeholder="Ingrese su dirección"
+                  [disabled]="isSubmitting"
+                  maxlength="255">
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Cambiar Contraseña -->
+          <div class="form-section">
+            <h6 class="section-title">
+              <i class="fas fa-lock"></i> Cambiar Contraseña
+            </h6>
+            <small class="text-muted d-block mb-3">
+              Complete estos campos solo si desea cambiar su contraseña
+            </small>
+
+            <div class="row">
+              <div class="col-12 mb-3" *ngIf="!currentUser?.primer_login">
+                <label class="form-label">
+                  Contraseña Actual <span class="text-danger">*</span>
+                </label>
+                <input 
+                  type="password" 
+                  class="form-control"
+                  [class.is-invalid]="formErrors.passwordActual"
+                  [(ngModel)]="editForm.passwordActual"
+                  name="passwordActual"
+                  placeholder="Ingrese su contraseña actual"
+                  [disabled]="isSubmitting"
+                  autocomplete="current-password">
+                <div class="invalid-feedback" *ngIf="formErrors.passwordActual">
+                  {{ formErrors.passwordActual }}
+                </div>
+              </div>
+
+              <!-- Nueva Contraseña -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">
+                  Nueva Contraseña
+                </label>
+                <input 
+                  type="password" 
+                  class="form-control"
+                  [class.is-invalid]="formErrors.passwordNueva"
+                  [(ngModel)]="editForm.passwordNueva"
+                  name="passwordNueva"
+                  placeholder="Mínimo 6 caracteres"
+                  [disabled]="isSubmitting"
+                  autocomplete="new-password">
+                <div class="invalid-feedback" *ngIf="formErrors.passwordNueva">
+                  {{ formErrors.passwordNueva }}
+                </div>
+              </div>
+
+              <!-- Confirmar Contraseña -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">
+                  Confirmar Contraseña
+                </label>
+                <input 
+                  type="password" 
+                  class="form-control"
+                  [class.is-invalid]="formErrors.passwordConfirmar"
+                  [(ngModel)]="editForm.passwordConfirmar"
+                  name="passwordConfirmar"
+                  placeholder="Repita la contraseña"
+                  [disabled]="isSubmitting"
+                  autocomplete="new-password">
+                <div class="invalid-feedback" *ngIf="formErrors.passwordConfirmar">
+                  {{ formErrors.passwordConfirmar }}
+                </div>
+              </div>
+            </div>
+
+  <div class="alert alert-warning" *ngIf="currentUser?.primer_login">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Primer inicio de sesión:</strong> Tu contraseña actual es <code>club2025</code>. Cambiala por una nueva.
+  </div>
+
+  <div class="alert alert-warning" *ngIf="!currentUser?.primer_login">
+    <i class="fas fa-info-circle"></i>
+    <strong>Importante:</strong> Si cambia su contraseña, deberá usarla en su próximo inicio de sesión.
+  </div>
+          </div>
+
+          <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle"></i>
+            Los campos marcados con <span class="text-danger">*</span> son obligatorios
+          </div>
+
+        </form>
+      </div>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="cerrarModal()"
+          [disabled]="isSubmitting">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="guardarCambios()"
+          [disabled]="isSubmitting">
+          <span *ngIf="!isSubmitting">
+            <i class="fas fa-save"></i> Guardar Cambios
+          </span>
+          <span *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Guardando...
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop del modal -->
+<div class="modal-backdrop fade" [class.show]="showEditModal" *ngIf="showEditModal"></div>
