@@ -71,8 +71,8 @@
                 </div>
             </div>
             
-            <!-- Contenido de la noticia con saltos de línea preservados -->
-            <div [innerHTML]="noticia.cuerpo"></div>
+            <!-- ⬇️ ARREGLADO: Agregar wrapper <p> y usar nl2br pipe -->
+            <p [innerHTML]="noticia.cuerpo | nl2br"></p>
         </div>
         
         <h5 class="fin-text">

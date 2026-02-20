@@ -19,9 +19,8 @@ export class NoticiaComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener el ID de la noticia desde la URL
     this.route.params.subscribe(params => {
-      const id = +params['id']; // El + convierte string a number
+      const id = +params['id'];
       if (id) {
         this.cargarNoticia(id);
       } else {
@@ -53,7 +52,6 @@ export class NoticiaComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  // Formatear fecha
   formatearFecha(fecha: string): string {
     const date = new Date(fecha);
     const opciones: Intl.DateTimeFormatOptions = { 
@@ -64,7 +62,6 @@ export class NoticiaComponent implements OnInit {
     return date.toLocaleDateString('es-AR', opciones);
   }
 
-  // Determinar categoría
   getCategoria(): string {
     if (!this.noticia) return 'Noticias';
     
@@ -76,17 +73,22 @@ export class NoticiaComponent implements OnInit {
       return 'Hockey';
     } else if (titulo.includes('socio') || titulo.includes('comunidad')) {
       return 'Comunidad';
+    } else if (titulo.includes('infantil') || titulo.includes('juvenil')) {
+      return 'Fútbol Infantil';
     } else {
       return 'Noticias';
     }
   }
 
-  // Obtener imagen o placeholder
+  // ⬇️ ARREGLADO: Sin placeholder hardcodeado
   getImageUrl(): string {
-    return this.noticia?.imagen || 'https://www.ole.com.ar/2023/05/13/S35qjoqk2_1290x760__2.jpg';
+    if (this.noticia?.imagen) {
+      return this.noticia.imagen;
+    }
+    // Placeholder genérico solo si NO hay imagen
+    return 'https://via.placeholder.com/1200x500/dc2626/ffffff?text=Sin+Imagen';
   }
 
-  // Compartir en redes sociales
   compartirFacebook(): void {
     const url = window.location.href;
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
