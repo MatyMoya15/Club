@@ -30,7 +30,7 @@ import { AdminGuard } from './guards/admin.guard';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AdminNoticiasComponent } from './components/access _fan/socio/admin/admin-noticias/admin-noticias.component';
 import { AdminSociosComponent } from './components/access _fan/socio/admin/admin-socios/admin-socios.component';
-import { AdminCuotasComponent } from './components/access _fan/socio/admin/admin-cuotas/admin-cuotas.component';
+import { AdminDeportesComponent } from './components/access _fan/socio/admin/admin-deportes/admin-deportes.component';
 import { FooterAfComponent } from './components/access _fan/footer-af/footer-af.component';
 import { Nl2brPipe } from './pipes/nl2br.pipe';
 
@@ -55,8 +55,8 @@ import { Nl2brPipe } from './pipes/nl2br.pipe';
     SocioComponent,
     PerfilComponent,
     CuotasComponent,
-    CarnetComponent, 
-    AdminComponent, AdminNoticiasComponent, AdminSociosComponent, AdminCuotasComponent, FooterAfComponent,
+    CarnetComponent,
+    AdminComponent, AdminNoticiasComponent, AdminSociosComponent, AdminDeportesComponent, FooterAfComponent,
     Nl2brPipe
   ],
   imports: [

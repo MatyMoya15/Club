@@ -1,14 +1,10 @@
-<app-navbar-af 
-  [isLoggedIn]="true"
-  [currentPage]="'profile'"
-  [userName]="'Matías Moyano'"
-  (logout)="logout()">
+<app-navbar-af [isLoggedIn]="true" [currentPage]="'profile'" [userName]="'Matías Moyano'" (logout)="logout()"
+  (toggleMenu)="toggleSidebar()">
 </app-navbar-af>
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-3 col-lg-2 sidebar">
-      
+    <div class="col-md-3 col-lg-2 sidebar" [class.show]="sidebarOpen">
       <!-- Club Header -->
       <div class="sidebar-header">
         <div class="club-logo">
@@ -26,29 +22,23 @@
       <nav class="nav-menu">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" 
-              routerLink="/socio/perfil" 
-              routerLinkActive="active"
+            <a class="nav-link" routerLink="/socio/perfil" routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }">
               <i class="fas fa-user-circle"></i>
               <span>Mi Perfil</span>
             </a>
           </li>
-          
+
           <li class="nav-item">
-            <a class="nav-link" 
-              routerLink="/socio/cuotas" 
-              routerLinkActive="active"
+            <a class="nav-link" routerLink="/socio/cuotas" routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }">
               <i class="fas fa-credit-card"></i>
               <span>Estado de Cuotas</span>
             </a>
           </li>
-          
+
           <li class="nav-item">
-            <a class="nav-link" 
-              routerLink="/socio/carnet" 
-              routerLinkActive="active"
+            <a class="nav-link" routerLink="/socio/carnet" routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }">
               <i class="fas fa-id-badge"></i>
               <span>Carnet Digital</span>
@@ -63,29 +53,22 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" 
-                routerLink="/socio/admin/noticias" 
-                routerLinkActive="active">
+              <a class="nav-link" routerLink="/socio/admin/noticias" routerLinkActive="active">
                 <i class="fas fa-newspaper"></i>
                 <span>Noticias</span>
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" 
-                routerLink="/socio/admin/socios" 
-                routerLinkActive="active">
+              <a class="nav-link" routerLink="/socio/admin/socios" routerLinkActive="active">
                 <i class="fas fa-users"></i>
                 <span>Socios</span>
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" 
-                routerLink="/socio/admin/cuotas" 
-                routerLinkActive="active">
-                <i class="fas fa-dollar-sign"></i>
-                <span>Gestión de Cuotas</span>
+              <a class="nav-link" routerLink="/socio/admin/cuotas" routerLinkActive="active">
+                <i class="fa-solid fa-stopwatch-20"></i> <span>Gestión Deportiva</span>
               </a>
             </li>
           </ng-container>
@@ -99,7 +82,7 @@
           <span>Cerrar Sesión</span>
         </button>
       </div>
-      
+
     </div>
 
     <!-- Main Content -->
@@ -109,5 +92,5 @@
   </div>
 </div>
 
-<app-footer-af >
+<app-footer-af>
 </app-footer-af>

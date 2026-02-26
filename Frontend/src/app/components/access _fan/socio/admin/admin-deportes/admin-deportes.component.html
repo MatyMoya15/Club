@@ -1,0 +1,658 @@
+<!-- Bootstrap Icons CDN — agregar en index.html o angular.json -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> -->
+
+<!-- Google Fonts — agregar en index.html -->
+<!-- <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet"> -->
+
+<div class="container-fluid py-4">
+
+  <!-- ==================== HEADER ==================== -->
+  <div class="page-header mb-4 d-flex align-items-center gap-3">
+    <div class="header-icon">
+      <i class="bi bi-sliders2"></i>
+    </div>
+    <div>
+      <h2 class="mb-1">Administración de Cuotas</h2>
+      <p class="mb-0">Gestiona deportes, clases e instructores del club</p>
+    </div>
+  </div>
+
+  <!-- ==================== TABS ==================== -->
+  <div class="nav-tabs-custom">
+    <button class="nav-tab-btn" [class.active]="tabActiva === 'deportes'" (click)="cambiarTab('deportes')" type="button">
+      <i class="bi bi-trophy-fill tab-icon"></i>
+      Deportes
+      <span class="tab-badge">{{ deportes.length }}</span>
+    </button>
+    <button class="nav-tab-btn" [class.active]="tabActiva === 'clases'" (click)="cambiarTab('clases')" type="button">
+      <i class="bi bi-calendar-week-fill tab-icon"></i>
+      Clases
+      <span class="tab-badge">{{ clases.length }}</span>
+    </button>
+    <button class="nav-tab-btn" [class.active]="tabActiva === 'instructores'" (click)="cambiarTab('instructores')" type="button">
+      <i class="bi bi-person-badge-fill tab-icon"></i>
+      Instructores
+      <span class="tab-badge">{{ instructores.length }}</span>
+    </button>
+  </div>
+
+  <!-- ==================== LOADING ==================== -->
+  <div *ngIf="cargando" class="loading-wrapper">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- ==================== TAB DEPORTES ==================== -->
+  <div *ngIf="tabActiva === 'deportes' && !cargando">
+
+    <div class="action-bar d-flex align-items-center gap-3">
+      <div class="search-wrapper">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" class="form-control" placeholder="Buscar deporte por nombre..."
+          [(ngModel)]="filtroDeporte">
+      </div>
+      <button class="btn btn-primary flex-shrink-0" (click)="abrirModalDeporte('crear')">
+        <i class="bi bi-plus-lg"></i>
+        Nuevo Deporte
+      </button>
+    </div>
+
+    <div class="data-card">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="px-4">Deporte</th>
+              <th>Descripción</th>
+              <th>Cuota Mensual</th>
+              <th class="text-end px-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let deporte of deportesFiltrados">
+              <td class="px-4">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="icon-wrapper">
+                    <i class="bi bi-trophy-fill"></i>
+                  </div>
+                  <strong>{{ deporte.nombre }}</strong>
+                </div>
+              </td>
+              <td>
+                <span class="text-muted" *ngIf="!deporte.descripcion">Sin descripción</span>
+                <span *ngIf="deporte.descripcion">{{ deporte.descripcion }}</span>
+              </td>
+              <td>
+                <span class="badge badge-money">
+                  <i class="bi bi-currency-dollar"></i>
+                  {{ deporte.monto_mensual | number:'1.2-2' }} / mes
+                </span>
+              </td>
+              <td class="text-end px-4">
+                <div class="btn-group">
+                  <button class="btn btn-action-view" (click)="abrirModalDeporte('ver', deporte)" title="Ver detalles">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <button class="btn btn-action-edit" (click)="abrirModalDeporte('editar', deporte)" title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn btn-action-delete" (click)="confirmarEliminarDeporte(deporte)" title="Eliminar">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="deportesFiltrados.length === 0" class="empty-state">
+          <i class="bi bi-trophy empty-icon"></i>
+          <p>No hay deportes disponibles</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB CLASES ==================== -->
+  <div *ngIf="tabActiva === 'clases' && !cargando">
+
+    <div class="action-bar d-flex align-items-center gap-3">
+      <div class="search-wrapper">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" class="form-control" placeholder="Buscar clase por deporte o día..."
+          [(ngModel)]="filtroClase">
+      </div>
+      <button class="btn btn-success flex-shrink-0" (click)="abrirModalClase('crear')">
+        <i class="bi bi-plus-lg"></i>
+        Nueva Clase
+      </button>
+    </div>
+
+    <div class="data-card">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="px-4">Deporte</th>
+              <th>Día</th>
+              <th>Horario</th>
+              <th>Instructor</th>
+              <th>Cancha</th>
+              <th>Estado</th>
+              <th class="text-end px-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let clase of clasesFiltradas">
+              <td class="px-4">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="icon-wrapper blue">
+                    <i class="bi bi-trophy-fill"></i>
+                  </div>
+                  <strong>{{ clase.deporte_nombre || getDeporteNombre(clase.id_deporte) }}</strong>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge-day">{{ clase.dia }}</span>
+              </td>
+              <td>
+                <span class="d-flex align-items-center gap-1 text-muted">
+                  <i class="bi bi-clock"></i>
+                  {{ formatearHora(clase.hora_inicio) }} – {{ formatearHora(clase.hora_fin) }}
+                </span>
+              </td>
+              <td>
+                <span class="d-flex align-items-center gap-2">
+                  <i class="bi bi-person text-muted"></i>
+                  {{ getInstructorNombre(clase.id_instructor) }}
+                </span>
+              </td>
+              <td class="text-muted">
+                <span *ngIf="clase.cancha" class="d-flex align-items-center gap-1">
+                  <i class="bi bi-geo-alt"></i> {{ clase.cancha }}
+                </span>
+                <span *ngIf="!clase.cancha">–</span>
+              </td>
+              <td>
+                <span class="badge cursor-pointer"
+                  [class.badge-active]="clase.activa"
+                  [class.badge-inactive]="!clase.activa"
+                  (click)="toggleEstadoClase(clase)" title="Click para cambiar">
+                  <i class="bi" [class.bi-check-circle-fill]="clase.activa" [class.bi-x-circle-fill]="!clase.activa"></i>
+                  {{ clase.activa ? 'Activa' : 'Inactiva' }}
+                </span>
+              </td>
+              <td class="text-end px-4">
+                <div class="btn-group">
+                  <button class="btn btn-action-view" (click)="abrirModalClase('ver', clase)" title="Ver detalles">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <button class="btn btn-action-edit" (click)="abrirModalClase('editar', clase)" title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn btn-action-delete" (click)="confirmarEliminarClase(clase)" title="Eliminar">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="clasesFiltradas.length === 0" class="empty-state">
+          <i class="bi bi-calendar-x empty-icon"></i>
+          <p>No hay clases disponibles</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB INSTRUCTORES ==================== -->
+  <div *ngIf="tabActiva === 'instructores' && !cargando">
+
+    <div class="action-bar d-flex align-items-center gap-3">
+      <div class="search-wrapper">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" class="form-control" placeholder="Buscar instructor por nombre o apellido..."
+          [(ngModel)]="filtroInstructor">
+      </div>
+      <button class="btn btn-info flex-shrink-0" (click)="abrirModalInstructor('crear')">
+        <i class="bi bi-plus-lg"></i>
+        Nuevo Instructor
+      </button>
+    </div>
+
+    <div class="data-card">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="px-4">Instructor</th>
+              <th>Categoría</th>
+              <th>Fecha Alta</th>
+              <th>Estado</th>
+              <th class="text-end px-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let instructor of instructoresFiltrados">
+              <td class="px-4">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="avatar-circle">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
+                  <strong>{{ instructor.nombre }} {{ instructor.apellido }}</strong>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge-category" *ngIf="instructor.categoria">
+                  <i class="bi bi-award-fill"></i>
+                  {{ instructor.categoria }}
+                </span>
+                <span class="text-muted" *ngIf="!instructor.categoria">Sin categoría</span>
+              </td>
+              <td>
+                <span class="d-flex align-items-center gap-1 text-muted">
+                  <i class="bi bi-calendar3"></i>
+                  {{ instructor.fecha_alta | date:'dd/MM/yyyy' }}
+                </span>
+              </td>
+              <td>
+                <span class="badge cursor-pointer"
+                  [class.badge-active]="instructor.activo"
+                  [class.badge-inactive]="!instructor.activo"
+                  (click)="toggleEstadoInstructor(instructor)" title="Click para cambiar">
+                  <i class="bi" [class.bi-check-circle-fill]="instructor.activo" [class.bi-x-circle-fill]="!instructor.activo"></i>
+                  {{ instructor.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td class="text-end px-4">
+                <div class="btn-group">
+                  <button class="btn btn-action-view" (click)="abrirModalInstructor('ver', instructor)" title="Ver detalles">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <button class="btn btn-action-edit" (click)="abrirModalInstructor('editar', instructor)" title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn btn-action-delete" (click)="confirmarEliminarInstructor(instructor)" title="Desactivar">
+                    <i class="bi bi-person-dash-fill"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="instructoresFiltrados.length === 0" class="empty-state">
+          <i class="bi bi-person-x empty-icon"></i>
+          <p>No hay instructores disponibles</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL ==================== -->
+<div class="modal fade" id="crudModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header" [ngClass]="{
+        'bg-gradient-primary': accionModal === 'crear' || accionModal === 'ver',
+        'bg-gradient-warning': accionModal === 'editar',
+        'bg-gradient-danger': accionModal === 'eliminar'
+      }">
+        <div class="d-flex align-items-center gap-3 flex-1">
+          <div class="modal-icon">
+            <i class="bi" [ngClass]="{
+              'bi-plus-circle-fill': accionModal === 'crear',
+              'bi-eye-fill': accionModal === 'ver',
+              'bi-pencil-fill': accionModal === 'editar',
+              'bi-trash-fill': accionModal === 'eliminar'
+            }"></i>
+          </div>
+          <div>
+            <h5 class="modal-title text-white">
+              <span *ngIf="tipoModal === 'deporte'">
+                {{ accionModal === 'crear' ? 'Nuevo Deporte' : accionModal === 'ver' ? 'Detalles del Deporte' :
+                   accionModal === 'editar' ? 'Editar Deporte' : 'Eliminar Deporte' }}
+              </span>
+              <span *ngIf="tipoModal === 'clase'">
+                {{ accionModal === 'crear' ? 'Nueva Clase' : accionModal === 'ver' ? 'Detalles de la Clase' :
+                   accionModal === 'editar' ? 'Editar Clase' : 'Eliminar Clase' }}
+              </span>
+              <span *ngIf="tipoModal === 'instructor'">
+                {{ accionModal === 'crear' ? 'Nuevo Instructor' : accionModal === 'ver' ? 'Detalles del Instructor' :
+                   accionModal === 'editar' ? 'Editar Instructor' : 'Desactivar Instructor' }}
+              </span>
+            </h5>
+            <small class="text-white opacity-75" *ngIf="accionModal !== 'eliminar' && accionModal !== 'ver'">
+              Complete la información requerida
+            </small>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarModal()"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- FORM DEPORTE -->
+        <form [formGroup]="deporteForm" *ngIf="tipoModal === 'deporte' && accionModal !== 'eliminar' && accionModal !== 'ver'">
+          <div class="mb-4">
+            <label class="form-label">
+              <i class="bi bi-trophy text-danger"></i> Nombre del Deporte *
+            </label>
+            <input type="text" class="form-control form-control-lg" formControlName="nombre"
+              placeholder="Ej: Fútbol, Tenis, Natación..."
+              [class.is-invalid]="deporteForm.get('nombre')?.invalid && deporteForm.get('nombre')?.touched">
+            <div class="invalid-feedback">El nombre es requerido (mínimo 3 caracteres)</div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">
+              <i class="bi bi-text-paragraph text-muted"></i> Descripción
+            </label>
+            <textarea class="form-control" rows="3" formControlName="descripcion"
+              placeholder="Descripción opcional del deporte..."></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="bi bi-cash-coin text-success"></i> Monto Mensual *
+            </label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" formControlName="monto_mensual" min="0" step="0.01"
+                placeholder="0.00"
+                [class.is-invalid]="deporteForm.get('monto_mensual')?.invalid && deporteForm.get('monto_mensual')?.touched">
+              <span class="input-group-text">/mes</span>
+              <div class="invalid-feedback">El monto debe ser mayor o igual a 0</div>
+            </div>
+          </div>
+        </form>
+
+        <!-- VER DEPORTE -->
+        <div *ngIf="tipoModal === 'deporte' && accionModal === 'ver' && deporteSeleccionado" class="details-view">
+          <div class="detail-item">
+            <div class="detail-icon"><i class="bi bi-trophy-fill text-warning"></i></div>
+            <div class="detail-content">
+              <small>Nombre</small>
+              <p class="mb-0 fw-bold fs-5">{{ deporteSeleccionado.nombre }}</p>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-icon"><i class="bi bi-card-text text-info"></i></div>
+            <div class="detail-content">
+              <small>Descripción</small>
+              <p class="mb-0">{{ deporteSeleccionado.descripcion || 'Sin descripción' }}</p>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-icon"><i class="bi bi-cash-coin text-success"></i></div>
+            <div class="detail-content">
+              <small>Monto Mensual</small>
+              <p class="mb-0 fw-bold text-success fs-4">${{ deporteSeleccionado.monto_mensual | number:'1.2-2' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM CLASE -->
+        <form [formGroup]="claseForm" *ngIf="tipoModal === 'clase' && accionModal !== 'eliminar' && accionModal !== 'ver'">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="bi bi-trophy text-danger"></i> Deporte *
+              </label>
+              <select class="form-select form-select-lg" formControlName="id_deporte"
+                [class.is-invalid]="claseForm.get('id_deporte')?.invalid && claseForm.get('id_deporte')?.touched">
+                <option value="">Seleccione un deporte</option>
+                <option *ngFor="let deporte of deportes" [value]="deporte.id_deportes">{{ deporte.nombre }}</option>
+              </select>
+              <div class="invalid-feedback">Debe seleccionar un deporte</div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="bi bi-person-badge text-info"></i> Instructor
+              </label>
+              <select class="form-select form-select-lg" formControlName="id_instructor">
+                <option value="">Sin asignar</option>
+                <option *ngFor="let instructor of instructores" [value]="instructor.id_instructores">
+                  {{ instructor.nombre }} {{ instructor.apellido }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div formArrayName="horarios">
+            <div *ngFor="let horario of horarios.controls; let i = index" [formGroupName]="i"
+              class="border rounded p-3 mb-2" style="background: var(--bg-gray);">
+              <div class="row g-2">
+                <div class="col-md-4">
+                  <label class="form-label small"><i class="bi bi-calendar3"></i> Día</label>
+                  <select formControlName="dia" class="form-select">
+                    <option *ngFor="let dia of diasSemana" [value]="dia">{{ dia }}</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label small"><i class="bi bi-clock"></i> Inicio</label>
+                  <input type="time" formControlName="hora_inicio" class="form-control">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label small"><i class="bi bi-clock-history"></i> Fin</label>
+                  <input type="time" formControlName="hora_fin" class="form-control">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                  <button class="btn btn-action-delete w-100" style="height:42px;" (click)="eliminarHorario(i)">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-light mb-4 mt-1" (click)="agregarHorario()">
+            <i class="bi bi-plus-circle"></i> Agregar otro día
+          </button>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              <i class="bi bi-geo-alt text-danger"></i> Cancha
+            </label>
+            <input type="text" class="form-control form-control-lg" formControlName="cancha" placeholder="Ej: Cancha 1">
+          </div>
+          <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" formControlName="activa" id="activa">
+            <label class="form-check-label fw-semibold" for="activa">Clase activa</label>
+          </div>
+        </form>
+
+        <!-- VER CLASE -->
+        <div *ngIf="tipoModal === 'clase' && accionModal === 'ver' && claseSeleccionada" class="details-view">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon"><i class="bi bi-trophy-fill text-danger"></i></div>
+                <div class="detail-content">
+                  <small>Deporte</small>
+                  <p class="mb-0 fw-bold">{{ getDeporteNombre(claseSeleccionada.id_deporte) }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon"><i class="bi bi-person-badge-fill text-info"></i></div>
+                <div class="detail-content">
+                  <small>Instructor</small>
+                  <p class="mb-0 fw-bold">{{ getInstructorNombre(claseSeleccionada.id_instructor) }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon"><i class="bi bi-calendar-week-fill text-danger"></i></div>
+                <div class="detail-content">
+                  <small>Día</small>
+                  <p class="mb-0 fw-bold">{{ claseSeleccionada.dia }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon"><i class="bi bi-clock-fill text-success"></i></div>
+                <div class="detail-content">
+                  <small>Horario</small>
+                  <p class="mb-0 fw-bold">{{ formatearHora(claseSeleccionada.hora_inicio) }} – {{ formatearHora(claseSeleccionada.hora_fin) }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon"><i class="bi bi-geo-alt-fill text-danger"></i></div>
+                <div class="detail-content">
+                  <small>Cancha</small>
+                  <p class="mb-0 fw-bold">{{ claseSeleccionada.cancha || '–' }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <i class="bi bi-check-circle-fill text-success" *ngIf="claseSeleccionada.activa"></i>
+                  <i class="bi bi-x-circle-fill text-muted" *ngIf="!claseSeleccionada.activa"></i>
+                </div>
+                <div class="detail-content">
+                  <small>Estado</small>
+                  <p class="mb-0">
+                    <span class="badge" [class.badge-active]="claseSeleccionada.activa" [class.badge-inactive]="!claseSeleccionada.activa">
+                      {{ claseSeleccionada.activa ? 'Activa' : 'Inactiva' }}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM INSTRUCTOR -->
+        <form [formGroup]="instructorForm" *ngIf="tipoModal === 'instructor' && accionModal !== 'eliminar' && accionModal !== 'ver'">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="bi bi-person text-danger"></i> Nombre *
+              </label>
+              <input type="text" class="form-control form-control-lg" formControlName="nombre"
+                placeholder="Nombre del instructor"
+                [class.is-invalid]="instructorForm.get('nombre')?.invalid && instructorForm.get('nombre')?.touched">
+              <div class="invalid-feedback">El nombre es requerido (mínimo 2 caracteres)</div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                <i class="bi bi-person text-danger"></i> Apellido *
+              </label>
+              <input type="text" class="form-control form-control-lg" formControlName="apellido"
+                placeholder="Apellido del instructor"
+                [class.is-invalid]="instructorForm.get('apellido')?.invalid && instructorForm.get('apellido')?.touched">
+              <div class="invalid-feedback">El apellido es requerido (mínimo 2 caracteres)</div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">
+              <i class="bi bi-award text-warning"></i> Categoría
+            </label>
+            <input type="text" class="form-control form-control-lg" formControlName="categoria"
+              placeholder="Ej: Profesional, Senior, Junior...">
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" formControlName="activo" id="activo">
+            <label class="form-check-label fw-semibold" for="activo">Instructor activo</label>
+          </div>
+        </form>
+
+        <!-- VER INSTRUCTOR -->
+        <div *ngIf="tipoModal === 'instructor' && accionModal === 'ver' && instructorSeleccionado" class="details-view">
+          <div class="text-center mb-4">
+            <div class="avatar-large mx-auto mb-3">
+              <i class="bi bi-person-fill"></i>
+            </div>
+            <h4 class="mb-2">{{ instructorSeleccionado.nombre }} {{ instructorSeleccionado.apellido }}</h4>
+            <span class="badge" [class.badge-active]="instructorSeleccionado.activo" [class.badge-inactive]="!instructorSeleccionado.activo">
+              <i class="bi" [class.bi-check-circle-fill]="instructorSeleccionado.activo" [class.bi-x-circle-fill]="!instructorSeleccionado.activo"></i>
+              {{ instructorSeleccionado.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon"><i class="bi bi-award-fill text-warning"></i></div>
+                <div class="detail-content">
+                  <small>Categoría</small>
+                  <p class="mb-0 fw-bold">{{ instructorSeleccionado.categoria || 'Sin categoría' }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-item">
+                <div class="detail-icon"><i class="bi bi-calendar3-fill text-info"></i></div>
+                <div class="detail-content">
+                  <small>Fecha de Alta</small>
+                  <p class="mb-0 fw-bold">{{ instructorSeleccionado.fecha_alta | date:'dd/MM/yyyy' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONFIRMACIÓN ELIMINAR -->
+        <div *ngIf="accionModal === 'eliminar'" class="text-center py-2">
+          <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-3 fs-4 flex-shrink-0"></i>
+            <div class="text-start">
+              <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+            </div>
+          </div>
+          <div class="delete-icon">
+            <i class="bi bi-trash3-fill"></i>
+          </div>
+          <p class="fs-5 mt-2" *ngIf="tipoModal === 'deporte' && deporteSeleccionado">
+            ¿Eliminar el deporte <strong class="text-danger">{{ deporteSeleccionado.nombre }}</strong>?
+          </p>
+          <p class="fs-5 mt-2" *ngIf="tipoModal === 'clase' && claseSeleccionada">
+            ¿Eliminar esta clase de <strong class="text-danger">{{ getDeporteNombre(claseSeleccionada.id_deporte) }}</strong>?
+          </p>
+          <p class="fs-5 mt-2" *ngIf="tipoModal === 'instructor' && instructorSeleccionado">
+            ¿Desactivar a <strong class="text-danger">{{ instructorSeleccionado.nombre }} {{ instructorSeleccionado.apellido }}</strong>?
+          </p>
+          <p class="text-muted small">Esta acción desactivará el registro pero no lo eliminará permanentemente.</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-lg" (click)="cerrarModal()">
+          <i class="bi bi-x-circle"></i>
+          {{ accionModal === 'ver' ? 'Cerrar' : 'Cancelar' }}
+        </button>
+        <button type="button" class="btn btn-primary btn-lg"
+          *ngIf="(accionModal === 'crear' || accionModal === 'editar') && tipoModal === 'deporte'"
+          [disabled]="deporteForm.invalid" (click)="guardarDeporte()">
+          <i class="bi bi-floppy-fill"></i>
+          {{ accionModal === 'crear' ? 'Crear Deporte' : 'Guardar Cambios' }}
+        </button>
+        <button type="button" class="btn btn-success btn-lg"
+          *ngIf="(accionModal === 'crear' || accionModal === 'editar') && tipoModal === 'clase'"
+          [disabled]="claseForm.invalid" (click)="guardarClase()">
+          <i class="bi bi-floppy-fill"></i>
+          {{ accionModal === 'crear' ? 'Crear Clase' : 'Guardar Cambios' }}
+        </button>
+        <button type="button" class="btn btn-info btn-lg"
+          *ngIf="(accionModal === 'crear' || accionModal === 'editar') && tipoModal === 'instructor'"
+          [disabled]="instructorForm.invalid" (click)="guardarInstructor()">
+          <i class="bi bi-floppy-fill"></i>
+          {{ accionModal === 'crear' ? 'Crear Instructor' : 'Guardar Cambios' }}
+        </button>
+        <button type="button" class="btn btn-danger btn-lg" *ngIf="accionModal === 'eliminar'"
+          (click)="tipoModal === 'deporte' ? eliminarDeporte() : tipoModal === 'clase' ? eliminarClase() : eliminarInstructor()">
+          <i class="bi bi-trash3-fill"></i>
+          {{ tipoModal === 'instructor' ? 'Desactivar' : 'Eliminar' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

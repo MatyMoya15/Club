@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DeporteService, Deporte, Clase, Instructor } from './../../../../../service/deportes.service';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DeporteService, Deporte, Clase, Instructor } from '../../../../../service/deportes.service';
+import { forkJoin } from 'rxjs';
 
 declare var bootstrap: any;
 
 @Component({
-  selector: 'app-admin-cuotas',
-  templateUrl: './admin-cuotas.component.html',
-  styleUrls: ['./admin-cuotas.component.css']
+  selector: 'app-admin-deportes',
+  templateUrl: './admin-deportes.component.html',
+  styleUrls: ['./admin-deportes.component.css']
 })
-export class AdminCuotasComponent implements OnInit {
+export class AdminDeportesComponent implements OnInit
+{
   // Pestañas
   tabActiva: 'deportes' | 'clases' | 'instructores' = 'deportes';
 
@@ -48,15 +50,19 @@ export class AdminCuotasComponent implements OnInit {
   constructor(
     private deporteService: DeporteService,
     private fb: FormBuilder
-  ) {
+  )
+  {
     this.inicializarFormularios();
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
     this.cargarTodo();
+    this.agregarHorario();
   }
 
-  inicializarFormularios(): void {
+  inicializarFormularios(): void
+  {
     // Formulario de Deporte
     this.deporteForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
@@ -68,9 +74,7 @@ export class AdminCuotasComponent implements OnInit {
     this.claseForm = this.fb.group({
       id_deporte: ['', Validators.required],
       id_instructor: [''],
-      dia: ['', Validators.required],
-      hora_inicio: ['', Validators.required],
-      hora_fin: ['', Validators.required],
+      horarios: this.fb.array([], Validators.required),
       cancha: [''],
       activa: [true]
     });
@@ -86,20 +90,24 @@ export class AdminCuotasComponent implements OnInit {
 
   // ==================== CARGA DE DATOS ====================
 
-  cargarTodo(): void {
+  cargarTodo(): void
+  {
     this.cargarDeportes();
     this.cargarClases();
     this.cargarInstructores();
   }
 
-  cargarDeportes(): void {
+  cargarDeportes(): void
+  {
     this.cargando = true;
     this.deporteService.getAllDeportes().subscribe({
-      next: (data) => {
+      next: (data) =>
+      {
         this.deportes = data;
         this.cargando = false;
       },
-      error: (err) => {
+      error: (err) =>
+      {
         this.error = 'Error al cargar deportes';
         this.cargando = false;
         console.error(err);
@@ -107,23 +115,29 @@ export class AdminCuotasComponent implements OnInit {
     });
   }
 
-  cargarClases(): void {
+  cargarClases(): void
+  {
     this.deporteService.getAllClases().subscribe({
-      next: (data) => {
+      next: (data) =>
+      {
         this.clases = data;
       },
-      error: (err) => {
+      error: (err) =>
+      {
         console.error('Error al cargar clases:', err);
       }
     });
   }
 
-  cargarInstructores(): void {
+  cargarInstructores(): void
+  {
     this.deporteService.getAllInstructores().subscribe({
-      next: (data) => {
+      next: (data) =>
+      {
         this.instructores = data;
       },
-      error: (err) => {
+      error: (err) =>
+      {
         console.error('Error al cargar instructores:', err);
       }
     });
@@ -131,59 +145,71 @@ export class AdminCuotasComponent implements OnInit {
 
   // ==================== DEPORTES ====================
 
-  get deportesFiltrados(): Deporte[] {
+  get deportesFiltrados(): Deporte[]
+  {
     if (!this.filtroDeporte) return this.deportes;
     return this.deportes.filter(d =>
       d.nombre.toLowerCase().includes(this.filtroDeporte.toLowerCase())
     );
   }
 
-  abrirModalDeporte(accion: 'crear' | 'ver' | 'editar', deporte?: Deporte): void {
+  abrirModalDeporte(accion: 'crear' | 'ver' | 'editar', deporte?: Deporte): void
+  {
     this.accionModal = accion;
     this.tipoModal = 'deporte';
     this.deporteSeleccionado = deporte || null;
 
-    if (accion === 'crear') {
+    if (accion === 'crear')
+    {
       this.deporteForm.reset({ monto_mensual: 0 });
-    } else if (deporte && accion !== 'ver') {
+    } else if (deporte && accion !== 'ver')
+    {
       this.deporteForm.patchValue(deporte);
     }
 
     this.abrirModal();
   }
 
-  confirmarEliminarDeporte(deporte: Deporte): void {
+  confirmarEliminarDeporte(deporte: Deporte): void
+  {
     this.accionModal = 'eliminar';
     this.tipoModal = 'deporte';
     this.deporteSeleccionado = deporte;
     this.abrirModal();
   }
 
-  guardarDeporte(): void {
+  guardarDeporte(): void
+  {
     if (this.deporteForm.invalid) return;
 
     const data = this.deporteForm.value;
 
-    if (this.accionModal === 'crear') {
+    if (this.accionModal === 'crear')
+    {
       this.deporteService.createDeporte(data).subscribe({
-        next: () => {
+        next: () =>
+        {
           this.cerrarModal();
           this.cargarDeportes();
           this.mostrarMensaje('Deporte creado exitosamente');
         },
-        error: (err) => {
+        error: (err) =>
+        {
           console.error(err);
           this.mostrarMensaje('Error al crear el deporte', 'error');
         }
       });
-    } else if (this.accionModal === 'editar' && this.deporteSeleccionado) {
+    } else if (this.accionModal === 'editar' && this.deporteSeleccionado)
+    {
       this.deporteService.updateDeporte(this.deporteSeleccionado.id_deportes, data).subscribe({
-        next: () => {
+        next: () =>
+        {
           this.cerrarModal();
           this.cargarDeportes();
           this.mostrarMensaje('Deporte actualizado exitosamente');
         },
-        error: (err) => {
+        error: (err) =>
+        {
           console.error(err);
           this.mostrarMensaje('Error al actualizar el deporte', 'error');
         }
@@ -191,17 +217,20 @@ export class AdminCuotasComponent implements OnInit {
     }
   }
 
-  eliminarDeporte(): void {
+  eliminarDeporte(): void
+  {
     if (!this.deporteSeleccionado) return;
 
     this.deporteService.deleteDeporte(this.deporteSeleccionado.id_deportes).subscribe({
-      next: () => {
+      next: () =>
+      {
         this.cerrarModal();
         this.cargarDeportes();
         this.cargarClases();
         this.mostrarMensaje('Deporte eliminado exitosamente');
       },
-      error: (err) => {
+      error: (err) =>
+      {
         console.error(err);
         this.mostrarMensaje('Error al eliminar el deporte', 'error');
       }
@@ -210,7 +239,8 @@ export class AdminCuotasComponent implements OnInit {
 
   // ==================== CLASES ====================
 
-  get clasesFiltradas(): Clase[] {
+  get clasesFiltradas(): Clase[]
+  {
     if (!this.filtroClase) return this.clases;
     return this.clases.filter(c =>
       c.deporte_nombre?.toLowerCase().includes(this.filtroClase.toLowerCase()) ||
@@ -218,90 +248,114 @@ export class AdminCuotasComponent implements OnInit {
     );
   }
 
-  abrirModalClase(accion: 'crear' | 'ver' | 'editar', clase?: Clase): void {
+  abrirModalClase(accion: 'crear' | 'ver' | 'editar', clase?: Clase): void
+  {
     this.accionModal = accion;
     this.tipoModal = 'clase';
     this.claseSeleccionada = clase || null;
 
-    if (accion === 'crear') {
+    // Limpiar horarios siempre
+    this.horarios.clear();
+
+    if (accion === 'crear')
+    {
+
       this.claseForm.reset({ activa: true });
-    } else if (clase && accion !== 'ver') {
+      this.agregarHorario(); // uno vacío
+
+    } else if (clase && accion !== 'ver')
+    {
+
       this.claseForm.patchValue({
         id_deporte: clase.id_deporte,
         id_instructor: clase.id_instructor,
-        dia: clase.dia,
-        hora_inicio: clase.hora_inicio.substring(0, 5),
-        hora_fin: clase.hora_fin.substring(0, 5),
         cancha: clase.cancha,
         activa: clase.activa
       });
+
+      // 👇 Agregamos el horario dentro del FormArray
+      this.horarios.push(
+        this.fb.group({
+          dia: [clase.dia, Validators.required],
+          hora_inicio: [clase.hora_inicio.substring(0, 5), Validators.required],
+          hora_fin: [clase.hora_fin.substring(0, 5), Validators.required]
+        })
+      );
     }
 
     this.abrirModal();
   }
 
-  confirmarEliminarClase(clase: Clase): void {
+  confirmarEliminarClase(clase: Clase): void
+  {
     this.accionModal = 'eliminar';
     this.tipoModal = 'clase';
     this.claseSeleccionada = clase;
     this.abrirModal();
   }
 
-  guardarClase(): void {
+  guardarClase(): void
+  {
     if (this.claseForm.invalid) return;
 
     const data = this.claseForm.value;
 
-    if (this.accionModal === 'crear') {
-      this.deporteService.createClase(data).subscribe({
-        next: () => {
-          this.cerrarModal();
-          this.cargarClases();
-          this.mostrarMensaje('Clase creada exitosamente');
-        },
-        error: (err) => {
-          console.error(err);
-          this.mostrarMensaje('Error al crear la clase', 'error');
-        }
+    const requests = data.horarios.map((h: any) =>
+    {
+      return this.deporteService.createClase({
+        id_deporte: data.id_deporte,
+        id_instructor: data.id_instructor,
+        dia: h.dia,
+        hora_inicio: h.hora_inicio,
+        hora_fin: h.hora_fin,
+        cancha: data.cancha
       });
-    } else if (this.accionModal === 'editar' && this.claseSeleccionada) {
-      this.deporteService.updateClase(this.claseSeleccionada.id_clase, data).subscribe({
-        next: () => {
-          this.cerrarModal();
-          this.cargarClases();
-          this.mostrarMensaje('Clase actualizada exitosamente');
-        },
-        error: (err) => {
-          console.error(err);
-          this.mostrarMensaje('Error al actualizar la clase', 'error');
-        }
-      });
-    }
+    });
+
+    forkJoin(requests).subscribe({
+      next: () =>
+      {
+        this.cerrarModal();
+        this.cargarClases();
+        this.mostrarMensaje('Clases creadas exitosamente');
+      },
+      error: (err) =>
+      {
+        console.error(err);
+        this.mostrarMensaje('Error al crear las clases', 'error');
+      }
+    });
   }
 
-  eliminarClase(): void {
+  eliminarClase(): void
+  {
     if (!this.claseSeleccionada) return;
 
     this.deporteService.deleteClase(this.claseSeleccionada.id_clase).subscribe({
-      next: () => {
+      next: () =>
+      {
         this.cerrarModal();
         this.cargarClases();
         this.mostrarMensaje('Clase eliminada exitosamente');
       },
-      error: (err) => {
+      error: (err) =>
+      {
         console.error(err);
         this.mostrarMensaje('Error al eliminar la clase', 'error');
       }
     });
   }
 
-  toggleEstadoClase(clase: Clase): void {
+  toggleEstadoClase(clase: Clase): void
+  {
     this.deporteService.toggleClase(clase.id_clase).subscribe({
-      next: () => {
+      next: () =>
+      {
         this.cargarClases();
         this.mostrarMensaje(`Clase ${clase.activa ? 'desactivada' : 'activada'}`);
       },
-      error: (err) => {
+      error: (err) =>
+      {
         console.error(err);
         this.mostrarMensaje('Error al cambiar estado de la clase', 'error');
       }
@@ -310,7 +364,8 @@ export class AdminCuotasComponent implements OnInit {
 
   // ==================== INSTRUCTORES ====================
 
-  get instructoresFiltrados(): Instructor[] {
+  get instructoresFiltrados(): Instructor[]
+  {
     if (!this.filtroInstructor) return this.instructores;
     return this.instructores.filter(i =>
       i.nombre.toLowerCase().includes(this.filtroInstructor.toLowerCase()) ||
@@ -318,53 +373,64 @@ export class AdminCuotasComponent implements OnInit {
     );
   }
 
-  abrirModalInstructor(accion: 'crear' | 'ver' | 'editar', instructor?: Instructor): void {
+  abrirModalInstructor(accion: 'crear' | 'ver' | 'editar', instructor?: Instructor): void
+  {
     this.accionModal = accion;
     this.tipoModal = 'instructor';
     this.instructorSeleccionado = instructor || null;
 
-    if (accion === 'crear') {
+    if (accion === 'crear')
+    {
       this.instructorForm.reset({ activo: true });
-    } else if (instructor && accion !== 'ver') {
+    } else if (instructor && accion !== 'ver')
+    {
       this.instructorForm.patchValue(instructor);
     }
 
     this.abrirModal();
   }
 
-  confirmarEliminarInstructor(instructor: Instructor): void {
+  confirmarEliminarInstructor(instructor: Instructor): void
+  {
     this.accionModal = 'eliminar';
     this.tipoModal = 'instructor';
     this.instructorSeleccionado = instructor;
     this.abrirModal();
   }
 
-  guardarInstructor(): void {
+  guardarInstructor(): void
+  {
     if (this.instructorForm.invalid) return;
 
     const data = this.instructorForm.value;
 
-    if (this.accionModal === 'crear') {
+    if (this.accionModal === 'crear')
+    {
       this.deporteService.createInstructor(data).subscribe({
-        next: () => {
+        next: () =>
+        {
           this.cerrarModal();
           this.cargarInstructores();
           this.mostrarMensaje('Instructor creado exitosamente');
         },
-        error: (err) => {
+        error: (err) =>
+        {
           console.error(err);
           this.mostrarMensaje('Error al crear el instructor', 'error');
         }
       });
-    } else if (this.accionModal === 'editar' && this.instructorSeleccionado) {
+    } else if (this.accionModal === 'editar' && this.instructorSeleccionado)
+    {
       this.deporteService.updateInstructor(this.instructorSeleccionado.id_instructores, data).subscribe({
-        next: () => {
+        next: () =>
+        {
           this.cerrarModal();
           this.cargarInstructores();
           this.cargarClases();
           this.mostrarMensaje('Instructor actualizado exitosamente');
         },
-        error: (err) => {
+        error: (err) =>
+        {
           console.error(err);
           this.mostrarMensaje('Error al actualizar el instructor', 'error');
         }
@@ -372,32 +438,38 @@ export class AdminCuotasComponent implements OnInit {
     }
   }
 
-  eliminarInstructor(): void {
+  eliminarInstructor(): void
+  {
     if (!this.instructorSeleccionado) return;
 
     this.deporteService.deleteInstructor(this.instructorSeleccionado.id_instructores).subscribe({
-      next: () => {
+      next: () =>
+      {
         this.cerrarModal();
         this.cargarInstructores();
         this.cargarClases();
         this.mostrarMensaje('Instructor desactivado exitosamente');
       },
-      error: (err) => {
+      error: (err) =>
+      {
         console.error(err);
         this.mostrarMensaje('Error al desactivar el instructor', 'error');
       }
     });
   }
 
-  toggleEstadoInstructor(instructor: Instructor): void {
+  toggleEstadoInstructor(instructor: Instructor): void
+  {
     const endpoint = instructor.activo ? 'deleteInstructor' : 'activateInstructor';
-    
+
     this.deporteService[endpoint](instructor.id_instructores).subscribe({
-      next: () => {
+      next: () =>
+      {
         this.cargarInstructores();
         this.mostrarMensaje(`Instructor ${instructor.activo ? 'desactivado' : 'activado'}`);
       },
-      error: (err) => {
+      error: (err) =>
+      {
         console.error(err);
         this.mostrarMensaje('Error al cambiar estado del instructor', 'error');
       }
@@ -406,16 +478,20 @@ export class AdminCuotasComponent implements OnInit {
 
   // ==================== MODAL ====================
 
-  abrirModal(): void {
+  abrirModal(): void
+  {
     const modalEl = document.getElementById('crudModal');
-    if (modalEl) {
+    if (modalEl)
+    {
       this.modalInstance = new bootstrap.Modal(modalEl);
       this.modalInstance.show();
     }
   }
 
-  cerrarModal(): void {
-    if (this.modalInstance) {
+  cerrarModal(): void
+  {
+    if (this.modalInstance)
+    {
       this.modalInstance.hide();
     }
     this.deporteSeleccionado = null;
@@ -425,26 +501,70 @@ export class AdminCuotasComponent implements OnInit {
 
   // ==================== UTILIDADES ====================
 
-  getDeporteNombre(idDeporte: number): string {
+  getDeporteNombre(idDeporte: number): string
+  {
     const deporte = this.deportes.find(d => d.id_deportes === idDeporte);
     return deporte?.nombre || 'N/A';
   }
 
-  getInstructorNombre(idInstructor?: number): string {
+  getInstructorNombre(idInstructor?: number): string
+  {
     if (!idInstructor) return 'Sin asignar';
     const instructor = this.instructores.find(i => i.id_instructores === idInstructor);
     return instructor ? `${instructor.nombre} ${instructor.apellido}` : 'N/A';
   }
 
-  formatearHora(hora: string): string {
+  formatearHora(hora: string): string
+  {
     return hora.substring(0, 5);
   }
 
-  mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success'): void {
+  mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success'): void
+  {
     alert(mensaje);
   }
 
-  cambiarTab(tab: 'deportes' | 'clases' | 'instructores'): void {
+  cambiarTab(tab: 'deportes' | 'clases' | 'instructores'): void
+  {
     this.tabActiva = tab;
+  }
+
+  onDiaChange(event: any)
+  {
+    const diasSeleccionados = this.claseForm.value.dias as string[];
+
+    if (event.target.checked)
+    {
+      diasSeleccionados.push(event.target.value);
+    } else
+    {
+      const index = diasSeleccionados.indexOf(event.target.value);
+      if (index >= 0)
+      {
+        diasSeleccionados.splice(index, 1);
+      }
+    }
+
+    this.claseForm.patchValue({ dias: diasSeleccionados });
+  }
+
+  get horarios()
+  {
+    return this.claseForm.get('horarios') as FormArray;
+  }
+  agregarHorario()
+  {
+    const horario = this.fb.group({
+      dia: ['', Validators.required],
+      hora_inicio: ['', Validators.required],
+      hora_fin: ['', Validators.required]
+    });
+
+    this.horarios.push(horario);
+  }
+
+  eliminarHorario(index: number)
+  {
+    this.horarios.removeAt(index);
   }
 }

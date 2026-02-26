@@ -1,18 +1,29 @@
-<nav class="auth-navbar" [ngClass]="{ 'navbar-logged': isLoggedIn }">
+<nav class="auth-navbar">
   <div class="navbar-container">
 
-    <!-- Escudo -->
-    <img 
-      src="assets/Fondo Club.png" 
-      alt="Escudo" 
-      class="brand-logo" 
-      [ngClass]="{ 'brand-logo-small': isLoggedIn }"
-      (click)="onGoHome()"
-    >
+    <!-- IZQUIERDA -->
+    <div class="nav-left">
+      <button 
+        class="hamburger-btn"
+        *ngIf="isLoggedIn"
+        (click)="onToggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
 
-    <!-- Botón salir -->
-    <div class="nav-actions" *ngIf="isLoggedIn">
-      <button class="nav-btn logout-btn" (click)="onLogout()" title="Cerrar sesión">
+    <!-- CENTRO -->
+    <div class="nav-center">
+      <img 
+        src="assets/Fondo Club.png" 
+        alt="Escudo" 
+        class="brand-logo"
+        (click)="onGoHome()"
+      >
+    </div>
+
+    <!-- DERECHA -->
+    <div class="nav-right" *ngIf="isLoggedIn">
+      <button class="nav-btn logout-btn" (click)="onLogout()">
         <i class="fas fa-sign-out-alt"></i>
         <span>Salir</span>
       </button>

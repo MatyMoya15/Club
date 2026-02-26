@@ -23,7 +23,7 @@ import { CarnetComponent } from './components/access _fan/socio/carnet/carnet.co
 // Admin Components - Separados
 import { AdminNoticiasComponent } from './components/access _fan/socio/admin/admin-noticias/admin-noticias.component';
 import { AdminSociosComponent } from './components/access _fan/socio/admin/admin-socios/admin-socios.component';
-import { AdminCuotasComponent } from './components/access _fan/socio/admin/admin-cuotas/admin-cuotas.component';
+import { AdminDeportesComponent } from './components/access _fan/socio/admin/admin-deportes/admin-deportes.component';
 
 // Guards
 import { AuthGuard } from './guards/auth.guard';
@@ -80,7 +80,7 @@ const routes: Routes = [
       },
       {
         path: 'admin/cuotas', 
-        component: AdminCuotasComponent,
+        component: AdminDeportesComponent,
         // canActivate: [AdminGuard] 
       }
     ]

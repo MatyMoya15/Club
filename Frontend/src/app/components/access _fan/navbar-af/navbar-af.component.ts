@@ -67,4 +67,19 @@ export class NavbarAfComponent {
         return 'Zona Socio';
     }
   }
+
+    sidebarOpen = false;
+
+  toggleSidebar()
+  {
+    this.sidebarOpen = !this.sidebarOpen;
+    document.body.style.overflow = this.sidebarOpen ? 'hidden' : '';
+  }
+
+  @Output() toggleMenu = new EventEmitter<void>();
+
+onToggleMenu() {
+  console.log('CLICK HAMBURGUESA');
+  this.toggleMenu.emit();
+}
 }
