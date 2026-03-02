@@ -3,16 +3,24 @@
   
   <!-- Header Compacto -->
   <div class="perfil-header">
-    <div class="header-content">
-      <div class="header-text">
-        <h1 class="page-title">Estado de Cuotas</h1>
-        <p class="page-subtitle">Gestiona tus pagos y mantente al día</p>
-      </div>
-      <button class="btn-edit">
-        <i class="fas fa-download"></i>
-        Exportar
-      </button>
-    </div>
+<div class="header-content">
+  <div class="header-text">
+    <h1 class="page-title">Estado de Cuotas</h1>
+    <p class="page-subtitle">Gestiona tus pagos y mantente al día</p>
+  </div>
+  <div class="d-flex gap-2 align-items-center">
+    <!-- Selector de año -->
+    <select class="form-select" 
+            [(ngModel)]="anioSeleccionado" 
+            (change)="cambiarAnio(anioSeleccionado)"
+            style="width: auto;">
+      <option *ngFor="let anio of aniosDisponibles" [value]="anio">{{ anio }}</option>
+    </select>
+    <button class="btn-edit">
+      <i class="fas fa-download"></i> Exportar
+    </button>
+  </div>
+</div>
   </div>
 
   <!-- Estadísticas Compactas -->
@@ -33,7 +41,7 @@
         <i class="fas fa-exclamation-circle"></i>
       </div>
       <div class="stat-content">
-        <p class="stat-label">Deuda Pendiente</p>
+        <p class="stat-label">Pendiente</p>
         <h3 class="stat-value">{{ estadoCuenta.totalDeuda | currency }}</h3>
       </div>
     </div>
@@ -46,12 +54,12 @@
       <div class="stat-content">
         <p class="stat-label">Estado Actual</p>
         <div class="stat-badge">
-          <span *ngIf="estadoCuenta.cuotasAlDia" class="badge badge-success">
-            Al día
-          </span>
-          <span *ngIf="!estadoCuenta.cuotasAlDia" class="badge badge-danger">
-            Con deuda
-          </span>
+<span *ngIf="estadoCuenta.cuotasAlDia" class="status-badge status-success">
+  <i class="fas fa-check-circle"></i> Al día
+</span>
+<span *ngIf="!estadoCuenta.cuotasAlDia" class="status-badge status-danger">
+  <i class="fas fa-exclamation-circle"></i> Con deuda
+</span>
         </div>
       </div>
     </div>
@@ -97,12 +105,12 @@
 
       <div class="table-body">
         <div class="payment-row" *ngFor="let pago of historialPagos" 
-             [class.row-paid]="pago.estado === 'pagado'"
-             [class.row-pending]="pago.estado === 'pendiente'"
-             [class.row-overdue]="pago.estado === 'vencido'">
+[class.row-paid]="pago.estado === 'pagada'"
+[class.row-pending]="pago.estado === 'pendiente'"
+[class.row-overdue]="pago.estado === 'vencida'">
           
           <div class="col-period">
-            <strong>{{ pago.mes }} {{ pago.anio }}</strong>
+<strong>{{ getNombreMes(pago.mes) }} {{ pago.anio }}</strong>
           </div>
           
           <div class="col-amount">
@@ -111,40 +119,39 @@
           
           <div class="col-status">
             <span class="status-badge" [ngClass]="{
-              'status-success': pago.estado === 'pagado',
-              'status-warning': pago.estado === 'pendiente',
-              'status-danger': pago.estado === 'vencido'
+'status-success': pago.estado === 'pagada',
+'status-warning': pago.estado === 'pendiente',
+'status-danger': pago.estado === 'vencida'
             }">
               <i class="fas" [ngClass]="{
-                'fa-check-circle': pago.estado === 'pagado',
-                'fa-clock': pago.estado === 'pendiente',
-                'fa-exclamation-circle': pago.estado === 'vencido'
+'fa-check-circle': pago.estado === 'pagada',
+'fa-clock': pago.estado === 'pendiente',
+'fa-exclamation-circle': pago.estado === 'vencida'
               }"></i>
               {{ pago.estado | titlecase }}
             </span>
           </div>
           
           <div class="col-date">
-            <span *ngIf="pago.fechaPago" class="date-text">
-              {{ pago.fechaPago | date:'dd/MM/yyyy' }}
+            <span *ngIf="pago.fecha_pago" class="date-text">
+              {{ pago.fecha_pago | date:'dd/MM/yyyy' }}
             </span>
-            <span *ngIf="!pago.fechaPago" class="date-text due">
-              Vence 10/{{ obtenerNumeroMes(pago.mes) + 1 | number:'2.0-0' }}/{{ pago.anio }}
-            </span>
+<span *ngIf="!pago.fecha_pago">Vence 10/{{ pago.mes | number:'2.0-0' }}/{{ pago.anio }}</span>
+
           </div>
           
           <div class="col-actions">
-            <button *ngIf="pago.estado === 'pagado'" 
+            <button *ngIf="pago.estado === 'pagada'"
                     class="btn-icon-sm" 
                     (click)="descargarComprobante(pago)"
                     title="Descargar comprobante">
               <i class="fas fa-download"></i>
             </button>
-            <button *ngIf="pago.estado === 'pendiente' || pago.estado === 'vencido'" 
-                    class="btn-pay-sm"
-                    (click)="pagarCuota(pago)">
-              Pagar
-            </button>
+<button *ngIf="pago.estado === 'pendiente' || pago.estado === 'vencida'" 
+        class="btn-pay-sm"
+        (click)="pagarCuota(pago)">
+  Pagar
+</button>
           </div>
         </div>
       </div>
@@ -168,7 +175,7 @@
         </div>
         <div class="info-item-sm">
           <span class="label">Contacto:</span>
-          <span class="value">tesoreria@villmanzano.com.ar</span>
+          <strong class="value">csydvm@gmail.com.ar</strong>
         </div>
       </div>
     </div>
@@ -184,4 +191,76 @@
     </div>
   </div>
 
+</div>
+
+<!-- Modal de Pago -->
+<div class="modal-overlay" *ngIf="showPagoModal" (click)="cerrarPagoModal()">
+  <div class="modal-pago" (click)="$event.stopPropagation()">
+    
+    <!-- Header -->
+    <div class="modal-pago-header">
+      <h5><i class="fas fa-dollar-sign"></i> Pagar Cuota</h5>
+      <button class="btn-close-modal" (click)="cerrarPagoModal()" [disabled]="isProcessingPago">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Info cuota -->
+    <div class="modal-pago-info" *ngIf="cuotaAPagar">
+      <span><strong>{{ getNombreMes(cuotaAPagar.mes) }} {{ cuotaAPagar.anio }}</strong></span>
+      <span class="pago-monto">${{ cuotaAPagar.monto | number:'1.0-0' }}</span>
+    </div>
+
+    <!-- Error -->
+    <div class="pago-error" *ngIf="pagoError">
+      <i class="fas fa-exclamation-circle"></i> {{ pagoError }}
+    </div>
+
+    <!-- Selección de método -->
+    <div class="metodos-pago" *ngIf="!metodoPago">
+      <p class="metodos-titulo">Seleccioná cómo querés pagar:</p>
+      <div class="metodo-grid">
+        <button class="metodo-btn" (click)="metodoPago = 'transferencia'">
+          <i class="fas fa-university"></i>
+          <span>Transferencia</span>
+        </button>
+        <button class="metodo-btn metodo-mp" (click)="confirmarPagoMercadoPago()" 
+                [disabled]="isProcessingPago">
+          <span *ngIf="!isProcessingPago">
+            <i class="fas fa-wallet"></i>
+            <span>MercadoPago</span>
+          </span>
+          <span *ngIf="isProcessingPago">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Redirigiendo...</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Info Transferencia -->
+    <div class="transferencia-info" *ngIf="metodoPago === 'transferencia'">
+      <div class="transf-item">
+        <span class="transf-label">CBU / Alias</span>
+        <span class="transf-value highlight">VILLMANZANO.CUOTAS</span>
+      </div>
+      <div class="transf-item">
+        <span class="transf-label">Titular</span>
+        <span class="transf-value">Club Villa Manzano</span>
+      </div>
+      <div class="transf-item">
+        <span class="transf-label">Monto</span>
+        <span class="transf-value">${{ cuotaAPagar?.monto | number:'1.0-0' }}</span>
+      </div>
+      <div class="transf-aviso">
+        <i class="fas fa-info-circle"></i>
+        Una vez realizada la transferencia, enviá el comprobante a 
+        <strong>tesoreria@villmanzano.com.ar</strong> o acercate a tesorería.
+      </div>
+      <button class="btn-volver" (click)="metodoPago = null">
+        <i class="fas fa-arrow-left"></i> Volver
+      </button>
+    </div>
+
+  </div>
 </div>

@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { CuotaService, Cuota } from 'src/app/service/cuota.service';
+import { AuthService } from 'src/app/service/auth.service';
 
-interface Pago {
-  id: number;
-  mes: string;
-  anio: number;
-  monto: number;
-  fechaPago: Date | null;
-  estado: 'pagado' | 'pendiente' | 'vencido';
-  metodoPago?: string;
-}
-
-interface EstadoCuenta {
+interface EstadoCuenta
+{
   totalPagado: number;
   totalDeuda: number;
   cuotasAlDia: boolean;
@@ -22,84 +15,155 @@ interface EstadoCuenta {
   templateUrl: './cuotas.component.html',
   styleUrls: ['./cuotas.component.css']
 })
-export class CuotasComponent implements OnInit {
-  
+export class CuotasComponent implements OnInit
+{
+
   estadoCuenta: EstadoCuenta = {
     totalPagado: 0,
     totalDeuda: 0,
     cuotasAlDia: true,
     proximoVencimiento: null
   };
+  anioSeleccionado: number = 2026;
+  aniosDisponibles: number[] = [2026];
+  historialPagos: Cuota[] = [];
+  montoCuota: number = 8000;
+  isLoading: boolean = true;
+  error: string = '';
 
-  historialPagos: Pago[] = [];
-  montoCuota: number = 5000; // Monto mensual de la cuota
-  
-  // Datos de ejemplo - En producción vendrían de un servicio
-  ngOnInit() {
-    this.cargarDatosEjemplo();
-    this.calcularEstadoCuenta();
+  // Propiedades del modal de pago
+showPagoModal: boolean = false;
+cuotaAPagar: Cuota | null = null;
+metodoPago: 'transferencia' | 'mercadopago' | null = null;
+isProcessingPago: boolean = false;
+pagoError: string = '';
+
+  constructor(
+    private cuotaService: CuotaService,
+    private authService: AuthService
+  ) { }
+
+  ngOnInit(): void
+  {
+    this.cargarCuotas();
   }
 
-  cargarDatosEjemplo() {
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre'];
-    
-    this.historialPagos = [
-      { id: 1, mes: 'Enero', anio: 2025, monto: 5000, fechaPago: new Date('2025-01-15'), estado: 'pagado', metodoPago: 'Efectivo' },
-      { id: 2, mes: 'Febrero', anio: 2025, monto: 5000, fechaPago: new Date('2025-02-10'), estado: 'pagado', metodoPago: 'Transferencia' },
-      { id: 3, mes: 'Marzo', anio: 2025, monto: 5000, fechaPago: new Date('2025-03-12'), estado: 'pagado', metodoPago: 'Efectivo' },
-      { id: 4, mes: 'Abril', anio: 2025, monto: 5000, fechaPago: new Date('2025-04-08'), estado: 'pagado', metodoPago: 'Transferencia' },
-      { id: 5, mes: 'Mayo', anio: 2025, monto: 5000, fechaPago: new Date('2025-05-20'), estado: 'pagado', metodoPago: 'Efectivo' },
-      { id: 6, mes: 'Junio', anio: 2025, monto: 5000, fechaPago: null, estado: 'vencido', metodoPago: undefined },
-      { id: 7, mes: 'Julio', anio: 2025, monto: 5000, fechaPago: null, estado: 'vencido', metodoPago: undefined },
-      { id: 8, mes: 'Agosto', anio: 2025, monto: 5000, fechaPago: null, estado: 'pendiente', metodoPago: undefined },
-      { id: 9, mes: 'Septiembre', anio: 2025, monto: 5000, fechaPago: null, estado: 'pendiente', metodoPago: undefined }
-    ];
+  cargarCuotas(): void
+  {
+    this.isLoading = true;
+    this.error = '';
+
+    const user = this.authService.currentUserValue; // ← así
+    if (!user)
+    {
+      this.error = 'No se pudo obtener el usuario';
+      this.isLoading = false;
+      return;
+    }
+
+    this.cuotaService.getCuotasBySocio(user.id_socio).subscribe({ // ← id_socio, no id
+      next: (cuotas) =>
+      {
+        this.historialPagos = cuotas
+          .filter(c => c.anio === this.anioSeleccionado) // ← filtro
+          .sort((a, b) => a.mes - b.mes);
+        this.calcularEstadoCuenta();
+        this.isLoading = false;
+      },
+      error: (err) =>
+      {
+        this.error = 'Error al cargar las cuotas';
+        this.isLoading = false;
+      }
+    });
   }
 
-  calcularEstadoCuenta() {
+  getNombreMes(mes: number): string
+  {
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    return meses[mes - 1];
+  }
+
+  descargarComprobante(cuota: Cuota): void
+  {
+    console.log('Comprobante:', cuota.comprobante);
+    alert(`Comprobante: ${cuota.comprobante || 'No disponible'}`);
+  }
+
+
+pagarCuota(cuota: Cuota): void {
+  this.cuotaAPagar = cuota;
+  this.metodoPago = null;
+  this.pagoError = '';
+  this.showPagoModal = true;
+}
+
+cerrarPagoModal(): void {
+  if (this.isProcessingPago) return;
+  this.showPagoModal = false;
+  this.cuotaAPagar = null;
+  this.metodoPago = null;
+  this.pagoError = '';
+}
+
+confirmarPagoMercadoPago(): void {
+  if (!this.cuotaAPagar) return;
+  this.isProcessingPago = true;
+  this.pagoError = '';
+
+  this.cuotaService.crearPreferenciaMercadoPago(this.cuotaAPagar.id_cuota).subscribe({
+    next: (response) => {
+      this.isProcessingPago = false;
+      // Redirigir a MercadoPago
+      window.location.href = response.init_point; // Cambiá a init_point en producción
+    },
+    error: (err) => {
+      this.isProcessingPago = false;
+      this.pagoError = err.error?.error || 'Error al conectar con MercadoPago';
+    }
+  });
+}
+
+  cambiarAnio(anio: number): void
+  {
+    this.anioSeleccionado = anio;
+    this.cargarCuotas();
+  }
+
+  calcularEstadoCuenta(): void
+  {
+    const hoy = new Date();
+    const anioActual = hoy.getFullYear();
+    const mesActual = hoy.getMonth() + 1; // 1-12
+
     this.estadoCuenta.totalPagado = this.historialPagos
-      .filter(p => p.estado === 'pagado')
-      .reduce((sum, p) => sum + p.monto, 0);
-    
+      .filter(p => p.estado === 'pagada')
+      .reduce((sum, p) => sum + Number(p.monto), 0);
+
     this.estadoCuenta.totalDeuda = this.historialPagos
-      .filter(p => p.estado === 'vencido' || p.estado === 'pendiente')
-      .reduce((sum, p) => sum + p.monto, 0);
-    
-    this.estadoCuenta.cuotasAlDia = this.historialPagos
-      .filter(p => p.estado === 'vencido').length === 0;
-    
-    const proximaPendiente = this.historialPagos
-      .find(p => p.estado === 'pendiente' || p.estado === 'vencido');
-    
-    if (proximaPendiente) {
-      this.estadoCuenta.proximoVencimiento = new Date(proximaPendiente.anio, this.obtenerNumeroMes(proximaPendiente.mes), 10);
-    }
-  }
+      .filter(p => p.estado === 'vencida' || p.estado === 'pendiente')
+      .reduce((sum, p) => sum + Number(p.monto), 0);
 
-  obtenerNumeroMes(nombreMes: string): number {
-    const meses: { [key: string]: number } = {
-      'Enero': 0, 'Febrero': 1, 'Marzo': 2, 'Abril': 3, 'Mayo': 4, 'Junio': 5,
-      'Julio': 6, 'Agosto': 7, 'Septiembre': 8, 'Octubre': 9, 'Noviembre': 10, 'Diciembre': 11
-    };
-    return meses[nombreMes] || 0;
-  }
+    // Tiene deuda si hay una cuota no pagada de un mes que ya pasó
+    const tieneDeudaVencida = this.historialPagos.some(p =>
+    {
+      if (p.estado === 'pagada') return false;
 
-  getEstadoBadgeClass(estado: string): string {
-    switch(estado) {
-      case 'pagado': return 'bg-success';
-      case 'pendiente': return 'bg-warning';
-      case 'vencido': return 'bg-danger';
-      default: return 'bg-secondary';
-    }
-  }
+      const esMesPasado =
+        p.anio < anioActual ||
+        (p.anio === anioActual && p.mes < mesActual);
 
-  descargarComprobante(pago: Pago) {
-    // Implementar lógica para descargar comprobante
-    console.log('Descargando comprobante para:', pago);
-    alert(`Descargando comprobante de ${pago.mes} ${pago.anio}`);
-  }
+      return esMesPasado;
+    });
 
-  pagarCuota(pago: Pago){
+    this.estadoCuenta.cuotasAlDia = !tieneDeudaVencida;
 
+    const proxima = this.historialPagos
+      .find(p => p.estado === 'pendiente' || p.estado === 'vencida');
+
+    this.estadoCuenta.proximoVencimiento = proxima
+      ? new Date(proxima.anio, proxima.mes - 1, 10)
+      : null;
   }
 }
