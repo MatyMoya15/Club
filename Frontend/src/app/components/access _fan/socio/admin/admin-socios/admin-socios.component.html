@@ -1,6 +1,6 @@
 <!-- src/app/components/access_fan/socio/admin/admin-socios/admin-socios.component.html -->
 <div class="admin-socios-container">
-  
+
   <!-- Header -->
   <div class="seccion-header">
     <div class="header-content">
@@ -75,23 +75,14 @@
           <label class="form-label">
             <i class="fas fa-search"></i> Buscar
           </label>
-          <input 
-            type="text" 
-            class="form-control" 
-            [(ngModel)]="busquedaSocio"
-            (keyup.enter)="filtrarSocios()"
-            placeholder="Buscar por nombre, apellido o DNI"
-            [disabled]="isLoading">
+          <input type="text" class="form-control" [(ngModel)]="busquedaSocio" (keyup.enter)="filtrarSocios()"
+            placeholder="Buscar por nombre, apellido o DNI" [disabled]="isLoading">
         </div>
         <div class="col-md-3">
           <label class="form-label">
             <i class="fas fa-filter"></i> Estado
           </label>
-          <select 
-            class="form-select" 
-            [(ngModel)]="filtroEstado"
-            (change)="filtrarSocios()"
-            [disabled]="isLoading">
+          <select class="form-select" [(ngModel)]="filtroEstado" (change)="filtrarSocios()" [disabled]="isLoading">
             <option value="todos">Todos</option>
             <option value="activo">Activos</option>
             <option value="inactivo">Inactivos</option>
@@ -99,16 +90,10 @@
         </div>
         <div class="col-md-4">
           <div class="d-flex gap-2">
-            <button 
-              class="btn btn-primary flex-fill" 
-              (click)="filtrarSocios()"
-              [disabled]="isLoading">
+            <button class="btn btn-primary flex-fill" (click)="filtrarSocios()" [disabled]="isLoading">
               <i class="fas fa-search"></i> Buscar
             </button>
-            <button 
-              class="btn btn-outline-secondary" 
-              (click)="limpiarFiltros()"
-              [disabled]="isLoading">
+            <button class="btn btn-outline-secondary" (click)="limpiarFiltros()" [disabled]="isLoading">
               <i class="fas fa-times"></i> Limpiar
             </button>
           </div>
@@ -139,6 +124,7 @@
             <th>Teléfono</th>
             <th>Fecha Alta</th>
             <th>Estado</th>
+            <th>Cuotas</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -152,45 +138,33 @@
             <td>{{ socio.telefono || '-' }}</td>
             <td>{{ formatearFecha(socio.fecha_alta) }}</td>
             <td>
-              <span 
-                class="badge" 
-                [class.bg-success]="socio.activo"
-                [class.bg-danger]="!socio.activo">
+              <span class="badge" [class.bg-success]="socio.activo" [class.bg-danger]="!socio.activo">
                 {{ socio.activo ? 'ACTIVO' : 'INACTIVO' }}
               </span>
             </td>
+            <td><button class="btn btn-sm btn-outline-info" (click)="verCuotas(socio)" title="Ver cuotas">
+                <i class="fas fa-file-invoice-dollar"></i>
+              </button></td>
             <td>
               <div class="btn-group" role="group">
-                <button 
-                  class="btn btn-sm btn-outline-primary" 
-                  (click)="verDetalle(socio)"
-                  title="Ver detalle">
+                <button class="btn btn-sm btn-outline-primary" (click)="verDetalle(socio)" title="Ver detalle">
                   <i class="fas fa-eye"></i>
                 </button>
-                <button 
-                  class="btn btn-sm btn-outline-secondary" 
-                  (click)="editarSocio(socio)"
-                  title="Editar">
+                <button class="btn btn-sm btn-outline-secondary" (click)="editarSocio(socio)" title="Editar">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button 
-                  *ngIf="socio.activo"
-                  class="btn btn-sm btn-outline-danger" 
-                  (click)="desactivarSocio(socio)"
+                <button *ngIf="socio.activo" class="btn btn-sm btn-outline-danger" (click)="desactivarSocio(socio)"
                   title="Desactivar">
                   <i class="fas fa-user-times"></i>
                 </button>
-                <button 
-                  *ngIf="!socio.activo"
-                  class="btn btn-sm btn-outline-success" 
-                  (click)="activarSocio(socio)"
+                <button *ngIf="!socio.activo" class="btn btn-sm btn-outline-success" (click)="activarSocio(socio)"
                   title="Activar">
                   <i class="fas fa-user-check"></i>
                 </button>
               </div>
             </td>
           </tr>
-          
+
           <!-- Empty State -->
           <tr *ngIf="sociosFiltrados.length === 0">
             <td colspan="9" class="text-center py-5">
@@ -210,30 +184,31 @@
       Mostrando <strong>{{ sociosFiltrados.length }}</strong> socio(s)
     </div>
     <div>
-      <small class="text-muted">Última actualización: {{ 'now' | date:'dd/MM/yyyy HH:mm' }}</small>
+      <small class="text-muted">Última actualización: {{ hoy | date:'dd/MM/yyyy HH:mm' }}</small>
     </div>
   </div>
 
 </div>
 
 <!-- Modal de Edición -->
-<div class="modal fade" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'" 
-     tabindex="-1" role="dialog" *ngIf="socioEnEdicion">
+<div class="modal fade" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'" tabindex="-1"
+  role="dialog" *ngIf="socioEnEdicion">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
-      
+
       <!-- Header -->
       <div class="modal-header">
         <h5 class="modal-title">
-          <i class="fas fa-edit"></i> Editar Socio
+          <i class="fas fa-eye" *ngIf="isViewMode"></i>
+          <i class="fas fa-edit" *ngIf="!isViewMode"></i>
+          {{ isViewMode ? 'Ver Detalle' : 'Editar Socio' }}
         </h5>
-        <button type="button" class="btn-close" (click)="cerrarModal()" 
-                [disabled]="isSubmitting"></button>
+        <button type="button" class="btn-close" (click)="cerrarModal()" [disabled]="isSubmitting"></button>
       </div>
-      
+
       <!-- Body -->
       <div class="modal-body">
-        
+
         <!-- Info del Socio -->
         <div class="alert alert-info mb-4">
           <div class="row">
@@ -248,22 +223,16 @@
 
         <!-- Formulario -->
         <form>
-          
+
           <div class="row">
             <!-- Nombre -->
             <div class="col-md-6 mb-3">
               <label class="form-label">
                 <i class="fas fa-user"></i> Nombre <span class="text-danger">*</span>
               </label>
-              <input 
-                type="text" 
-                class="form-control"
-                [class.is-invalid]="formErrors.nombre"
-                [(ngModel)]="editForm.nombre"
-                name="nombre"
-                placeholder="Ingrese el nombre"
-                [disabled]="isSubmitting"
-                maxlength="100">
+              <input type="text" class="form-control" [class.is-invalid]="formErrors.nombre"
+                [(ngModel)]="editForm.nombre" name="nombre" placeholder="Ingrese el nombre"
+                [disabled]="isSubmitting || isViewMode" maxlength="100">
               <div class="invalid-feedback" *ngIf="formErrors.nombre">
                 {{ formErrors.nombre }}
               </div>
@@ -274,15 +243,9 @@
               <label class="form-label">
                 <i class="fas fa-user"></i> Apellido <span class="text-danger">*</span>
               </label>
-              <input 
-                type="text" 
-                class="form-control"
-                [class.is-invalid]="formErrors.apellido"
-                [(ngModel)]="editForm.apellido"
-                name="apellido"
-                placeholder="Ingrese el apellido"
-                [disabled]="isSubmitting"
-                maxlength="100">
+              <input type="text" class="form-control" [class.is-invalid]="formErrors.apellido"
+                [(ngModel)]="editForm.apellido" name="apellido" placeholder="Ingrese el apellido"
+                [disabled]="isSubmitting || isViewMode" maxlength="100">
               <div class="invalid-feedback" *ngIf="formErrors.apellido">
                 {{ formErrors.apellido }}
               </div>
@@ -294,15 +257,8 @@
             <label class="form-label">
               <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
             </label>
-            <input 
-              type="email" 
-              class="form-control"
-              [class.is-invalid]="formErrors.email"
-              [(ngModel)]="editForm.email"
-              name="email"
-              placeholder="ejemplo@correo.com"
-              [disabled]="isSubmitting"
-              maxlength="255">
+            <input type="email" class="form-control" [class.is-invalid]="formErrors.email" [(ngModel)]="editForm.email"
+              name="email" placeholder="ejemplo@correo.com" [disabled]="isSubmitting || isViewMode" maxlength="255">
             <div class="invalid-feedback" *ngIf="formErrors.email">
               {{ formErrors.email }}
             </div>
@@ -314,14 +270,8 @@
               <label class="form-label">
                 <i class="fas fa-phone"></i> Teléfono
               </label>
-              <input 
-                type="tel" 
-                class="form-control"
-                [(ngModel)]="editForm.telefono"
-                name="telefono"
-                placeholder="Ingrese el teléfono"
-                [disabled]="isSubmitting"
-                maxlength="20">
+              <input type="tel" class="form-control" [(ngModel)]="editForm.telefono" name="telefono"
+                placeholder="Ingrese el teléfono" [disabled]="isSubmitting || isViewMode" maxlength="20">
             </div>
 
             <!-- Dirección -->
@@ -329,31 +279,19 @@
               <label class="form-label">
                 <i class="fas fa-map-marker-alt"></i> Dirección
               </label>
-              <input 
-                type="text" 
-                class="form-control"
-                [(ngModel)]="editForm.direccion"
-                name="direccion"
-                placeholder="Ingrese la dirección"
-                [disabled]="isSubmitting"
-                maxlength="255">
+              <input type="text" class="form-control" [(ngModel)]="editForm.direccion" name="direccion"
+                placeholder="Ingrese la dirección" [disabled]="isSubmitting || isViewMode" maxlength="255">
             </div>
           </div>
 
           <!-- Password (opcional) -->
-          <div class="mb-3">
+          <div class="mb-3" *ngIf="!isViewMode">
             <label class="form-label">
               <i class="fas fa-lock"></i> Nueva Contraseña (opcional)
             </label>
-            <input 
-              type="password" 
-              class="form-control"
-              [class.is-invalid]="formErrors.password"
-              [(ngModel)]="editForm.password"
-              name="password"
-              placeholder="Dejar en blanco para no cambiar"
-              [disabled]="isSubmitting"
-              autocomplete="new-password">
+            <input type="password" class="form-control" [class.is-invalid]="formErrors.password"
+              [(ngModel)]="editForm.password" name="password" placeholder="Dejar en blanco para no cambiar"
+              [disabled]="isSubmitting" autocomplete="new-password">
             <div class="invalid-feedback" *ngIf="formErrors.password">
               {{ formErrors.password }}
             </div>
@@ -369,21 +307,15 @@
 
         </form>
       </div>
-      
+
       <!-- Footer -->
       <div class="modal-footer">
-        <button 
-          type="button" 
-          class="btn btn-secondary" 
-          (click)="cerrarModal()"
-          [disabled]="isSubmitting">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()" [disabled]="isSubmitting">
           <i class="fas fa-times"></i> Cancelar
         </button>
-        <button 
-          type="button" 
-          class="btn btn-primary" 
-          (click)="guardarCambios()"
+        <button *ngIf="!isViewMode" type="button" class="btn btn-primary" (click)="guardarCambios()"
           [disabled]="isSubmitting">
+
           <span *ngIf="!isSubmitting">
             <i class="fas fa-save"></i> Guardar Cambios
           </span>
@@ -399,3 +331,193 @@
 </div>
 
 <div class="modal-backdrop fade" [class.show]="showEditModal" *ngIf="showEditModal"></div>
+
+<!-- ===== MODAL CUOTAS ===== -->
+<div class="modal fade" [class.show]="showCuotasModal" [style.display]="showCuotasModal ? 'block' : 'none'"
+  tabindex="-1" *ngIf="socioVerCuotas">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-file-invoice-dollar"></i>
+          Cuotas de {{ socioVerCuotas.nombre }} {{ socioVerCuotas.apellido }}
+          <small class="text-muted ms-2">N° {{ socioVerCuotas.numero_socio }}</small>
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarCuotasModal()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Loading -->
+        <div *ngIf="isLoadingCuotas" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 text-muted">Cargando cuotas...</p>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="errorCuotas" class="alert alert-danger">
+          <i class="fas fa-exclamation-circle"></i> {{ errorCuotas }}
+        </div>
+
+        <!-- Resumen rápido -->
+        <div class="row mb-3" *ngIf="!isLoadingCuotas && cuotas.length > 0">
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="stat-icon bg-warning">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-content">
+                <h3>{{ cuotasPendientes }}</h3>
+                <p>Pendientes</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="stat-icon bg-success">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="stat-content">
+                <h3>{{ cuotasPagadas }}</h3>
+                <p>Pagadas</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="stat-icon bg-danger">
+                <i class="fas fa-times"></i>
+              </div>
+              <div class="stat-content">
+                <h3>{{ cuotasVencidas }}</h3>
+                <p>Vencidas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de cuotas -->
+        <div class="table-responsive" *ngIf="!isLoadingCuotas">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Período</th>
+                <th>Monto</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th>Fecha Pago</th>
+                <th>Método</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cuota of cuotas">
+                <td><strong>{{ getNombreMes(cuota.mes) }} {{ cuota.anio }}</strong></td>
+                <td>${{ cuota.monto | number:'1.0-0' }}</td>
+                <td>{{ formatearFecha(cuota.vencimiento) }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getEstadoBadgeClass(cuota.estado)">
+                    {{ cuota.estado | uppercase }}
+                  </span>
+                </td>
+                <td>{{ cuota.fecha_pago ? formatearFecha(cuota.fecha_pago) : '-' }}</td>
+                <td>{{ cuota.metodo_pago || '-' }}</td>
+                <td>
+                  <button *ngIf="cuota.estado !== 'pagada'" class="btn btn-sm btn-success"
+                    (click)="abrirPagoModal(cuota)" title="Registrar pago">
+                    <i class="fas fa-dollar-sign"></i> Pagar
+                  </button>
+                  <span *ngIf="cuota.estado === 'pagada'" class="text-success">
+                    <i class="fas fa-check-circle"></i>
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="cuotas.length === 0 && !isLoadingCuotas">
+                <td colspan="7" class="text-center py-4 text-muted">
+                  No hay cuotas registradas para este socio
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarCuotasModal()">
+          <i class="fas fa-times"></i> Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PAGO ===== -->
+<div class="modal fade" [class.show]="showPagoModal" [style.display]="showPagoModal ? 'block' : 'none'" tabindex="-1"
+  *ngIf="cuotaAPagar">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-dollar-sign"></i> Registrar Pago
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarPagoModal()" [disabled]="isSubmittingPago"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="alert alert-info">
+          <strong>Cuota:</strong> {{ getNombreMes(cuotaAPagar.mes) }} {{ cuotaAPagar.anio }} <br>
+          <strong>Monto total:</strong> ${{ cuotaAPagar.monto | number:'1.0-0' }} <br>
+          <strong>Ya pagado:</strong> ${{ cuotaAPagar.total_pagado | number:'1.0-0' }} <br>
+          <strong>Restante:</strong> ${{ (cuotaAPagar.monto - cuotaAPagar.total_pagado!) | number:'1.0-0' }}
+        </div>
+
+        <!-- Método de pago -->
+        <div class="mb-3">
+          <label class="form-label"><i class="fas fa-credit-card"></i> Método de pago</label>
+          <select class="form-select" [(ngModel)]="pagoForm.metodo" [disabled]="isSubmittingPago">
+            <option value="efectivo">Efectivo</option>
+            <option value="transferencia">Transferencia</option>
+            <option value="tarjeta">Tarjeta</option>
+            <option value="mercadopago">MercadoPago</option>
+          </select>
+        </div>
+
+        <!-- Monto -->
+        <div class="mb-3">
+          <label class="form-label"><i class="fas fa-dollar-sign"></i> Monto recibido</label>
+          <input type="number" class="form-control" [(ngModel)]="pagoForm.monto" [disabled]="isSubmittingPago" min="1">
+        </div>
+
+        <!-- Comprobante -->
+        <div class="mb-3">
+          <label class="form-label"><i class="fas fa-receipt"></i> Comprobante (opcional)</label>
+          <input type="text" class="form-control" [(ngModel)]="pagoForm.comprobante" [disabled]="isSubmittingPago"
+            placeholder="N° de transferencia, recibo, etc.">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarPagoModal()" [disabled]="isSubmittingPago">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button type="button" class="btn btn-success" (click)="confirmarPago()" [disabled]="isSubmittingPago">
+          <span *ngIf="!isSubmittingPago">
+            <i class="fas fa-check"></i> Confirmar Pago
+          </span>
+          <span *ngIf="isSubmittingPago">
+            <span class="spinner-border spinner-border-sm me-2"></span>Procesando...
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop cuotas -->
+<div class="modal-backdrop fade" [class.show]="showCuotasModal || showPagoModal"
+  *ngIf="showCuotasModal || showPagoModal"></div>

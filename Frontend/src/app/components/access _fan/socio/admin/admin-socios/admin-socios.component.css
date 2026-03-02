@@ -227,6 +227,11 @@
   font-size: 1.2rem;
 }
 
+.alert-info{
+  display: block;
+  gap: 0;
+}
+
 /* Loading */
 .spinner-border {
   width: 3rem;
