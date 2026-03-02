@@ -1,161 +1,248 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { 
-  DeporteService, 
-  Deporte, 
-  Clase, 
-  Instructor 
-} from 'src/app/service/deportes.service';
+import
+  {
+    DeporteService,
+    Deporte,
+    Clase,
+    Instructor
+  } from 'src/app/service/deportes.service';
 
-interface DeporteConClases {
+interface DeporteConClases
+{
   deporte: Deporte;
   clasesPorCategoria: { [categoria: string]: Clase[] };
 }
+
+const PALABRAS_ACTIVIDAD = ['aeróbico', 'aerobico', 'funcional', 'yoga', 'pilates', 'zumba', 'crossfit', 'gimnasia'];
+
+const ICONOS: { [key: string]: string } = {
+  'fútbol': 'fas fa-futbol',
+  'futbol': 'fas fa-futbol',
+  'hockey': 'fas fa-hockey-puck',
+  'básquet': 'fas fa-basketball-ball',
+  'basquet': 'fas fa-basketball-ball',
+  'tenis': 'fas fa-table-tennis',
+  'natación': 'fas fa-swimmer',
+  'natacion': 'fas fa-swimmer',
+  'aeróbico': 'fas fa-heart-pulse',
+  'aerobico': 'fas fa-heart-pulse',
+  'funcional': 'fas fa-dumbbell',
+  'yoga': 'fas fa-spa',
+  'pilates': 'fas fa-spa',
+  'zumba': 'fas fa-music',
+  'crossfit': 'fas fa-fire',
+};
 
 @Component({
   selector: 'app-deportes',
   templateUrl: './deportes.component.html',
   styleUrls: ['./deportes.component.css']
 })
-export class DeportesComponent implements OnInit {
+export class DeportesComponent implements OnInit
+{
   deportes: DeporteConClases[] = [];
   instructores: Instructor[] = [];
-  isLoading: boolean = true;
-  error: string = '';
+  isLoading = true;
+  error = '';
 
-  // Días de la semana en orden
+  deportesPrincipales: DeporteConClases[] = [];
+  actividades: DeporteConClases[] = [];
+
+  openDeportes = new Set<number>();
+
+  seccionActiva = '';
+
   diasOrden = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   constructor(
     private viewportScroller: ViewportScroller,
     private route: ActivatedRoute,
     private deporteService: DeporteService
-  ) {}
+  ) { }
 
-  ngOnInit() {
+  ngOnInit()
+  {
     this.cargarDatos();
 
-    // Manejar scroll a fragmento
-    this.route.fragment.subscribe(fragment => {
-      if (fragment) {
-        setTimeout(() => {
+    this.route.fragment.subscribe(fragment =>
+    {
+      if (fragment)
+      {
+        setTimeout(() =>
+        {
           this.viewportScroller.scrollToAnchor(fragment);
+          this.seccionActiva = fragment;
+          const deporteData = this.deportes.find(
+            d => this.generarIdDeporte(d.deporte.nombre) === fragment
+          );
+          if (deporteData)
+          {
+            this.openDeportes.add(deporteData.deporte.id_deportes);
+          }
         }, 300);
       }
     });
   }
 
-  cargarDatos(): void {
+  cargarDatos(): void
+  {
     this.isLoading = true;
     this.error = '';
 
-    // Cargar deportes
     this.deporteService.getAllDeportes().subscribe({
-      next: (deportes) => {
-        // Cargar clases
+      next: (deportes) =>
+      {
         this.deporteService.getAllClases(true).subscribe({
-          next: (clases) => {
-            // Cargar instructores
+          next: (clases) =>
+          {
             this.deporteService.getAllInstructores(true).subscribe({
-              next: (instructores) => {
+              next: (instructores) =>
+              {
                 this.instructores = instructores;
                 this.procesarDatos(deportes, clases);
                 this.isLoading = false;
               },
-              error: (err) => {
-                console.error('Error al cargar instructores:', err);
-                this.error = 'Error al cargar la información de instructores';
+              error: (err) =>
+              {
+                console.error('Error instructores:', err);
+                this.error = 'Error al cargar instructores';
                 this.isLoading = false;
               }
             });
           },
-          error: (err) => {
-            console.error('Error al cargar clases:', err);
-            this.error = 'Error al cargar la información de clases';
+          error: (err) =>
+          {
+            console.error('Error clases:', err);
+            this.error = 'Error al cargar clases';
             this.isLoading = false;
           }
         });
       },
-      error: (err) => {
-        console.error('Error al cargar deportes:', err);
-        this.error = 'Error al cargar la información de deportes';
+      error: (err) =>
+      {
+        console.error('Error deportes:', err);
+        this.error = 'Error al cargar deportes';
         this.isLoading = false;
       }
     });
   }
 
-  procesarDatos(deportes: Deporte[], clases: Clase[]): void {
-    this.deportes = deportes.map(deporte => {
-      // Filtrar clases activas de este deporte
+  procesarDatos(deportes: Deporte[], clases: Clase[]): void
+  {
+    this.deportes = deportes.map(deporte =>
+    {
       const clasesDeporte = clases.filter(
-        clase => clase.id_deporte === deporte.id_deportes && clase.activa
+        c => c.id_deporte === deporte.id_deportes && c.activa
       );
 
-      // Agrupar clases por categoría (cancha por ahora, luego será categoría)
-      const clasesPorCategoria: { [categoria: string]: Clase[] } = {};
-      
-      clasesDeporte.forEach(clase => {
-        // Usar cancha como categoría temporal
-        const categoria = clase.cancha || 'General';
-        
-        if (!clasesPorCategoria[categoria]) {
-          clasesPorCategoria[categoria] = [];
-        }
-        
-        clasesPorCategoria[categoria].push(clase);
+      const clasesPorCategoria: { [cat: string]: Clase[] } = {};
+      clasesDeporte.forEach(clase =>
+      {
+        const cat = clase.cancha || 'General';
+        if (!clasesPorCategoria[cat]) clasesPorCategoria[cat] = [];
+        clasesPorCategoria[cat].push(clase);
       });
 
-      // Ordenar clases por día y hora
-      Object.keys(clasesPorCategoria).forEach(categoria => {
-        clasesPorCategoria[categoria].sort((a, b) => {
-          const diaA = this.diasOrden.indexOf(a.dia);
-          const diaB = this.diasOrden.indexOf(b.dia);
-          
-          if (diaA !== diaB) {
-            return diaA - diaB;
-          }
-          
-          return a.hora_inicio.localeCompare(b.hora_inicio);
+      Object.keys(clasesPorCategoria).forEach(cat =>
+      {
+        clasesPorCategoria[cat].sort((a, b) =>
+        {
+          const dA = this.diasOrden.indexOf(a.dia);
+          const dB = this.diasOrden.indexOf(b.dia);
+          return dA !== dB ? dA - dB : a.hora_inicio.localeCompare(b.hora_inicio);
         });
       });
 
-      return {
-        deporte,
-        clasesPorCategoria
-      };
+      return { deporte, clasesPorCategoria };
     });
+
+    this.deportesPrincipales = this.deportes.filter(d => !this.esActividad(d.deporte.nombre));
+    this.actividades = this.deportes.filter(d => this.esActividad(d.deporte.nombre));
+
+    if (this.deportesPrincipales.length > 0)
+    {
+      this.openDeportes.add(this.deportesPrincipales[0].deporte.id_deportes);
+    }
+    if (this.actividades.length > 0)
+    {
+      this.openDeportes.add(this.actividades[0].deporte.id_deportes);
+    }
   }
 
-  getInstructorNombre(idInstructor?: number): string {
-    if (!idInstructor) return 'Por asignar';
-    
-    const instructor = this.instructores.find(
-      i => i.id_instructores === idInstructor
+  esActividad(nombre: string): boolean
+  {
+    const n = nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return PALABRAS_ACTIVIDAD.some(p =>
+      n.includes(p.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
     );
-    
-    return instructor 
-      ? `${instructor.nombre} ${instructor.apellido}` 
-      : 'No disponible';
   }
 
-  formatearHora(hora: string): string {
+  getIconoDeporte(nombre: string): string
+  {
+    const n = nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    for (const key of Object.keys(ICONOS))
+    {
+      if (n.includes(key.normalize('NFD').replace(/[\u0300-\u036f]/g, '')))
+      {
+        return ICONOS[key];
+      }
+    }
+    return 'fas fa-running';
+  }
+
+  toggleDeporte(id: number): void
+  {
+    if (this.openDeportes.has(id))
+    {
+      this.openDeportes.delete(id);
+    } else
+    {
+      this.openDeportes.add(id);
+    }
+  }
+
+  isOpen(id: number): boolean
+  {
+    if (window.innerWidth >= 901)
+    {
+      return true; // Siempre abierto en desktop
+    }
+    return this.openDeportes.has(id); // Acordeón en mobile
+  }
+  scrollToTop(): void
+  {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.seccionActiva = '';
+  }
+
+  getInstructorNombre(idInstructor?: number): string
+  {
+    if (!idInstructor) return 'Por asignar';
+    const i = this.instructores.find(x => x.id_instructores === idInstructor);
+    return i ? `${i.nombre} ${i.apellido}` : 'No disponible';
+  }
+
+  formatearHora(hora: string): string
+  {
     return hora.substring(0, 5);
   }
 
-  getDiasClase(clases: Clase[]): string {
+  getDiasClase(clases: Clase[]): string
+  {
     const dias = [...new Set(clases.map(c => c.dia))];
     return dias.join(', ');
   }
 
-  getHorariosClase(clases: Clase[]): string {
-    const horarios = clases.map(
-      c => `${this.formatearHora(c.hora_inicio)} - ${this.formatearHora(c.hora_fin)}`
-    );
-    return [...new Set(horarios)].join(' / ');
+  getHorariosClase(clases: Clase[]): string
+  {
+    const hs = clases.map(c => `${this.formatearHora(c.hora_inicio)} - ${this.formatearHora(c.hora_fin)}`);
+    return [...new Set(hs)].join(' / ');
   }
 
-  formatearMonto(monto: number): string {
+  formatearMonto(monto: number): string
+  {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency: 'ARS',
@@ -163,8 +250,8 @@ export class DeportesComponent implements OnInit {
     }).format(monto);
   }
 
-  // Generar ID para fragmentos (anclas)
-  generarIdDeporte(nombre: string): string {
+  generarIdDeporte(nombre: string): string
+  {
     return nombre
       .toLowerCase()
       .normalize('NFD')
@@ -172,13 +259,13 @@ export class DeportesComponent implements OnInit {
       .replace(/\s+/g, '-');
   }
 
-  // Verificar si hay clases para mostrar
-  tieneClases(deporteConClases: DeporteConClases): boolean {
-    return Object.keys(deporteConClases.clasesPorCategoria).length > 0;
+  tieneClases(d: DeporteConClases): boolean
+  {
+    return Object.keys(d.clasesPorCategoria).length > 0;
   }
 
-  // Obtener categorías de un deporte
-  getCategorias(deporteConClases: DeporteConClases): string[] {
-    return Object.keys(deporteConClases.clasesPorCategoria);
+  getCategorias(d: DeporteConClases): string[]
+  {
+    return Object.keys(d.clasesPorCategoria);
   }
 }
