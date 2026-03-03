@@ -309,37 +309,125 @@
     padding: 0 1rem;
     font-size: 1.5rem;
 }
-/* Responsive */
-@media (max-width: 768px) {
-    .main-header h1 {
-        font-size: 2.5rem;
-    }
-    
-    .section-card {
-        padding: 2rem;
-        margin-bottom: 2rem;
-    }
-    
-    .section-title {
-        font-size: 2rem;
-    }
-    
-    .info-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .main-container {
-        padding: 0 1rem;
-    }
-    
-    .process-section {
-        padding: 2rem;
-    }
-    
-    .membership-description {
-        font-size: 1.1rem;
-    }
+@media (max-width: 767.98px) {
+
+  /* Header más compacto */
+  .main-header {
+    padding: 2.5rem 0 0 0;
+    margin-bottom: 2rem;
+  }
+
+  .main-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .main-header .subtitle {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Container sin padding excesivo */
+  .main-container {
+    padding: 0 0.875rem;
+  }
+
+  /* Section cards más compactas */
+  .section-card {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 16px;
+  }
+
+  /* Quitar hover en mobile (no hay cursor) */
+  .section-card:hover {
+    transform: none;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Imagen debajo del texto en mobile */
+  .feature-image {
+    height: 220px;
+    margin-top: 1.5rem;
+  }
+
+  /* Info grid en columna */
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+    margin: 1rem 0;
+  }
+
+  .info-card {
+    padding: 1.25rem;
+  }
+
+  /* Membership hero */
+  .membership-hero {
+    padding: 1.25rem;
+  }
+
+  .membership-title {
+    font-size: 1.3rem;
+  }
+
+  .membership-description {
+    font-size: 0.95rem;
+  }
+
+  /* Process sections en columna */
+  .process-section {
+    padding: 1.5rem;
+    margin: 0 0 1rem 0;
+  }
+
+  .process-title {
+    font-size: 1.3rem;
+  }
+
+  .process-text {
+    font-size: 0.95rem;
+  }
+
+  /* Additional info */
+  .additional-info {
+    padding: 1.25rem;
+  }
+
+  .info-highlight {
+    padding: 1rem;
+  }
+
+  /* Botón CTA */
+  .cta-button {
+    padding: 0.875rem 1.75rem;
+    font-size: 0.95rem;
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  /* Sección ya soy socio */
+  .thank-you {
+    font-size: 1rem;
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  /* Divisor más compacto */
+  .section-divider {
+    margin: 2rem 0;
+  }
+
+  /* Bootstrap columns */
+  .col-lg-8,
+  .col-lg-4,
+  .col-md-6 {
+    width: 100%;
+  }
 }
 /* Animaciones */
 @keyframes fadeInUp {
