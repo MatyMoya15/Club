@@ -447,3 +447,86 @@
     border-left: 100vw solid transparent;
     border-bottom: 50px solid #ededed;
 }
+
+@media (max-width: 767.98px) {
+
+  /* Quitar el min-height fijo */
+  .login-content {
+    min-height: auto;
+  }
+
+  /* Imagen de fondo reposicionada */
+  .content-header {
+    top: 85px;
+    height: 25%;
+  }
+
+  /* Container que no se salga de pantalla */
+  .login-container {
+    margin: 4% 1rem 2rem 1rem;
+    border-radius: 12px;
+    width: auto;          /* ← no forzar ancho */
+    max-width: 100%;      /* ← nunca más ancho que la pantalla */
+    box-sizing: border-box;
+  }
+
+  /* Header compacto */
+  .login-header {
+    padding: 1.25rem 1rem 1rem;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.85rem;
+  }
+
+  /* Formulario sin padding excesivo */
+  .login-form {
+    padding: 1.25rem 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    padding: 0.75rem 0.875rem 0.75rem 2.75rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .login-options {
+    margin: 1.25rem 0;
+  }
+
+  .btn-login {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .register-link {
+    padding: 1rem 0;
+    font-size: 0.875rem;
+  }
+
+  /* Alerts compactos */
+  .alert {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
+  }
+
+  /* Reset form */
+  .password-reset-form {
+    padding: 1rem;
+  }
+}
