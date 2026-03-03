@@ -18,6 +18,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   direccion?: string;
+  metodo_pago?: string; 
 }
 
 export interface AuthResponse {
