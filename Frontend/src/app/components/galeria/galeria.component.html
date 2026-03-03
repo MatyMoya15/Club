@@ -1,0 +1,141 @@
+<!-- HEADER -->
+<div class="section-header">
+  <div class="container">
+    <h1><i class="fas fa-images me-3"></i>Galería</h1>
+    <p class="header-subtitle">Momentos e historia de nuestro club</p>
+  </div>
+</div>
+
+<!-- FILTROS -->
+<div class="galeria-filter-wrap">
+  <div class="container">
+    <div class="galeria-filter">
+      <span class="filter-label">Filtrar:</span>
+      <a
+        class="filter-pill"
+        *ngFor="let cat of categorias"
+        [class.active]="categoriaActiva === cat"
+        (click)="filtrarPorCategoria(cat)"
+      >
+        <i class="fas" [ngClass]="{
+          'fa-th': cat === 'Todas',
+          'fa-building': cat === 'Institucional',
+          'fa-calendar-star': cat === 'Eventos',
+          'fa-trophy': cat === 'Torneos',
+          'fa-running': cat === 'Deportes'
+        }"></i>
+        {{ cat }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- GALERÍA GRID -->
+<div class="galeria-content">
+  <div class="container">
+
+    <div class="galeria-contador">
+      <span>{{ fotosFiltradas.length }} foto{{ fotosFiltradas.length !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <div class="galeria-grid">
+      <div
+        class="galeria-item"
+        *ngFor="let foto of fotosFiltradas; let i = index"
+        [style.animation-delay]="(i * 0.05) + 's'"
+        (click)="abrirFoto(foto)"
+      >
+        <div class="galeria-img-wrap">
+          <img
+            [src]="foto.src"
+            [alt]="foto.alt"
+            loading="lazy"
+            class="galeria-img"
+          />
+          <div class="galeria-overlay">
+            <div class="overlay-content">
+              <span class="overlay-cat" *ngIf="foto.categoria">
+                <i class="fas fa-tag"></i> {{ foto.categoria }}
+              </span>
+              <p class="overlay-titulo">{{ foto.titulo }}</p>
+              <span class="overlay-ver">
+                <i class="fas fa-expand-alt"></i> Ver foto
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="galeria-item-footer">
+          <span class="galeria-item-titulo">{{ foto.titulo }}</span>
+          <span class="galeria-item-fecha" *ngIf="foto.fecha">
+            <i class="fas fa-calendar-alt"></i> {{ foto.fecha }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="fotosFiltradas.length === 0">
+      <i class="fas fa-images"></i>
+      <h4>Sin fotos en esta categoría</h4>
+      <p>Pronto agregaremos más contenido.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL LIGHTBOX -->
+<div
+  class="lightbox-backdrop"
+  *ngIf="fotoSeleccionada"
+  (click)="cerrarModal()"
+>
+  <div class="lightbox-panel" (click)="$event.stopPropagation()">
+
+    <!-- Boton cerrar -->
+    <button class="lightbox-close" (click)="cerrarModal()" aria-label="Cerrar">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <!-- Imagen + navegacion -->
+    <div class="lightbox-img-area">
+      <button class="lightbox-nav prev" (click)="fotoAnterior()" aria-label="Anterior">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div class="lightbox-img-wrap">
+        <img
+          [src]="fotoSeleccionada.src"
+          [alt]="fotoSeleccionada.alt"
+          class="lightbox-img"
+        />
+      </div>
+
+      <button class="lightbox-nav next" (click)="fotoSiguiente()" aria-label="Siguiente">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Info debajo -->
+    <div class="lightbox-info">
+      <div class="lightbox-info-top">
+        <span class="lightbox-cat" *ngIf="fotoSeleccionada.categoria">
+          <i class="fas fa-tag"></i> {{ fotoSeleccionada.categoria }}
+        </span>
+        <span class="lightbox-fecha" *ngIf="fotoSeleccionada.fecha">
+          <i class="fas fa-calendar-alt"></i> {{ fotoSeleccionada.fecha }}
+        </span>
+      </div>
+      <h3 class="lightbox-titulo">{{ fotoSeleccionada.titulo }}</h3>
+      <p class="lightbox-desc">{{ fotoSeleccionada.descripcion }}</p>
+
+      <div class="lightbox-nav-dots">
+        <span
+          class="nav-dot"
+          *ngFor="let foto of fotosFiltradas"
+          [class.active]="foto.id === fotoSeleccionada.id"
+          (click)="abrirFoto(foto)"
+        ></span>
+      </div>
+    </div>
+
+  </div>
+</div>

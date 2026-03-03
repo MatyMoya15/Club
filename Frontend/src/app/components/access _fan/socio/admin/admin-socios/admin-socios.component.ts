@@ -11,25 +11,20 @@ import { CuotaService, Cuota, PagarCuotaRequest } from 'src/app/service/cuota.se
 })
 export class AdminSociosComponent implements OnInit
 {
-  // Datos
   socios: Socio[] = [];
   sociosFiltrados: Socio[] = [];
 
-  // Filtros
   filtroEstado: string = 'todos';
   busquedaSocio: string = '';
 
-  // UI State
   isLoading: boolean = true;
   error: string = '';
   successMessage: string = '';
 
-  // Modal de Edición
   showEditModal: boolean = false;
   socioEnEdicion: Socio | null = null;
   isSubmitting: boolean = false;
   isViewMode: boolean = false;
-  // Formulario de Edición
   editForm = {
     nombre: '',
     apellido: '',
@@ -39,7 +34,6 @@ export class AdminSociosComponent implements OnInit
     password: ''
   };
 
-  // Validación
   formErrors = {
     nombre: '',
     apellido: '',
@@ -47,14 +41,12 @@ export class AdminSociosComponent implements OnInit
     password: ''
   };
 
-  // Modal de Cuotas
 showCuotasModal: boolean = false;
 socioVerCuotas: Socio | null = null;
 cuotas: Cuota[] = [];
 isLoadingCuotas: boolean = false;
 errorCuotas: string = '';
 
-// Modal de Pago
 showPagoModal: boolean = false;
 cuotaAPagar: Cuota | null = null;
 isSubmittingPago: boolean = false;
@@ -75,10 +67,9 @@ constructor(
 
   ngOnInit(): void
   {
-    // Verificar que sea admin
     if (!this.authService.isAdmin())
     {
-      console.warn('⚠️ Acceso denegado: Se requieren permisos de administrador');
+      console.warn(' Acceso denegado: Se requieren permisos de administrador');
       this.router.navigate(['/socio']);
       return;
     }
@@ -91,7 +82,6 @@ constructor(
     this.isLoading = true;
     this.error = '';
 
-    // Determinar el filtro de activo
     let activoFilter: boolean | undefined;
     if (this.filtroEstado === 'activo')
     {
@@ -101,7 +91,6 @@ constructor(
       activoFilter = false;
     }
 
-    // Llamar al servicio con filtros
     this.socioService.getAllSocios(activoFilter, this.busquedaSocio).subscribe({
       next: (socios) =>
       {
@@ -119,7 +108,6 @@ constructor(
 
   filtrarSocios(): void
   {
-    // Recargar desde el backend con los nuevos filtros
     this.cargarSocios();
   }
 
@@ -133,9 +121,8 @@ constructor(
     this.socioService.activateSocio(socio.id_socio).subscribe({
       next: (response) =>
       {
-        console.log('✅ Socio activado:', response);
         this.showSuccess('Socio activado exitosamente');
-        this.cargarSocios(); // Recargar lista
+        this.cargarSocios();
       },
       error: (error) =>
       {
@@ -155,9 +142,8 @@ constructor(
     this.socioService.deleteSocio(socio.id_socio).subscribe({
       next: (response) =>
       {
-        console.log('✅ Socio desactivado:', response);
         this.showSuccess('Socio desactivado exitosamente');
-        this.cargarSocios(); // Recargar lista
+        this.cargarSocios();
       },
       error: (error) =>
       {
@@ -170,6 +156,7 @@ constructor(
 verDetalle(socio: Socio): void {
   this.isViewMode = true;
   this.editarSocio(socio);
+  console.log(socio, 'Hola')
 }
 
 editarSocio(socio: Socio): void {
@@ -191,7 +178,7 @@ editarSocio(socio: Socio): void {
     if (this.isSubmitting) return;
     this.showEditModal = false;
     this.socioEnEdicion = null;
-    this.isViewMode = false;   // ← NUEVO
+    this.isViewMode = false;
     this.resetForm();
   }
   guardarCambios(): void
@@ -203,14 +190,12 @@ editarSocio(socio: Socio): void {
 
     this.isSubmitting = true;
 
-    // Preparar datos para enviar (solo campos modificados)
     const updateData: UpdateSocioRequest = {
       nombre: this.editForm.nombre,
       apellido: this.editForm.apellido,
       email: this.editForm.email
     };
 
-    // Agregar campos opcionales solo si tienen valor
     if (this.editForm.telefono)
     {
       updateData.telefono = this.editForm.telefono;
@@ -221,22 +206,18 @@ editarSocio(socio: Socio): void {
       updateData.direccion = this.editForm.direccion;
     }
 
-    // Solo enviar password si se ingresó uno nuevo
     if (this.editForm.password)
     {
       updateData.password = this.editForm.password;
     }
 
-    console.log('📤 Guardando cambios para socio:', this.socioEnEdicion.id_socio, updateData);
-
     this.socioService.updateSocio(this.socioEnEdicion.id_socio, updateData).subscribe({
       next: (response) =>
       {
-        console.log('✅ Socio actualizado:', response);
         this.isSubmitting = false;
         this.showSuccess('Socio actualizado exitosamente');
         this.cerrarModal();
-        this.cargarSocios(); // Recargar lista
+        this.cargarSocios();
       },
       error: (error) =>
       {
@@ -251,7 +232,6 @@ editarSocio(socio: Socio): void {
   {
     let isValid = true;
 
-    // Limpiar errores previos
     this.formErrors = {
       nombre: '',
       apellido: '',
@@ -331,8 +311,6 @@ editarSocio(socio: Socio): void {
 
   exportarSocios(): void
   {
-    // TODO: Implementar exportación a CSV/Excel
-    console.log('Exportar socios');
     alert('Función de exportar - Por implementar');
   }
 
@@ -433,11 +411,11 @@ cerrarCuotasModal(): void {
 abrirPagoModal(cuota: Cuota): void {
   this.cuotaAPagar = cuota;
   const totalPagado = Number((cuota as any).total_pagado || 0);
-  const restante = Number(cuota.monto) - totalPagado;  // ← monto restante real
+  const restante = Number(cuota.monto) - totalPagado;
   
   this.pagoForm = {
     metodo: 'efectivo',
-    monto: restante,  // ← pre-llena con lo que falta
+    monto: restante,
     comprobante: ''
   };
   this.showPagoModal = true;
@@ -464,7 +442,6 @@ confirmarPago(): void {
       this.isSubmittingPago = false;
       this.showSuccess('Cuota marcada como pagada');
       this.cerrarPagoModal();
-      // Recargar cuotas del socio
       if (this.socioVerCuotas) this.verCuotas(this.socioVerCuotas);
     },
     error: (error) => {

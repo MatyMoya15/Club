@@ -24,7 +24,6 @@ export class SocioComponent implements OnInit
 
   logout(): void
   {
-    console.log('Cerrando sesión...');
     this.authService.logout();
     this.router.navigate(['/access-fan']);
   }

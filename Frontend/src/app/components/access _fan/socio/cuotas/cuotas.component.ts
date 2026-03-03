@@ -31,12 +31,11 @@ export class CuotasComponent implements OnInit
   isLoading: boolean = true;
   error: string = '';
 
-  // Propiedades del modal de pago
-showPagoModal: boolean = false;
-cuotaAPagar: Cuota | null = null;
-metodoPago: 'transferencia' | 'mercadopago' | null = null;
-isProcessingPago: boolean = false;
-pagoError: string = '';
+  showPagoModal: boolean = false;
+  cuotaAPagar: Cuota | null = null;
+  metodoPago: 'transferencia' | 'mercadopago' | null = null;
+  isProcessingPago: boolean = false;
+  pagoError: string = '';
 
   constructor(
     private cuotaService: CuotaService,
@@ -53,7 +52,7 @@ pagoError: string = '';
     this.isLoading = true;
     this.error = '';
 
-    const user = this.authService.currentUserValue; // ← así
+    const user = this.authService.currentUserValue;
     if (!user)
     {
       this.error = 'No se pudo obtener el usuario';
@@ -61,11 +60,11 @@ pagoError: string = '';
       return;
     }
 
-    this.cuotaService.getCuotasBySocio(user.id_socio).subscribe({ // ← id_socio, no id
+    this.cuotaService.getCuotasBySocio(user.id_socio).subscribe({
       next: (cuotas) =>
       {
         this.historialPagos = cuotas
-          .filter(c => c.anio === this.anioSeleccionado) // ← filtro
+          .filter(c => c.anio === this.anioSeleccionado)
           .sort((a, b) => a.mes - b.mes);
         this.calcularEstadoCuenta();
         this.isLoading = false;
@@ -87,43 +86,46 @@ pagoError: string = '';
 
   descargarComprobante(cuota: Cuota): void
   {
-    console.log('Comprobante:', cuota.comprobante);
     alert(`Comprobante: ${cuota.comprobante || 'No disponible'}`);
   }
 
 
-pagarCuota(cuota: Cuota): void {
-  this.cuotaAPagar = cuota;
-  this.metodoPago = null;
-  this.pagoError = '';
-  this.showPagoModal = true;
-}
+  pagarCuota(cuota: Cuota): void
+  {
+    this.cuotaAPagar = cuota;
+    this.metodoPago = null;
+    this.pagoError = '';
+    this.showPagoModal = true;
+  }
 
-cerrarPagoModal(): void {
-  if (this.isProcessingPago) return;
-  this.showPagoModal = false;
-  this.cuotaAPagar = null;
-  this.metodoPago = null;
-  this.pagoError = '';
-}
+  cerrarPagoModal(): void
+  {
+    if (this.isProcessingPago) return;
+    this.showPagoModal = false;
+    this.cuotaAPagar = null;
+    this.metodoPago = null;
+    this.pagoError = '';
+  }
 
-confirmarPagoMercadoPago(): void {
-  if (!this.cuotaAPagar) return;
-  this.isProcessingPago = true;
-  this.pagoError = '';
+  confirmarPagoMercadoPago(): void
+  {
+    if (!this.cuotaAPagar) return;
+    this.isProcessingPago = true;
+    this.pagoError = '';
 
-  this.cuotaService.crearPreferenciaMercadoPago(this.cuotaAPagar.id_cuota).subscribe({
-    next: (response) => {
-      this.isProcessingPago = false;
-      // Redirigir a MercadoPago
-      window.location.href = response.init_point; // Cambiá a init_point en producción
-    },
-    error: (err) => {
-      this.isProcessingPago = false;
-      this.pagoError = err.error?.error || 'Error al conectar con MercadoPago';
-    }
-  });
-}
+    this.cuotaService.crearPreferenciaMercadoPago(this.cuotaAPagar.id_cuota).subscribe({
+      next: (response) =>
+      {
+        this.isProcessingPago = false;
+        window.location.href = response.init_point;
+      },
+      error: (err) =>
+      {
+        this.isProcessingPago = false;
+        this.pagoError = err.error?.error || 'Error al conectar con MercadoPago';
+      }
+    });
+  }
 
   cambiarAnio(anio: number): void
   {
@@ -135,7 +137,7 @@ confirmarPagoMercadoPago(): void {
   {
     const hoy = new Date();
     const anioActual = hoy.getFullYear();
-    const mesActual = hoy.getMonth() + 1; // 1-12
+    const mesActual = hoy.getMonth() + 1;
 
     this.estadoCuenta.totalPagado = this.historialPagos
       .filter(p => p.estado === 'pagada')
@@ -145,7 +147,6 @@ confirmarPagoMercadoPago(): void {
       .filter(p => p.estado === 'vencida' || p.estado === 'pendiente')
       .reduce((sum, p) => sum + Number(p.monto), 0);
 
-    // Tiene deuda si hay una cuota no pagada de un mes que ya pasó
     const tieneDeudaVencida = this.historialPagos.some(p =>
     {
       if (p.estado === 'pagada') return false;

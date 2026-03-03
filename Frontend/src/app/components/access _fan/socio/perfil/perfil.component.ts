@@ -4,7 +4,8 @@ import { SocioService, UpdateSocioRequest } from 'src/app/service/socio.service'
 import { Router, ActivatedRoute } from '@angular/router';
 import { CuotaService, Cuota } from 'src/app/service/cuota.service';
 
-interface SocioData {
+interface SocioData
+{
   nombreCompleto: string;
   numeroSocio: string;
   dni: string;
@@ -14,7 +15,6 @@ interface SocioData {
   fechaAfiliacion: string;
   estaActivo: boolean;
   rol: string;
-  // Para futuras integraciones con cuotas
   debeCuotas: boolean;
   montoPendiente: number;
 }
@@ -24,18 +24,17 @@ interface SocioData {
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.css']
 })
-export class PerfilComponent implements OnInit {
+export class PerfilComponent implements OnInit
+{
   currentUser: User | null = null;
   socioData!: SocioData;
   isLoading: boolean = true;
   error: string = '';
   successMessage: string = '';
 
-  // Modal de Edición
   showEditModal: boolean = false;
   isSubmitting: boolean = false;
 
-  // Formulario de Edición
   editForm = {
     nombre: '',
     apellido: '',
@@ -47,7 +46,6 @@ export class PerfilComponent implements OnInit {
     passwordConfirmar: ''
   };
 
-  // Validación
   formErrors = {
     nombre: '',
     apellido: '',
@@ -58,63 +56,72 @@ export class PerfilComponent implements OnInit {
     passwordConfirmar: ''
   };
 
-constructor(
-  private authService: AuthService,
-  private socioService: SocioService,
-  private router: Router,
-  private route: ActivatedRoute,
-  private cuotaService: CuotaService
-  ) {}
+  constructor(
+    private authService: AuthService,
+    private socioService: SocioService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private cuotaService: CuotaService
+  ) { }
 
-ngOnInit(): void {
-  this.loadUserData();
-  this.cargarEstadoCuotas(); // ← AGREGAR
+  ngOnInit(): void
+  {
+    this.loadUserData();
+    this.cargarEstadoCuotas();
 
-  this.route.queryParams.subscribe(params => {
-    if (params['cambiarPassword'] === 'true') {
-      setTimeout(() => {
-        this.showWarning('⚠️ Por seguridad, debés cambiar tu contraseña predeterminada');
-        this.editarPerfil();
-      }, 500);
-    }
-  });
-}
+    this.route.queryParams.subscribe(params =>
+    {
+      if (params['cambiarPassword'] === 'true')
+      {
+        setTimeout(() =>
+        {
+          this.showWarning('⚠️ Por seguridad, debés cambiar tu contraseña predeterminada');
+          this.editarPerfil();
+        }, 500);
+      }
+    });
+  }
 
-// ✅ Agregar método para mostrar warning
-private showWarning(message: string): void {
-  this.error = message; // Usa el mismo sistema de alertas que ya tienes
-  setTimeout(() => {
-    this.error = '';
-  }, 8000); // Mostrar por más tiempo
-}
+  private showWarning(message: string): void
+  {
+    this.error = message;
+    setTimeout(() =>
+    {
+      this.error = '';
+    }, 8000);
+  }
 
-  private loadUserData(): void {
+  private loadUserData(): void
+  {
     this.isLoading = true;
 
-    // Obtener usuario actual del servicio
     this.authService.currentUser$.subscribe({
-      next: (user) => {
-        if (user) {
+      next: (user) =>
+      {
+        if (user)
+        {
           this.currentUser = user;
           this.mapUserToSocioData(user);
           this.isLoading = false;
-        } else {
+        } else
+        {
           this.error = 'No se encontró información del usuario';
           this.isLoading = false;
         }
       },
-      error: (error) => {
+      error: (error) =>
+      {
         console.error('Error al cargar usuario:', error);
         this.error = 'Error al cargar los datos del usuario';
         this.isLoading = false;
       }
     });
 
-    // Opcionalmente, refrescar datos desde el backend
     this.refreshUserData();
   }
 
-  private mapUserToSocioData(user: User): void {
+  private mapUserToSocioData(user: User): void
+  {
     this.socioData = {
       nombreCompleto: `${user.nombre} ${user.apellido}`,
       numeroSocio: user.numero_socio,
@@ -125,41 +132,36 @@ private showWarning(message: string): void {
       fechaAfiliacion: this.formatFecha(user.fecha_alta),
       estaActivo: user.activo,
       rol: user.rol,
-      // TODO: Implementar cuando tengas el servicio de cuotas
       debeCuotas: false,
       montoPendiente: 0
     };
   }
 
-  refreshUserData(): void {
-    // Llamar al endpoint /api/auth/me para obtener datos actualizados
+  refreshUserData(): void
+  {
     this.authService.getMe().subscribe({
-      next: (user) => {
-        console.log('✅ Datos actualizados del usuario:', user);
-        
-        // Actualizar localStorage con los datos más recientes
+      next: (user) =>
+      {
         localStorage.setItem('currentUser', JSON.stringify(user));
-        
-        // Actualizar los datos mostrados
+
         this.currentUser = user;
         this.mapUserToSocioData(user);
       },
-      error: (error) => {
+      error: (error) =>
+      {
         console.error('❌ Error al actualizar datos:', error);
-        if (error.status === 401) {
-          // Token inválido, el interceptor manejará el logout
+        if (error.status === 401)
+        {
           this.authService.logout();
         }
       }
     });
   }
 
-  editarPerfil(): void {
+  editarPerfil(): void
+  {
     if (!this.currentUser) return;
 
-    console.log('Editar perfil');
-    
-    // Cargar datos en el formulario
     this.editForm = {
       nombre: this.currentUser.nombre,
       apellido: this.currentUser.apellido,
@@ -171,7 +173,6 @@ private showWarning(message: string): void {
       passwordConfirmar: ''
     };
 
-    // Limpiar errores
     this.formErrors = {
       nombre: '',
       apellido: '',
@@ -185,201 +186,219 @@ private showWarning(message: string): void {
     this.showEditModal = true;
   }
 
-  cerrarModal(): void {
-    if (this.isSubmitting) {
-      return; // No cerrar si está guardando
+  cerrarModal(): void
+  {
+    if (this.isSubmitting)
+    {
+      return;
     }
-    
+
     this.showEditModal = false;
     this.resetForm();
   }
 
-guardarCambios(): void {
-  if (!this.currentUser || !this.validarFormulario()) {
-    return;
-  }
-
-  this.isSubmitting = true;
-
-  // ✅ Si está cambiando contraseña, usar endpoint específico
-  if (this.editForm.passwordNueva && this.editForm.passwordNueva.trim()) {
-    this.cambiarPassword();
-    return;
-  }
-
-  // Preparar datos para enviar (solo info del perfil, sin password)
-  const updateData: UpdateSocioRequest = {
-    nombre: this.editForm.nombre.trim(),
-    apellido: this.editForm.apellido.trim()
-  };
-
-  // Agregar email solo si tiene valor
-  if (this.editForm.email && this.editForm.email.trim()) {
-    updateData.email = this.editForm.email.trim();
-  }
-
-  // Agregar campos opcionales solo si tienen valor
-  if (this.editForm.telefono.trim()) {
-    updateData.telefono = this.editForm.telefono.trim();
-  }
-
-  if (this.editForm.direccion.trim()) {
-    updateData.direccion = this.editForm.direccion.trim();
-  }
-
-  console.log('📤 Guardando cambios del perfil:', updateData);
-
-  this.socioService.updateMiPerfil(updateData).subscribe({
-    next: (response) => {
-      console.log('✅ Perfil actualizado:', response);
-      this.isSubmitting = false;
-      this.showSuccess('Perfil actualizado exitosamente');
-      this.cerrarModal();
-      
-      this.currentUser = response.socio;
-      localStorage.setItem('currentUser', JSON.stringify(response.socio));
-      this.mapUserToSocioData(response.socio);
-    },
-    error: (error) => {
-      console.error('❌ Error al actualizar perfil:', error);
-      this.isSubmitting = false;
-      this.showError(this.getErrorMessage(error));
+  guardarCambios(): void
+  {
+    if (!this.currentUser || !this.validarFormulario())
+    {
+      return;
     }
-  });
-}
 
-private cambiarPassword(): void {
-  // La contraseña actual debería ser la que tiene actualmente
-  // Si es primer login, será "club2025"
-  const currentPassword = this.editForm.passwordActual || 'club2025';
-  
-  this.authService.changePassword(
-    currentPassword,
-    this.editForm.passwordNueva
-  ).subscribe({
-    next: (response) => {
-      console.log('✅ Contraseña cambiada:', response);
-      
-      // Ahora actualizar el resto del perfil
-      const updateData: UpdateSocioRequest = {
-        nombre: this.editForm.nombre.trim(),
-        apellido: this.editForm.apellido.trim()
-      };
+    this.isSubmitting = true;
 
-      if (this.editForm.email && this.editForm.email.trim()) {
-        updateData.email = this.editForm.email.trim();
-      }
+    if (this.editForm.passwordNueva && this.editForm.passwordNueva.trim())
+    {
+      this.cambiarPassword();
+      return;
+    }
 
-      if (this.editForm.telefono.trim()) {
-        updateData.telefono = this.editForm.telefono.trim();
-      }
+    const updateData: UpdateSocioRequest = {
+      nombre: this.editForm.nombre.trim(),
+      apellido: this.editForm.apellido.trim()
+    };
 
-      if (this.editForm.direccion.trim()) {
-        updateData.direccion = this.editForm.direccion.trim();
-      }
+    if (this.editForm.email && this.editForm.email.trim())
+    {
+      updateData.email = this.editForm.email.trim();
+    }
 
-      // Actualizar el resto del perfil
-      this.socioService.updateMiPerfil(updateData).subscribe({
-        next: (profileResponse) => {
-          this.isSubmitting = false;
-          this.showSuccess('Perfil y contraseña actualizados exitosamente');
-          this.cerrarModal();
-          
-          this.currentUser = profileResponse.socio;
-          localStorage.setItem('currentUser', JSON.stringify(profileResponse.socio));
-          this.mapUserToSocioData(profileResponse.socio);
-        },
-        error: (error) => {
-          this.isSubmitting = false;
-          this.showError('Contraseña actualizada pero hubo un error al actualizar el perfil');
-        }
-      });
-    },
-    error: (error) => {
-      console.error('❌ Error al cambiar contraseña:', error);
-      this.isSubmitting = false;
-      
-      if (error.status === 401) {
-        this.formErrors.passwordActual = 'Contraseña actual incorrecta';
-        this.showError('Contraseña actual incorrecta');
-      } else {
+    if (this.editForm.telefono.trim())
+    {
+      updateData.telefono = this.editForm.telefono.trim();
+    }
+
+    if (this.editForm.direccion.trim())
+    {
+      updateData.direccion = this.editForm.direccion.trim();
+    }
+
+    this.socioService.updateMiPerfil(updateData).subscribe({
+      next: (response) =>
+      {
+        this.isSubmitting = false;
+        this.showSuccess('Perfil actualizado exitosamente');
+        this.cerrarModal();
+
+        this.currentUser = response.socio;
+        localStorage.setItem('currentUser', JSON.stringify(response.socio));
+        this.mapUserToSocioData(response.socio);
+      },
+      error: (error) =>
+      {
+        console.error('❌ Error al actualizar perfil:', error);
+        this.isSubmitting = false;
         this.showError(this.getErrorMessage(error));
       }
-    }
-  });
-}
+    });
+  }
 
-validarFormulario(): boolean {
-  let isValid = true;
+  private cambiarPassword(): void
+  {
+    const currentPassword = this.editForm.passwordActual || 'club2025';
 
-  // Limpiar errores previos
-  this.formErrors = {
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    passwordActual: '',
-    passwordNueva: '',
-    passwordConfirmar: ''
-  };
+    this.authService.changePassword(
+      currentPassword,
+      this.editForm.passwordNueva
+    ).subscribe({
+      next: (response) =>
+      {
+
+        const updateData: UpdateSocioRequest = {
+          nombre: this.editForm.nombre.trim(),
+          apellido: this.editForm.apellido.trim()
+        };
+
+        if (this.editForm.email && this.editForm.email.trim())
+        {
+          updateData.email = this.editForm.email.trim();
+        }
+
+        if (this.editForm.telefono.trim())
+        {
+          updateData.telefono = this.editForm.telefono.trim();
+        }
+
+        if (this.editForm.direccion.trim())
+        {
+          updateData.direccion = this.editForm.direccion.trim();
+        }
+
+        this.socioService.updateMiPerfil(updateData).subscribe({
+          next: (profileResponse) =>
+          {
+            this.isSubmitting = false;
+            this.showSuccess('Perfil y contraseña actualizados exitosamente');
+            this.cerrarModal();
+
+            this.currentUser = profileResponse.socio;
+            localStorage.setItem('currentUser', JSON.stringify(profileResponse.socio));
+            this.mapUserToSocioData(profileResponse.socio);
+          },
+          error: (error) =>
+          {
+            this.isSubmitting = false;
+            this.showError('Contraseña actualizada pero hubo un error al actualizar el perfil');
+          }
+        });
+      },
+      error: (error) =>
+      {
+        console.error('❌ Error al cambiar contraseña:', error);
+        this.isSubmitting = false;
+
+        if (error.status === 401)
+        {
+          this.formErrors.passwordActual = 'Contraseña actual incorrecta';
+          this.showError('Contraseña actual incorrecta');
+        } else
+        {
+          this.showError(this.getErrorMessage(error));
+        }
+      }
+    });
+  }
+
+  validarFormulario(): boolean
+  {
+    let isValid = true;
+
+    this.formErrors = {
+      nombre: '',
+      apellido: '',
+      email: '',
+      telefono: '',
+      passwordActual: '',
+      passwordNueva: '',
+      passwordConfirmar: ''
+    };
 
     // Validar nombre
-    if (!this.editForm.nombre || this.editForm.nombre.trim().length === 0) {
+    if (!this.editForm.nombre || this.editForm.nombre.trim().length === 0)
+    {
       this.formErrors.nombre = 'El nombre es requerido';
       isValid = false;
-    } else if (this.editForm.nombre.trim().length < 2) {
+    } else if (this.editForm.nombre.trim().length < 2)
+    {
       this.formErrors.nombre = 'El nombre debe tener al menos 2 caracteres';
       isValid = false;
     }
 
     // Validar apellido
-    if (!this.editForm.apellido || this.editForm.apellido.trim().length === 0) {
+    if (!this.editForm.apellido || this.editForm.apellido.trim().length === 0)
+    {
       this.formErrors.apellido = 'El apellido es requerido';
       isValid = false;
-    } else if (this.editForm.apellido.trim().length < 2) {
+    } else if (this.editForm.apellido.trim().length < 2)
+    {
       this.formErrors.apellido = 'El apellido debe tener al menos 2 caracteres';
       isValid = false;
     }
 
     // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!this.editForm.email || this.editForm.email.trim().length === 0) {
+    if (!this.editForm.email || this.editForm.email.trim().length === 0)
+    {
       this.formErrors.email = 'El email es requerido';
       isValid = false;
-    } else if (!emailRegex.test(this.editForm.email)) {
+    } else if (!emailRegex.test(this.editForm.email))
+    {
       this.formErrors.email = 'El email no es válido';
       isValid = false;
     }
 
     // Validar contraseñas (solo si se intenta cambiar)
-  const intentaCambiarPassword = this.editForm.passwordNueva || this.editForm.passwordConfirmar;
+    const intentaCambiarPassword = this.editForm.passwordNueva || this.editForm.passwordConfirmar;
 
-  if (intentaCambiarPassword) {
-    // ✅ Validar contraseña actual (pero no si es primer login)
-    const esPrimerLogin = this.currentUser?.primer_login;
-    
-    if (!esPrimerLogin && (!this.editForm.passwordActual || this.editForm.passwordActual.length === 0)) {
-      this.formErrors.passwordActual = 'Debés ingresar tu contraseña actual';
-      isValid = false;
+    if (intentaCambiarPassword)
+    {
+      const esPrimerLogin = this.currentUser?.primer_login;
+
+      if (!esPrimerLogin && (!this.editForm.passwordActual || this.editForm.passwordActual.length === 0))
+      {
+        this.formErrors.passwordActual = 'Debés ingresar tu contraseña actual';
+        isValid = false;
+      }
+
+      // Validar que la nueva contraseña tenga al menos 6 caracteres
+      if (!this.editForm.passwordNueva || this.editForm.passwordNueva.length < 6)
+      {
+        this.formErrors.passwordNueva = 'La contraseña debe tener al menos 6 caracteres';
+        isValid = false;
+      }
+
+      // Validar que las contraseñas coincidan
+      if (this.editForm.passwordNueva !== this.editForm.passwordConfirmar)
+      {
+        this.formErrors.passwordConfirmar = 'Las contraseñas no coinciden';
+        isValid = false;
+      }
     }
 
-    // Validar que la nueva contraseña tenga al menos 6 caracteres
-    if (!this.editForm.passwordNueva || this.editForm.passwordNueva.length < 6) {
-      this.formErrors.passwordNueva = 'La contraseña debe tener al menos 6 caracteres';
-      isValid = false;
-    }
-
-    // Validar que las contraseñas coincidan
-    if (this.editForm.passwordNueva !== this.editForm.passwordConfirmar) {
-      this.formErrors.passwordConfirmar = 'Las contraseñas no coinciden';
-      isValid = false;
-    }
+    return isValid;
   }
 
-  return isValid;
-}
-
-  resetForm(): void {
+  resetForm(): void
+  {
     this.editForm = {
       nombre: '',
       apellido: '',
@@ -402,120 +421,140 @@ validarFormulario(): boolean {
     this.isSubmitting = false;
   }
 
-  private getErrorMessage(error: any): string {
-    if (error.status === 403) {
+  private getErrorMessage(error: any): string
+  {
+    if (error.status === 403)
+    {
       return 'No tienes permisos para realizar esta acción';
-    } else if (error.status === 404) {
+    } else if (error.status === 404)
+    {
       return 'Usuario no encontrado';
-    } else if (error.status === 400) {
+    } else if (error.status === 400)
+    {
       return error.error?.error || 'Datos inválidos';
-    } else if (error.status === 401) {
+    } else if (error.status === 401)
+    {
       return 'Credenciales incorrectas';
-    } else if (error.status === 0) {
+    } else if (error.status === 0)
+    {
       return 'No se pudo conectar con el servidor';
-    } else if (error.error?.error) {
+    } else if (error.error?.error)
+    {
       return error.error.error;
     }
     return 'Error al procesar la solicitud';
   }
 
-  private showSuccess(message: string): void {
+  private showSuccess(message: string): void
+  {
     this.successMessage = message;
-    setTimeout(() => {
+    setTimeout(() =>
+    {
       this.successMessage = '';
     }, 3000);
   }
 
-  private showError(message: string): void {
+  private showError(message: string): void
+  {
     this.error = message;
-    setTimeout(() => {
+    setTimeout(() =>
+    {
       this.error = '';
     }, 3000);
   }
 
   // Helpers
-  getIniciales(): string {
+  getIniciales(): string
+  {
     if (!this.currentUser) return 'U';
-    
+
     const inicial1 = this.currentUser.nombre?.charAt(0).toUpperCase() || '';
     const inicial2 = this.currentUser.apellido?.charAt(0).toUpperCase() || '';
-    
+
     return `${inicial1}${inicial2}`;
   }
 
-  formatFecha(fecha?: string): string {
+  formatFecha(fecha?: string): string
+  {
     if (!fecha) return 'No disponible';
-    
+
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-AR', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('es-AR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   }
 
-  formatearMonto(monto: number): string {
+  formatearMonto(monto: number): string
+  {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency: 'ARS'
     }).format(monto);
   }
 
-  // Getters útiles para el template
-  get fullName(): string {
+  get fullName(): string
+  {
     return this.socioData?.nombreCompleto || '';
   }
 
-  get memberSince(): string {
+  get memberSince(): string
+  {
     return this.socioData?.fechaAfiliacion || '';
   }
 
-  get isAdmin(): boolean {
+  get isAdmin(): boolean
+  {
     return this.authService.isAdmin();
   }
 
-  logout(): void {
-    if (confirm('¿Estás seguro que querés cerrar sesión?')) {
+  logout(): void
+  {
+    if (confirm('¿Estás seguro que querés cerrar sesión?'))
+    {
       this.authService.logout();
     }
   }
 
-  cargarEstadoCuotas(): void {
-  const user = this.authService.currentUserValue;
-  if (!user) return;
+  cargarEstadoCuotas(): void
+  {
+    const user = this.authService.currentUserValue;
+    if (!user) return;
 
-  const hoy = new Date();
-  const anioActual = hoy.getFullYear();
-  const mesActual = hoy.getMonth() + 1;
+    const hoy = new Date();
+    const anioActual = hoy.getFullYear();
+    const mesActual = hoy.getMonth() + 1;
 
-  this.cuotaService.getCuotasBySocio(user.id_socio).subscribe({
-    next: (cuotas) => {
-      // Solo cuotas del año actual
-      const cuotasAnio = cuotas.filter(c => c.anio === anioActual);
+    this.cuotaService.getCuotasBySocio(user.id_socio).subscribe({
+      next: (cuotas) =>
+      {
+        const cuotasAnio = cuotas.filter(c => c.anio === anioActual);
 
-      // Tiene deuda si hay una cuota no pagada de un mes que ya pasó
-      const tieneDeuda = cuotasAnio.some(c => {
-        if (c.estado === 'pagada') return false;
-        return c.anio < anioActual || (c.anio === anioActual && c.mes < mesActual);
-      });
-
-      // Calcular monto pendiente de meses vencidos
-      const montoPendiente = cuotasAnio
-        .filter(c => {
+        const tieneDeuda = cuotasAnio.some(c =>
+        {
           if (c.estado === 'pagada') return false;
           return c.anio < anioActual || (c.anio === anioActual && c.mes < mesActual);
-        })
-        .reduce((sum, c) => sum + Number(c.monto), 0);
+        });
 
-      // Actualizar socioData
-      if (this.socioData) {
-        this.socioData.debeCuotas = tieneDeuda;
-        this.socioData.montoPendiente = montoPendiente;
+        const montoPendiente = cuotasAnio
+          .filter(c =>
+          {
+            if (c.estado === 'pagada') return false;
+            return c.anio < anioActual || (c.anio === anioActual && c.mes < mesActual);
+          })
+          .reduce((sum, c) => sum + Number(c.monto), 0);
+
+        if (this.socioData)
+        {
+          this.socioData.debeCuotas = tieneDeuda;
+          this.socioData.montoPendiente = montoPendiente;
+        }
+      },
+      error: (err) =>
+      {
+        console.error('Error al cargar estado de cuotas:', err);
       }
-    },
-    error: (err) => {
-      console.error('Error al cargar estado de cuotas:', err);
-    }
-  });
-}
+    });
+  }
 }
