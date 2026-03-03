@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService, User } from 'src/app/service/auth.service';
 import { SocioService, UpdateSocioRequest } from 'src/app/service/socio.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CuotaService, Cuota } from 'src/app/service/cuota.service';
 
 interface SocioData {
   nombreCompleto: string;
@@ -61,18 +62,19 @@ constructor(
   private authService: AuthService,
   private socioService: SocioService,
   private router: Router,
-  private route: ActivatedRoute
+  private route: ActivatedRoute,
+  private cuotaService: CuotaService
   ) {}
 
 ngOnInit(): void {
   this.loadUserData();
-  
-  // ✅ Detectar si viene del primer login
+  this.cargarEstadoCuotas(); // ← AGREGAR
+
   this.route.queryParams.subscribe(params => {
     if (params['cambiarPassword'] === 'true') {
       setTimeout(() => {
         this.showWarning('⚠️ Por seguridad, debés cambiar tu contraseña predeterminada');
-        this.editarPerfil(); // Abrir automáticamente el modal
+        this.editarPerfil();
       }, 500);
     }
   });
@@ -477,4 +479,43 @@ validarFormulario(): boolean {
       this.authService.logout();
     }
   }
+
+  cargarEstadoCuotas(): void {
+  const user = this.authService.currentUserValue;
+  if (!user) return;
+
+  const hoy = new Date();
+  const anioActual = hoy.getFullYear();
+  const mesActual = hoy.getMonth() + 1;
+
+  this.cuotaService.getCuotasBySocio(user.id_socio).subscribe({
+    next: (cuotas) => {
+      // Solo cuotas del año actual
+      const cuotasAnio = cuotas.filter(c => c.anio === anioActual);
+
+      // Tiene deuda si hay una cuota no pagada de un mes que ya pasó
+      const tieneDeuda = cuotasAnio.some(c => {
+        if (c.estado === 'pagada') return false;
+        return c.anio < anioActual || (c.anio === anioActual && c.mes < mesActual);
+      });
+
+      // Calcular monto pendiente de meses vencidos
+      const montoPendiente = cuotasAnio
+        .filter(c => {
+          if (c.estado === 'pagada') return false;
+          return c.anio < anioActual || (c.anio === anioActual && c.mes < mesActual);
+        })
+        .reduce((sum, c) => sum + Number(c.monto), 0);
+
+      // Actualizar socioData
+      if (this.socioData) {
+        this.socioData.debeCuotas = tieneDeuda;
+        this.socioData.montoPendiente = montoPendiente;
+      }
+    },
+    error: (err) => {
+      console.error('Error al cargar estado de cuotas:', err);
+    }
+  });
+}
 }

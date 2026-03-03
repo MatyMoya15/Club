@@ -93,20 +93,14 @@
                   {{ formatearMonto(socioData.montoPendiente) }}
                 </span>
               </div>
-              <div class="status-actions" *ngIf="socioData.debeCuotas">
-                <button class="btn-sm btn-primary">
-                  <i class="fas fa-credit-card"></i> Pagar
-                </button>
-                <button class="btn-sm btn-outline">
-                  <i class="fas fa-list"></i> Detalle
-                </button>
-              </div>
-              <div class="status-message" *ngIf="!socioData.debeCuotas">
-                <p class="text-success">
-                  <i class="fas fa-check-circle"></i>
-                  ¡Excelente! No tenés cuotas pendientes.
-                </p>
-              </div>
+<div class="status-actions" *ngIf="socioData.debeCuotas">
+  <button class="btn-sm btn-primary" routerLink="/socio/cuotas">
+    <i class="fas fa-credit-card"></i> Pagar
+  </button>
+  <button class="btn-sm btn-outline" routerLink="/socio/cuotas">
+    <i class="fas fa-list"></i> Detalle
+  </button>
+</div>
             </div>
           </div>
         </div>
