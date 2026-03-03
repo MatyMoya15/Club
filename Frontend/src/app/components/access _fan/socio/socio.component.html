@@ -15,6 +15,9 @@
             <div class="club-name">Club Social y Deportivo Villa Manzano</div>
             <small style="color: #9ca3af; font-size: 0.75rem;">Portal del Socio</small>
           </div>
+            <button class="btn-close-sidebar d-md-none" (click)="toggleSidebar()">
+    <i class="fas fa-times"></i>
+  </button>
         </div>
       </div>
 
@@ -22,7 +25,7 @@
       <nav class="nav-menu">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/socio/perfil" routerLinkActive="active"
+            <a class="nav-link" routerLink="/socio/perfil" routerLinkActive="active" (click)="closeSidebar()"
               [routerLinkActiveOptions]="{ exact: true }">
               <i class="fas fa-user-circle"></i>
               <span>Mi Perfil</span>
@@ -30,7 +33,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" routerLink="/socio/cuotas" routerLinkActive="active"
+            <a class="nav-link" routerLink="/socio/cuotas" routerLinkActive="active" (click)="closeSidebar()"
               [routerLinkActiveOptions]="{ exact: true }">
               <i class="fas fa-credit-card"></i>
               <span>Estado de Cuotas</span>
@@ -38,14 +41,13 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" routerLink="/socio/carnet" routerLinkActive="active"
+            <a class="nav-link" routerLink="/socio/carnet" routerLinkActive="active" (click)="closeSidebar()"
               [routerLinkActiveOptions]="{ exact: true }">
               <i class="fas fa-id-badge"></i>
               <span>Carnet Digital</span>
             </a>
           </li>
 
-          <!-- 🔥 Sección Admin (solo visible para admins) -->
           <ng-container *ngIf="isAdmin">
             <li class="nav-divider">
               <hr>
@@ -53,21 +55,21 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" routerLink="/socio/admin/noticias" routerLinkActive="active">
+              <a class="nav-link" routerLink="/socio/admin/noticias" routerLinkActive="active" (click)="closeSidebar()">
                 <i class="fas fa-newspaper"></i>
                 <span>Noticias</span>
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" routerLink="/socio/admin/socios" routerLinkActive="active">
+              <a class="nav-link" routerLink="/socio/admin/socios" routerLinkActive="active" (click)="closeSidebar()">
                 <i class="fas fa-users"></i>
                 <span>Socios</span>
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" routerLink="/socio/admin/cuotas" routerLinkActive="active">
+              <a class="nav-link" routerLink="/socio/admin/cuotas" routerLinkActive="active" (click)="closeSidebar()">
                 <i class="fa-solid fa-stopwatch-20"></i> <span>Gestión Deportiva</span>
               </a>
             </li>
@@ -77,7 +79,7 @@
 
       <!-- Logout Button -->
       <div class="sidebar-footer">
-        <button class="btn btn-logout" (click)="logout()">
+        <button class="btn btn-logout" (click)="logout()" (click)="closeSidebar()">
           <i class="fas fa-sign-out-alt"></i>
           <span>Cerrar Sesión</span>
         </button>

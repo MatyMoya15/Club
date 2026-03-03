@@ -1,7 +1,5 @@
 .container-fluid {
   padding: 0;
-  max-height: calc(100vh - 221px);
-  min-height: calc(100vh - 221px);
 }
 
 .row {
@@ -13,7 +11,7 @@
   background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
   color: white;
   padding: 0;
-  min-height: calc(100vh - 221px);
+  min-height: 100%;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   position: absolute;
   left: 0;
@@ -341,4 +339,79 @@ img{
   border-radius: 8px;
   padding: 8px 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+@media (min-width: 768px) {
+  .container-fluid {
+    max-height: calc(100vh - 224px);
+    min-height: calc(100vh - 224px);
+  }
+
+  .sidebar {
+    min-height: calc(100vh - 221px);
+    position: absolute; /* solo absolute en desktop */
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;           /* ← desde el top */
+    height: 100vh;    /* ← altura completa del viewport */
+    width: 300px;
+    z-index: 1050;
+    overflow-y: auto; /* ← scroll interno */
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar.show {
+    left: 0;
+  }
+
+  /* El footer del sidebar se queda pegado abajo */
+  .sidebar-footer {
+    position: sticky; /* ← sticky en lugar de absolute */
+    bottom: 0;
+    margin-top: auto;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    min-height: auto;  /* sin altura fija en mobile */
+  }
+}
+
+.btn-close-sidebar {
+  display: none; /* oculto por defecto en desktop */
+}
+
+@media (max-width: 767.98px) {
+  .btn-close-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+  }
+
+  .btn-close-sidebar:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: scale(1.05);
+  }
 }

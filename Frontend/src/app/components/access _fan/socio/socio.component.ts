@@ -31,10 +31,10 @@ export class SocioComponent implements OnInit
 
   sidebarOpen = false;
 
-toggleSidebar() {
-  this.sidebarOpen = !this.sidebarOpen;
-  console.log('Sidebar state:', this.sidebarOpen);
-}
+  toggleSidebar()
+  {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
   closeSidebar()
   {
     this.sidebarOpen = false;
