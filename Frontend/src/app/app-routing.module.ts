@@ -1,4 +1,3 @@
-// src/app/app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -11,6 +10,7 @@ import { FaqComponent } from './components/faq/faq.component';
 import { HistoriaComponent } from './components/historia/historia.component';
 import { NoticiaComponent } from './components/noticia/noticia.component';
 import { SociosInfoComponent } from './components/socios-info/socios-info.component';
+import { GaleriaComponent } from './components/galeria/galeria.component';
 
 // Access Fan Components
 import { LoginComponent } from './components/access _fan/login/login.component';
@@ -36,19 +36,18 @@ const routes: Routes = [
   { path: 'contacto', component: ContactoComponent },
   { path: 'deportes', component: DeportesComponent },
   { path: 'faq', component: FaqComponent },
+  { path: 'galeria', component: GaleriaComponent },
   { path: 'historia', component: HistoriaComponent },
-  { path: 'noticia/:id', component: NoticiaComponent }, // ⬅️ CAMBIADO
+  { path: 'noticia/:id', component: NoticiaComponent },
   { path: 'info-socios', component: SociosInfoComponent },
   
-  // Rutas de autenticación
   { path: 'access-fan', component: LoginComponent },
   { path: 'asociarme', component: RegisterComponent },
   
-  // Rutas del socio (protegidas)
   {
     path: 'socio', 
     component: SocioComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -67,21 +66,20 @@ const routes: Routes = [
         path: 'carnet', 
         component: CarnetComponent
       },
-      // ✅ Rutas de administración - separadas y protegidas
       {
         path: 'admin/noticias', 
         component: AdminNoticiasComponent,
-        // canActivate: [AdminGuard] 
+        canActivate: [AdminGuard] 
       },
       {
         path: 'admin/socios', 
         component: AdminSociosComponent,
-        // canActivate: [AdminGuard] 
+        canActivate: [AdminGuard] 
       },
       {
         path: 'admin/cuotas', 
         component: AdminDeportesComponent,
-        // canActivate: [AdminGuard] 
+        canActivate: [AdminGuard] 
       }
     ]
   },

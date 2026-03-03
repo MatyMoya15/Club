@@ -33,6 +33,7 @@ import { AdminSociosComponent } from './components/access _fan/socio/admin/admin
 import { AdminDeportesComponent } from './components/access _fan/socio/admin/admin-deportes/admin-deportes.component';
 import { FooterAfComponent } from './components/access _fan/footer-af/footer-af.component';
 import { Nl2brPipe } from './pipes/nl2br.pipe';
+import { GaleriaComponent } from './components/galeria/galeria.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { Nl2brPipe } from './pipes/nl2br.pipe';
     CuotasComponent,
     CarnetComponent,
     AdminComponent, AdminNoticiasComponent, AdminSociosComponent, AdminDeportesComponent, FooterAfComponent,
-    Nl2brPipe
+    Nl2brPipe,
+    GaleriaComponent
   ],
   imports: [
     BrowserModule,

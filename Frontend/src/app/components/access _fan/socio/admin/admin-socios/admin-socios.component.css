@@ -2,8 +2,6 @@
   padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  max-height: calc(100vh - 224px);
-  min-height: calc(100vh - 224px);
 }
 
 /* Header */
@@ -294,8 +292,8 @@
 
 @media (min-width: 768px) {
   .admin-socios-container {
-    min-height: calc(100vh - 224px);
-    max-height: calc(100vh - 224px);
+    min-height: calc(100vh - 211px);
+    max-height: calc(100vh - 211px);
     overflow-y: auto;
   }
 }

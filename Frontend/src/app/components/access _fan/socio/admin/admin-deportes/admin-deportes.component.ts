@@ -12,39 +12,31 @@ declare var bootstrap: any;
 })
 export class AdminDeportesComponent implements OnInit
 {
-  // Pestañas
   tabActiva: 'deportes' | 'clases' | 'instructores' = 'deportes';
 
-  // Datos
   deportes: Deporte[] = [];
   clases: Clase[] = [];
   instructores: Instructor[] = [];
 
-  // Estados
   cargando = false;
   error = '';
 
-  // Modal
   modalInstance: any;
   accionModal: 'crear' | 'ver' | 'editar' | 'eliminar' = 'crear';
   tipoModal: 'deporte' | 'clase' | 'instructor' = 'deporte';
 
-  // Items seleccionados
   deporteSeleccionado: Deporte | null = null;
   claseSeleccionada: Clase | null = null;
   instructorSeleccionado: Instructor | null = null;
 
-  // Formularios
   deporteForm!: FormGroup;
   claseForm!: FormGroup;
   instructorForm!: FormGroup;
 
-  // Filtros
   filtroDeporte = '';
   filtroClase = '';
   filtroInstructor = '';
 
-  // Días de la semana
   diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   constructor(
@@ -88,8 +80,6 @@ export class AdminDeportesComponent implements OnInit
     });
   }
 
-  // ==================== CARGA DE DATOS ====================
-
   cargarTodo(): void
   {
     this.cargarDeportes();
@@ -131,7 +121,7 @@ export class AdminDeportesComponent implements OnInit
 
   cargarInstructores(): void
   {
-    this.deporteService.getAllInstructores().subscribe({
+    this.deporteService.getAllInstructores(true).subscribe({
       next: (data) =>
       {
         this.instructores = data;
@@ -232,7 +222,17 @@ export class AdminDeportesComponent implements OnInit
       error: (err) =>
       {
         console.error(err);
-        this.mostrarMensaje('Error al eliminar el deporte', 'error');
+        if (err.status === 400)
+        {
+          this.mostrarMensaje(
+            err.error?.error || 'No se puede eliminar el deporte porque tiene clases asociadas. Eliminá las clases primero.',
+            'error'
+          );
+        } else
+        {
+          this.mostrarMensaje('Error al eliminar el deporte', 'error');
+        }
+        this.cerrarModal();
       }
     });
   }
@@ -254,14 +254,13 @@ export class AdminDeportesComponent implements OnInit
     this.tipoModal = 'clase';
     this.claseSeleccionada = clase || null;
 
-    // Limpiar horarios siempre
     this.horarios.clear();
 
     if (accion === 'crear')
     {
 
       this.claseForm.reset({ activa: true });
-      this.agregarHorario(); // uno vacío
+      this.agregarHorario();
 
     } else if (clase && accion !== 'ver')
     {
@@ -273,7 +272,6 @@ export class AdminDeportesComponent implements OnInit
         activa: clase.activa
       });
 
-      // 👇 Agregamos el horario dentro del FormArray
       this.horarios.push(
         this.fb.group({
           dia: [clase.dia, Validators.required],
@@ -498,8 +496,6 @@ export class AdminDeportesComponent implements OnInit
     this.claseSeleccionada = null;
     this.instructorSeleccionado = null;
   }
-
-  // ==================== UTILIDADES ====================
 
   getDeporteNombre(idDeporte: number): string
   {
