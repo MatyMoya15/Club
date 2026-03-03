@@ -199,26 +199,6 @@
                 placeholder="+54 9 11 1234-5678">
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="form-label">Ocupación</label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="occupation"
-                placeholder="Tu ocupación">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">¿Cómo conociste el club?</label>
-          <select class="form-select" formControlName="howKnowClub">
-            <option value="">Seleccionar opción</option>
-            <option *ngFor="let option of howKnowOptions" [value]="option.value">
-              {{ option.label }}
-            </option>
-          </select>
         </div>
       </div>
 
@@ -230,17 +210,13 @@
         <div class="summary-section">
           <h4 class="summary-title">Resumen de Membresía</h4>
           <div class="summary-item">
-            <span class="summary-label">Cuota de Ingreso:</span>
-            <span class="summary-value">$15.000</span>
-          </div>
-          <div class="summary-item">
             <span class="summary-label">Cuota Mensual:</span>
-            <span class="summary-value">$8.500</span>
+            <span class="summary-value">$8.000</span>
           </div>
           <hr>
           <div class="summary-item">
             <span class="summary-label"><strong>Total Inicial:</strong></span>
-            <span class="summary-value"><strong>$23.500</strong></span>
+            <span class="summary-value"><strong>$8.000</strong></span>
           </div>
         </div>
 
@@ -254,7 +230,7 @@
               <i class="fas fa-building"></i>
             </div>
             <h4 class="payment-title">Pago Presencial</h4>
-            <p class="payment-description">Visitá nuestras oficinas para realizar el pago en efectivo o con tarjeta</p>
+            <p class="payment-description">Visitá nuestras oficinas para realizar el pago en efectivo</p>
           </div>
           <div 
             class="payment-option" 
@@ -269,50 +245,6 @@
           </div>
         </div>
 
-        <div class="mercadopago-options" [class.show]="showMercadopagoOptions" *ngIf="showMercadopagoOptions">
-          <h5 style="margin-bottom: 1rem; color: var(--dark-bg); font-weight: 700;">Opciones de Mercado Pago</h5>
-          <div class="form-check">
-            <input 
-              class="form-check-input" 
-              type="radio" 
-              formControlName="mercadopagoType"
-              id="subscription" 
-              value="subscription">
-            <label class="form-check-label" for="subscription">
-              <strong>Suscripción Automática</strong>
-              <small class="d-block text-muted">Se debitará automáticamente cada mes</small>
-            </label>
-          </div>
-          <div class="form-check">
-            <input 
-              class="form-check-input" 
-              type="radio" 
-              formControlName="mercadopagoType"
-              id="manual" 
-              value="manual">
-            <label class="form-check-label" for="manual">
-              <strong>Pago Manual</strong>
-              <small class="d-block text-muted">Realizarás el pago manualmente cada mes</small>
-            </label>
-          </div>
-        </div>
-
-        <div class="form-check" style="margin-top: 2rem;">
-          <input 
-            class="form-check-input" 
-            type="checkbox" 
-            [class.is-invalid]="isFieldInvalid('acceptTerms')"
-            formControlName="acceptTerms"
-            id="acceptTerms">
-          <label class="form-check-label" for="acceptTerms">
-            Acepto los <a href="#" style="color: var(--principal);">términos y condiciones</a> y el 
-            <a href="#" style="color: var(--principal);">reglamento del club</a> 
-            <span class="required">*</span>
-          </label>
-          <div class="invalid-feedback" *ngIf="isFieldInvalid('acceptTerms')">
-            {{ getFieldErrorMessage('acceptTerms') }}
-          </div>
-        </div>
       </div>
 
       <!-- Navigation -->

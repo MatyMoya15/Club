@@ -51,14 +51,6 @@ export class RegisterComponent implements OnInit {
     'Santiago del Estero', 'Tierra del Fuego', 'Tucumán'
   ];
 
-  howKnowOptions = [
-    { value: 'redes-sociales', label: 'Redes Sociales' },
-    { value: 'recomendacion', label: 'Recomendación de amigos/familiares' },
-    { value: 'publicidad', label: 'Publicidad' },
-    { value: 'eventos', label: 'Eventos del club' },
-    { value: 'otro', label: 'Otro' }
-  ];
-
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -87,8 +79,6 @@ export class RegisterComponent implements OnInit {
       province: ['', Validators.required],
       address: ['', Validators.required],
       phone: [''],
-      occupation: [''],
-      howKnowClub: [''],
       
       // Paso 3: Método de Pago
       paymentMethod: ['', Validators.required],
@@ -423,16 +413,8 @@ export class RegisterComponent implements OnInit {
 
   // Generar número de socio (ajusta según tu lógica de negocio)
   private generateNumeroSocio(): string {
-    // Opción 1: Generar automáticamente con timestamp
     const timestamp = Date.now();
     return `SOC${timestamp.toString().slice(-8)}`;
-    
-    // Opción 2: Si el backend lo genera automáticamente, 
-    // puedes enviar un valor temporal que el backend reemplazará
-    // return 'TEMP';
-    
-    // Opción 3: Solicitar al usuario que ingrese su número de socio
-    // en el formulario
   }
 
   // Reiniciar formulario

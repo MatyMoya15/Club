@@ -770,20 +770,218 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
 .table tbody tr:nth-child(4) { animation-delay: 0.12s; }
 .table tbody tr:nth-child(5) { animation-delay: 0.15s; }
 
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 768px) {
-  .nav-tabs-custom {
-    width: 100%;
-    flex-direction: column;
+/* Solo en desktop mantenemos altura fija */
+@media (min-width: 768px) {
+  .container-fluid {
+    min-height: calc(100vh - 221px);
+    max-height: calc(100vh - 221px);
   }
-
-  .table { font-size: 0.85rem; }
-  .table thead th, .table td { padding: 0.75rem 0.875rem; }
-  .btn { font-size: 0.85rem; }
-  .modal-header, .modal-body, .modal-footer { padding: 1.25rem; }
-  .page-header { padding: 1.5rem; }
 }
 
+@media (max-width: 767.98px) {
+
+  /* Quitar altura fija */
+  .container-fluid {
+    min-height: auto;
+    max-height: none;
+    padding: 0 0.75rem;
+  }
+
+  /* Page header compacto */
+  .page-header {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .page-header h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .page-header p {
+    display: none;
+  }
+
+  .header-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  /* Tabs en fila scrolleable horizontal */
+  .nav-tabs-custom {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 0.3rem;
+    margin-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs-custom::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-tab-btn {
+    flex-shrink: 0;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8rem;
+  }
+
+  .tab-badge {
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.65rem;
+  }
+
+  /* Action bar compacto */
+  .action-bar {
+    padding: 0.875rem;
+    margin-bottom: 0.875rem;
+    flex-wrap: wrap;
+    gap: 0.75rem !important;
+  }
+
+  .search-wrapper {
+    width: 100%;
+    flex: none;
+  }
+
+  .action-bar .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Tabla → cards por fila */
+  .table-responsive {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .data-card {
+    border-radius: var(--radius-md);
+  }
+
+  .table thead { display: none; }
+
+  .table,
+  .table tbody { display: block; width: 100%; }
+
+  .table tbody tr {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border-strong);
+    padding: 0.875rem;
+    margin: 0.5rem 0;
+    animation: none;  /* evitar conflicto con animaciones */
+    position: relative;
+  }
+
+  .table tbody tr:hover {
+    background: var(--principal-light);
+  }
+
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.875rem;
+  }
+
+  .table td:last-child {
+    border-bottom: none;
+    padding-top: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  /* Etiquetas por tab */
+
+  /* Deportes */
+  .table td:nth-child(1)::before { content: 'Deporte'; }
+  .table td:nth-child(2)::before { content: 'Descripción'; }
+  .table td:nth-child(3)::before { content: 'Cuota'; }
+
+  /* Las etiquetas genéricas las sobreescribe cada tab via orden */
+  .table td::before {
+    color: var(--text-tertiary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 90px;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* Última columna (acciones) sin etiqueta */
+  .table td:last-child::before {
+    content: none;
+  }
+
+  /* Botones de acción en fila */
+  .btn-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .btn-group .btn {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 2.5rem 1rem;
+  }
+
+  /* Modal full width */
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
+  }
+
+  /* Detail items en columna única */
+  .details-view .row .col-md-6 {
+    width: 100%;
+  }
+
+  /* Footer del modal en columna */
+  .modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Form dentro del modal */
+  .row .col-md-6,
+  .row .col-md-4,
+  .row .col-md-3,
+  .row .col-md-2 {
+    width: 100%;
+  }
+
+  /* py-4 utilitario */
+  .py-4 { padding: 1rem 0; }
+}
 /* ==================== UTILITIES ==================== */
 .cursor-pointer { cursor: pointer; }
 .text-muted { color: var(--text-secondary) !important; }

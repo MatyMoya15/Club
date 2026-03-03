@@ -55,6 +55,7 @@
   border: 1px solid #334155;
   position: relative;
   overflow: hidden;
+  height: max-content;
 }
 
 .carnet-card::before {
@@ -407,47 +408,145 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
+
+  /* Quitar altura fija */
+  .carnet-container {
+    min-height: auto;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  /* Header en una línea */
+  .header-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .page-subtitle {
+    display: none;
+  }
+
+  .page-title {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  /* Contenido principal en columna, sidebar primero */
+  .carnet-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 0.75rem;
+  }
+
+  .info-sidebar {
+    order: 0;               /* sidebar arriba en mobile */
+    gap: 1rem;
+  }
+
+  /* Carnet compacto */
+  .carnet-card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  /* Header del carnet en una línea, más compacto */
+  .carnet-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .badge-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .badge-text h2 {
+    font-size: 0.7rem;
+  }
+
+  .badge-text h3 {
+    font-size: 0.85rem;
+  }
+
+  .type-badge {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.65rem;
+    white-space: nowrap;
+  }
+
+  /* Cuerpo: avatar + datos en fila */
   .carnet-body {
     grid-template-columns: 1fr;
-    text-align: center;
   }
-  
+
   .socio-info {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;          /* avatar a la izquierda, datos a la derecha */
     align-items: flex-start;
+    gap: 1rem;
+    text-align: left;
   }
-  
-  .header-actions {
-    align-self: stretch;
-    justify-content: flex-start;
+
+  .avatar-iniciales-large {
+    width: 56px;
+    height: 56px;
+    font-size: 1.25rem;
+    flex-shrink: 0;
   }
-  
+
+  .socio-name {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Info grid en 2 columnas dentro del carnet */
+  .info-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .info-label {
+    font-size: 0.65rem;
+  }
+
+  .info-value {
+    font-size: 0.8rem;
+  }
+
+  /* Footer del carnet más compacto */
+  .carnet-footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    text-align: left;
+  }
+
+  /* Cards del sidebar más compactas */
+  .compact-card {
+    padding: 1rem;
+  }
+
+  /* Acciones en 2 columnas (ya están bien) */
+  .actions-grid-sm {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 360px) {
   .carnet-header {
     flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
   }
-  
-  .carnet-footer {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-  
-  .actions-grid-sm {
-    grid-template-columns: repeat(2, 1fr);
+
+  .info-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -464,5 +563,13 @@
     width: 60px;
     height: 60px;
     font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .carnet-container {
+    min-height: calc(100vh - 224px);
+    max-height: calc(100vh - 224px);
+    overflow-y: auto;
   }
 }

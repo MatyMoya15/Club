@@ -1,26 +1,21 @@
 <!-- cuotas.component.html - Versión Mejorada -->
 <div class="cuotas-container">
-  
+
   <!-- Header Compacto -->
   <div class="perfil-header">
-<div class="header-content">
-  <div class="header-text">
-    <h1 class="page-title">Estado de Cuotas</h1>
-    <p class="page-subtitle">Gestiona tus pagos y mantente al día</p>
-  </div>
-  <div class="d-flex gap-2 align-items-center">
-    <!-- Selector de año -->
-    <select class="form-select" 
-            [(ngModel)]="anioSeleccionado" 
-            (change)="cambiarAnio(anioSeleccionado)"
-            style="width: auto;">
-      <option *ngFor="let anio of aniosDisponibles" [value]="anio">{{ anio }}</option>
-    </select>
-    <button class="btn-edit">
-      <i class="fas fa-download"></i> Exportar
-    </button>
-  </div>
-</div>
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">Estado de Cuotas</h1>
+        <p class="page-subtitle">Gestiona tus pagos y mantente al día</p>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <!-- Selector de año -->
+        <select class="form-select" [(ngModel)]="anioSeleccionado" (change)="cambiarAnio(anioSeleccionado)"
+          style="width: auto;">
+          <option *ngFor="let anio of aniosDisponibles" [value]="anio">{{ anio }}</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <!-- Estadísticas Compactas -->
@@ -37,14 +32,14 @@
 
     <div class="stat-card">
       <div class="stat-card">
-      <div class="stat-icon danger">
-        <i class="fas fa-exclamation-circle"></i>
+        <div class="stat-icon danger">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Pendiente</p>
+          <h3 class="stat-value">{{ estadoCuenta.totalDeuda | currency }}</h3>
+        </div>
       </div>
-      <div class="stat-content">
-        <p class="stat-label">Pendiente</p>
-        <h3 class="stat-value">{{ estadoCuenta.totalDeuda | currency }}</h3>
-      </div>
-    </div>
     </div>
 
     <div class="stat-card">
@@ -54,12 +49,12 @@
       <div class="stat-content">
         <p class="stat-label">Estado Actual</p>
         <div class="stat-badge">
-<span *ngIf="estadoCuenta.cuotasAlDia" class="status-badge status-success">
-  <i class="fas fa-check-circle"></i> Al día
-</span>
-<span *ngIf="!estadoCuenta.cuotasAlDia" class="status-badge status-danger">
-  <i class="fas fa-exclamation-circle"></i> Con deuda
-</span>
+          <span *ngIf="estadoCuenta.cuotasAlDia" class="status-badge status-success">
+            <i class="fas fa-check-circle"></i> Al día
+          </span>
+          <span *ngIf="!estadoCuenta.cuotasAlDia" class="status-badge status-danger">
+            <i class="fas fa-exclamation-circle"></i> Con deuda
+          </span>
         </div>
       </div>
     </div>
@@ -104,19 +99,17 @@
       </div>
 
       <div class="table-body">
-        <div class="payment-row" *ngFor="let pago of historialPagos" 
-[class.row-paid]="pago.estado === 'pagada'"
-[class.row-pending]="pago.estado === 'pendiente'"
-[class.row-overdue]="pago.estado === 'vencida'">
-          
+        <div class="payment-row" *ngFor="let pago of historialPagos" [class.row-paid]="pago.estado === 'pagada'"
+          [class.row-pending]="pago.estado === 'pendiente'" [class.row-overdue]="pago.estado === 'vencida'">
+
           <div class="col-period">
-<strong>{{ getNombreMes(pago.mes) }} {{ pago.anio }}</strong>
+            <strong>{{ getNombreMes(pago.mes) }} {{ pago.anio }}</strong>
           </div>
-          
+
           <div class="col-amount">
             {{ pago.monto | currency }}
           </div>
-          
+
           <div class="col-status">
             <span class="status-badge" [ngClass]="{
 'status-success': pago.estado === 'pagada',
@@ -131,27 +124,21 @@
               {{ pago.estado | titlecase }}
             </span>
           </div>
-          
+
           <div class="col-date">
             <span *ngIf="pago.fecha_pago" class="date-text">
               {{ pago.fecha_pago | date:'dd/MM/yyyy' }}
             </span>
-<span *ngIf="!pago.fecha_pago">Vence 10/{{ pago.mes | number:'2.0-0' }}/{{ pago.anio }}</span>
+            <span *ngIf="!pago.fecha_pago">Vence 10/{{ pago.mes | number:'2.0-0' }}/{{ pago.anio }}</span>
 
           </div>
-          
+
           <div class="col-actions">
-            <button *ngIf="pago.estado === 'pagada'"
-                    class="btn-icon-sm" 
-                    (click)="descargarComprobante(pago)"
-                    title="Descargar comprobante">
-              <i class="fas fa-download"></i>
+            <button *ngIf="pago.estado === 'pendiente' || pago.estado === 'vencida'" class="btn-pay-sm"
+              (click)="pagarCuota(pago)">
+              Pagar
             </button>
-<button *ngIf="pago.estado === 'pendiente' || pago.estado === 'vencida'" 
-        class="btn-pay-sm"
-        (click)="pagarCuota(pago)">
-  Pagar
-</button>
+            <!-- Si está pagada, no mostrar nada por ahora -->
           </div>
         </div>
       </div>
@@ -185,8 +172,8 @@
         <h5><i class="fas fa-lightbulb"></i> Recordatorio</h5>
       </div>
       <div class="reminder-content">
-        <p>Las cuotas vencen el <strong>día 10 de cada mes</strong>. 
-        Envía el comprobante de transferencia para un registro rápido.</p>
+        <p>Las cuotas vencen el <strong>día 10 de cada mes</strong>.
+          Envía el comprobante de transferencia para un registro rápido.</p>
       </div>
     </div>
   </div>
@@ -196,7 +183,7 @@
 <!-- Modal de Pago -->
 <div class="modal-overlay" *ngIf="showPagoModal" (click)="cerrarPagoModal()">
   <div class="modal-pago" (click)="$event.stopPropagation()">
-    
+
     <!-- Header -->
     <div class="modal-pago-header">
       <h5><i class="fas fa-dollar-sign"></i> Pagar Cuota</h5>
@@ -224,8 +211,7 @@
           <i class="fas fa-university"></i>
           <span>Transferencia</span>
         </button>
-        <button class="metodo-btn metodo-mp" (click)="confirmarPagoMercadoPago()" 
-                [disabled]="isProcessingPago">
+        <button class="metodo-btn metodo-mp" (click)="confirmarPagoMercadoPago()" [disabled]="isProcessingPago">
           <span *ngIf="!isProcessingPago">
             <i class="fas fa-wallet"></i>
             <span>MercadoPago</span>
@@ -254,7 +240,7 @@
       </div>
       <div class="transf-aviso">
         <i class="fas fa-info-circle"></i>
-        Una vez realizada la transferencia, enviá el comprobante a 
+        Una vez realizada la transferencia, enviá el comprobante a
         <strong>tesoreria@villmanzano.com.ar</strong> o acercate a tesorería.
       </div>
       <button class="btn-volver" (click)="metodoPago = null">

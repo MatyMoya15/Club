@@ -7,9 +7,30 @@
   border-bottom: 3px solid var(--gold);
   z-index: 1000;
   position: relative;
-  overflow: visible; /* MUY IMPORTANTE */
+  overflow: visible;
+  /* Suavizar el rojo */
+  background: linear-gradient(135deg, #c41a1a 0%, #a81515 100%);
 }
 
+/* Botón salir — más discreto */
+.nav-btn {
+  background: rgba(0, 0, 0, 0.2);        /* oscuro translúcido en vez de gold */
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
 .navbar-container {
   display: flex;
   align-items: center;
@@ -40,19 +61,7 @@
 .brand-logo:hover {
   transform: translateY(-35px) scale(1.05);
 }
-/* Botón salir */
-.nav-btn {
-  background: var(--gold);
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 8px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
+
 
 /* Hamburguesa */
 .hamburger-btn {
@@ -70,8 +79,19 @@
     display: block;
   }
 
-  .nav-right {
-    width: auto;
+  .nav-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Ocultar el texto "Salir" en mobile, solo ícono */
+  .logout-btn span {
+    display: none;
+  }
+
+  .logout-btn {
+    padding: 8px 10px;
+    border-radius: 8px;
   }
 
   .brand-logo {

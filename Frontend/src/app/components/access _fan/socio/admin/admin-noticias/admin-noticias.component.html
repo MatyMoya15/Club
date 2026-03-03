@@ -57,38 +57,30 @@
           </div>
 
           <!-- Carga de Imagen -->
-<div class="form-group full-width">
-  <label class="form-label">Imagen de la Noticia</label>
-  <div class="image-upload-container">
-    <div class="image-preview" *ngIf="noticiaForm.imagenPreview || noticiaForm.imagen">
-      <img [src]="noticiaForm.imagenPreview || noticiaForm.imagen" alt="Vista previa">
-      <button type="button" class="btn-remove-image" (click)="removerImagen()"
-        [disabled]="isSaving || isUploadingImage">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
+          <div class="form-group full-width">
+            <label class="form-label">Imagen de la Noticia</label>
+            <div class="image-upload-container">
+              <div class="image-preview" *ngIf="noticiaForm.imagenPreview || noticiaForm.imagen">
+                <img [src]="noticiaForm.imagenPreview || noticiaForm.imagen" alt="Vista previa">
+                <button type="button" class="btn-remove-image" (click)="removerImagen()"
+                  [disabled]="isSaving || isUploadingImage">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
 
-    <div class="upload-area" *ngIf="!noticiaForm.imagenPreview && !noticiaForm.imagen"
-         (click)="fileInput.click()"
-         [class.uploading]="isUploadingImage">
-      <input type="file" 
-             #fileInput 
-             (change)="onImageSelected($event)" 
-             accept="image/*" 
-             class="file-input"
-             [disabled]="isSaving || isUploadingImage" 
-             hidden>
-      <div class="upload-placeholder">
-        <i class="fas" 
-           [class.fa-cloud-upload-alt]="!isUploadingImage" 
-           [class.fa-spinner]="isUploadingImage"
-           [class.fa-spin]="isUploadingImage"></i>
-        <p>{{ isUploadingImage ? 'Subiendo imagen...' : 'Haz clic para subir una imagen' }}</p>
-        <small *ngIf="!isUploadingImage">Formatos: JPG, PNG, WEBP (Máx. 5MB)</small>
-      </div>
-    </div>
-  </div>
-</div>
+              <div class="upload-area" *ngIf="!noticiaForm.imagenPreview && !noticiaForm.imagen"
+                (click)="fileInput.click()" [class.uploading]="isUploadingImage">
+                <input type="file" #fileInput (change)="onImageSelected($event)" accept="image/*" class="file-input"
+                  [disabled]="isSaving || isUploadingImage" hidden>
+                <div class="upload-placeholder">
+                  <i class="fas" [class.fa-cloud-upload-alt]="!isUploadingImage" [class.fa-spinner]="isUploadingImage"
+                    [class.fa-spin]="isUploadingImage"></i>
+                  <p>{{ isUploadingImage ? 'Subiendo imagen...' : 'Haz clic para subir una imagen' }}</p>
+                  <small *ngIf="!isUploadingImage">Formatos: JPG, PNG, WEBP (Máx. 5MB)</small>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- Contenido -->
           <div class="form-group full-width">
             <label class="form-label">Contenido *</label>
