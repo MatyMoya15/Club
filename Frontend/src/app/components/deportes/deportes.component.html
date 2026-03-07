@@ -113,14 +113,15 @@
                                                 <div class="clase-info-row">
                                                     <i class="fas fa-map-marker-alt clase-info-icon"></i>
                                                     <span class="clase-info-label">Predio:</span>
-                                                    <span>Sede del Club</span>
+                                                    <span>{{ deporteData.clasesPorCategoria[categoria][0].cancha
+                                                        }}</span>
                                                 </div>
                                                 <div class="clase-info-row">
                                                     <i class="fas fa-user-tie clase-info-icon"></i>
                                                     <span class="clase-info-label">Instructor:</span>
                                                     <span><strong>{{
-                                                        getInstructorNombre(deporteData.clasesPorCategoria[categoria][0].id_instructor)
-                                                        }}</strong></span>
+                                                            getInstructorNombre(deporteData.clasesPorCategoria[categoria][0].id_instructor)
+                                                            }}</strong></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -206,14 +207,15 @@
                                                 <div class="clase-info-row">
                                                     <i class="fas fa-map-marker-alt clase-info-icon"></i>
                                                     <span class="clase-info-label">Predio:</span>
-                                                    <span>Sede del Club</span>
+                                                    <span>{{ deporteData.clasesPorCategoria[categoria][0].cancha
+                                                        }}</span>
                                                 </div>
                                                 <div class="clase-info-row">
                                                     <i class="fas fa-user-tie clase-info-icon"></i>
                                                     <span class="clase-info-label">Instructor:</span>
                                                     <span> <strong>{{
-                                                        getInstructorNombre(deporteData.clasesPorCategoria[categoria][0].id_instructor)
-                                                        }}</strong></span>
+                                                            getInstructorNombre(deporteData.clasesPorCategoria[categoria][0].id_instructor)
+                                                            }}</strong></span>
                                                 </div>
                                             </div>
                                         </div>
