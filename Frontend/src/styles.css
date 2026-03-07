@@ -32,19 +32,3 @@
     --text-dark: #1f2937;
     --warm-gray: #f3f4f6;
 }
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  overflow: hidden; /* el scroll va dentro de cada sección, no en el body */
-}
-
-app-root {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
