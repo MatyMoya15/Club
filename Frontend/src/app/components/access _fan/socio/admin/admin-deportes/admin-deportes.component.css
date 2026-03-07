@@ -12,11 +12,13 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
 }
 
 .container-fluid {
-  max-height: calc(100vh - 221px);
+  display: flex;
+  flex-direction: column;
   min-height: calc(100vh - 221px);
+  max-height: calc(100vh - 221px);
   padding: 0 1.5rem;
+  overflow: hidden;
 }
-
 /* ==================== PAGE HEADER ==================== */
 .page-header {
   position: relative;
@@ -79,6 +81,15 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
   flex-shrink: 0;
 }
 
+.container-fluid > div[class=""] ,  /* fallback */
+.container-fluid > div:not(.page-header):not(.nav-tabs-custom):not(.loading-wrapper) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
 /* ==================== TABS ==================== */
 .nav-tabs-custom {
   display: flex;
@@ -90,6 +101,10 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.75rem;
   width: fit-content;
+}
+
+.nav-tabs-custom {
+  flex-shrink: 0;
 }
 
 .nav-tab-btn {
@@ -154,6 +169,11 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
   margin-bottom: 1.25rem;
 }
 
+.action-bar {
+  flex-shrink: 0;
+}
+
+
 .search-wrapper {
   position: relative;
   flex: 1;
@@ -203,6 +223,15 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
   transition: box-shadow 0.2s;
 }
 
+.data-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+
 .data-card:hover {
   box-shadow: var(--shadow-md);
 }
@@ -213,8 +242,9 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
 }
 
 .table-responsive {
-    overflow-y: auto;
-    max-height: calc(50vh - 41px);
+  flex: 1;
+  overflow-y: auto;
+  max-height: none;
 }
 
 .table thead {
@@ -987,3 +1017,23 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
 .text-muted { color: var(--text-secondary) !important; }
 .fw-bold { font-weight: 700 !important; }
 .fw-semibold { font-weight: 600 !important; }
+
+@media (max-width: 767.98px) {
+  .container-fluid {
+    min-height: auto;
+    max-height: none;
+    /* En mobile volvemos a display block para el scroll nativo */
+    display: block;
+    overflow: visible;
+    padding: 0 0.75rem;
+  }
+
+  .data-card {
+    display: block; /* en mobile no necesitamos el flex trick */
+  }
+
+  .table-responsive {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
