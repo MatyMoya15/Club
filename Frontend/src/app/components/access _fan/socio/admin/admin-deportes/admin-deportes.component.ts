@@ -37,6 +37,9 @@ export class AdminDeportesComponent implements OnInit
   filtroClase = '';
   filtroInstructor = '';
 
+  clasesFiltradas: any[] = [];
+
+
   diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   constructor(
@@ -111,11 +114,9 @@ export class AdminDeportesComponent implements OnInit
       next: (data) =>
       {
         this.clases = data;
+        this.aplicarFiltroClases(); // ← recalcular al cargar
       },
-      error: (err) =>
-      {
-        console.error('Error al cargar clases:', err);
-      }
+      error: (err) => console.error('Error al cargar clases:', err)
     });
   }
 
@@ -238,17 +239,7 @@ export class AdminDeportesComponent implements OnInit
   }
 
   // ==================== CLASES ====================
-
-  get clasesFiltradas(): Clase[]
-  {
-    if (!this.filtroClase) return this.clases;
-    return this.clases.filter(c =>
-      c.deporte_nombre?.toLowerCase().includes(this.filtroClase.toLowerCase()) ||
-      c.dia.toLowerCase().includes(this.filtroClase.toLowerCase())
-    );
-  }
-
-  abrirModalClase(accion: 'crear' | 'ver' | 'editar', clase?: Clase): void
+  abrirModalClase(accion: 'crear' | 'ver' | 'editar', clase?: any): void
   {
     this.accionModal = accion;
     this.tipoModal = 'clase';
@@ -258,13 +249,11 @@ export class AdminDeportesComponent implements OnInit
 
     if (accion === 'crear')
     {
-
       this.claseForm.reset({ activa: true });
       this.agregarHorario();
 
     } else if (clase && accion !== 'ver')
     {
-
       this.claseForm.patchValue({
         id_deporte: clase.id_deporte,
         id_instructor: clase.id_instructor,
@@ -272,13 +261,18 @@ export class AdminDeportesComponent implements OnInit
         activa: clase.activa
       });
 
-      this.horarios.push(
-        this.fb.group({
-          dia: [clase.dia, Validators.required],
-          hora_inicio: [clase.hora_inicio.substring(0, 5), Validators.required],
-          hora_fin: [clase.hora_fin.substring(0, 5), Validators.required]
-        })
-      );
+      // Cargar todos los horarios del grupo
+      clase.horarios.forEach((h: any) =>
+      {
+        this.horarios.push(
+          this.fb.group({
+            dia: [h.dia, Validators.required],
+            hora_inicio: [h.hora_inicio.substring(0, 5), Validators.required],
+            hora_fin: [h.hora_fin.substring(0, 5), Validators.required],
+            id_clase: [h.id_clase]  // guardar id para saber cuáles actualizar y cuáles crear
+          })
+        );
+      });
     }
 
     this.abrirModal();
@@ -297,51 +291,77 @@ export class AdminDeportesComponent implements OnInit
     if (this.claseForm.invalid) return;
 
     const data = this.claseForm.value;
+    const idInstructor = data.id_instructor ? Number(data.id_instructor) : null;
 
-    const requests = data.horarios.map((h: any) =>
+    if (this.accionModal === 'crear')
     {
-      return this.deporteService.createClase({
-        id_deporte: data.id_deporte,
-        id_instructor: data.id_instructor,
-        dia: h.dia,
-        hora_inicio: h.hora_inicio,
-        hora_fin: h.hora_fin,
-        cancha: data.cancha
+      const requests = data.horarios.map((h: any) =>
+        this.deporteService.createClase({
+          id_deporte: Number(data.id_deporte),
+          id_instructor: idInstructor,
+          dia: h.dia,
+          hora_inicio: h.hora_inicio,
+          hora_fin: h.hora_fin,
+          cancha: data.cancha || null,
+          activa: data.activa ?? true
+        })
+      );
+
+      forkJoin(requests).subscribe({
+        next: () =>
+        {
+          this.cerrarModal();
+          this.cargarClases();
+          this.mostrarMensaje('Clases creadas exitosamente');
+        },
+        error: (err) =>
+        {
+          console.error(err);
+          this.mostrarMensaje('Error al crear las clases', 'error');
+        }
       });
-    });
 
-    forkJoin(requests).subscribe({
-      next: () =>
-      {
-        this.cerrarModal();
-        this.cargarClases();
-        this.mostrarMensaje('Clases creadas exitosamente');
-      },
-      error: (err) =>
-      {
-        console.error(err);
-        this.mostrarMensaje('Error al crear las clases', 'error');
-      }
-    });
-  }
+    } else if (this.accionModal === 'editar' && this.claseSeleccionada)
+    {
+      const idInstructor = data.id_instructor ? Number(data.id_instructor) : null;
 
-  eliminarClase(): void
-  {
-    if (!this.claseSeleccionada) return;
+      const requests = data.horarios.map((h: any) =>
+      {
+        const payload = {
+          id_deporte: Number(data.id_deporte),
+          id_instructor: idInstructor,
+          dia: h.dia,
+          hora_inicio: h.hora_inicio,
+          hora_fin: h.hora_fin,
+          cancha: data.cancha || null,
+          activa: data.activa
+        };
 
-    this.deporteService.deleteClase(this.claseSeleccionada.id_clase).subscribe({
-      next: () =>
-      {
-        this.cerrarModal();
-        this.cargarClases();
-        this.mostrarMensaje('Clase eliminada exitosamente');
-      },
-      error: (err) =>
-      {
-        console.error(err);
-        this.mostrarMensaje('Error al eliminar la clase', 'error');
-      }
-    });
+        if (h.id_clase)
+        {
+          // Fila existente → actualizar
+          return this.deporteService.updateClase(h.id_clase, payload);
+        } else
+        {
+          // Fila nueva (el usuario agregó un día extra) → crear
+          return this.deporteService.createClase(payload);
+        }
+      });
+
+      forkJoin(requests).subscribe({
+        next: () =>
+        {
+          this.cerrarModal();
+          this.cargarClases();
+          this.mostrarMensaje('Clase actualizada exitosamente');
+        },
+        error: (err) =>
+        {
+          console.error(err);
+          this.mostrarMensaje('Error al actualizar la clase', 'error');
+        }
+      });
+    }
   }
 
   toggleEstadoClase(clase: Clase): void
@@ -550,10 +570,12 @@ export class AdminDeportesComponent implements OnInit
   }
   agregarHorario()
   {
+    const primerHorario = this.horarios.length > 0 ? this.horarios.at(0).value : null;
+
     const horario = this.fb.group({
-      dia: ['', Validators.required],
-      hora_inicio: ['', Validators.required],
-      hora_fin: ['', Validators.required]
+      dia: [primerHorario?.dia || '', Validators.required],
+      hora_inicio: [primerHorario?.hora_inicio || '', Validators.required],
+      hora_fin: [primerHorario?.hora_fin || '', Validators.required]
     });
 
     this.horarios.push(horario);
@@ -562,5 +584,98 @@ export class AdminDeportesComponent implements OnInit
   eliminarHorario(index: number)
   {
     this.horarios.removeAt(index);
+  }
+
+  aplicarFiltroClases(): void
+  {
+    let clases = this.clases;
+
+    if (this.filtroClase)
+    {
+      clases = clases.filter(c =>
+        c.deporte_nombre?.toLowerCase().includes(this.filtroClase.toLowerCase()) ||
+        c.dia.toLowerCase().includes(this.filtroClase.toLowerCase())
+      );
+    }
+
+    this.clasesFiltradas = this.agruparClases(clases);
+  }
+
+  agruparClases(clases: Clase[]): any[]
+  {
+    const grupos: { [key: string]: any } = {};
+
+    clases.forEach(clase =>
+    {
+      // Agrupar solo por deporte + instructor + cancha
+      const key = `${clase.id_deporte}-${clase.id_instructor ?? 'null'}-${clase.cancha ?? ''}`;
+
+      if (!grupos[key])
+      {
+        grupos[key] = {
+          ...clase,
+          horarios: [{
+            dia: clase.dia,
+            hora_inicio: clase.hora_inicio,
+            hora_fin: clase.hora_fin,
+            id_clase: clase.id_clase
+          }],
+          ids: [clase.id_clase]
+        };
+      } else
+      {
+        grupos[key].horarios.push({
+          dia: clase.dia,
+          hora_inicio: clase.hora_inicio,
+          hora_fin: clase.hora_fin,
+          id_clase: clase.id_clase
+        });
+        grupos[key].ids.push(clase.id_clase);
+      }
+    });
+
+    return Object.values(grupos);
+  }
+  toggleEstadoClaseGrupo(grupo: any): void
+  {
+    const requests = grupo.ids.map((id: number) => this.deporteService.toggleClase(id));
+    forkJoin(requests).subscribe({
+      next: () =>
+      {
+        this.cargarClases();
+        this.mostrarMensaje('Estado actualizado');
+      },
+      error: (err) => this.mostrarMensaje('Error al cambiar estado', 'error')
+    });
+  }
+
+  confirmarEliminarClaseGrupo(grupo: any): void
+  {
+    this.accionModal = 'eliminar';
+    this.tipoModal = 'clase';
+    // Usar la primera clase como referencia para el modal
+    this.claseSeleccionada = { ...grupo, id_clase: grupo.ids[0] };
+    this._idsEliminar = grupo.ids;
+    this.abrirModal();
+  }
+
+  // Agregar esta propiedad en la clase
+  private _idsEliminar: number[] = [];
+
+  eliminarClase(): void
+  {
+    const ids = this._idsEliminar.length > 0 ? this._idsEliminar : [this.claseSeleccionada!.id_clase];
+    const requests = ids.map(id => this.deporteService.deleteClase(id));
+
+    forkJoin(requests).subscribe({
+      next: () =>
+      {
+        this.cerrarModal();
+        this.cargarClases();
+        this._idsEliminar = [];
+        this.mostrarMensaje('Clase eliminada exitosamente');
+      },
+      error: (err) => this.mostrarMensaje('Error al eliminar la clase', 'error')
+    });
   }
 }

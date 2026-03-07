@@ -97,27 +97,32 @@
                                 <div *ngIf="tieneClases(deporteData)" class="clases-grid">
                                     <div class="clase-card" *ngFor="let categoria of getCategorias(deporteData)">
                                         <div class="clase-cat-title">{{ categoria }}</div>
-                                        <div class="clase-info-row">
-                                            <i class="fas fa-calendar clase-info-icon"></i>
-                                            <span class="clase-info-label">Días:</span>
-                                            <span>{{ getDiasClase(deporteData.clasesPorCategoria[categoria]) }}</span>
-                                        </div>
-                                        <div class="clase-info-row">
-                                            <i class="fas fa-clock clase-info-icon"></i>
-                                            <span class="clase-info-label">Horarios:</span>
-                                            <span>{{ getHorariosClase(deporteData.clasesPorCategoria[categoria])
-                                                }}</span>
-                                        </div>
-                                        <div class="clase-info-row">
-                                            <i class="fas fa-map-marker-alt clase-info-icon"></i>
-                                            <span class="clase-info-label">Predio:</span>
-                                            <span>Sede del Club</span>
-                                        </div>
-                                        <div class="clase-info-row"
-                                            *ngFor="let clase of deporteData.clasesPorCategoria[categoria]">
-                                            <i class="fas fa-user-tie clase-info-icon"></i>
-                                            <span class="clase-info-label">Instructor:</span>
-                                            <span>{{ getInstructorNombre(clase.id_instructor) }}</span>
+
+                                        <div class="row g-0">
+                                            <div class="col-6">
+                                                <div class="clase-info-row"
+                                                    *ngFor="let clase of deporteData.clasesPorCategoria[categoria]">
+                                                    <i class="fas fa-calendar clase-info-icon"></i>
+                                                    <span class="clase-info-label">{{ clase.dia }}:</span>
+                                                    <span>{{ formatearHora(clase.hora_inicio) }} - {{
+                                                        formatearHora(clase.hora_fin) }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="clase-info-row">
+                                                    <i class="fas fa-map-marker-alt clase-info-icon"></i>
+                                                    <span class="clase-info-label">Predio:</span>
+                                                    <span>Sede del Club</span>
+                                                </div>
+                                                <div class="clase-info-row">
+                                                    <i class="fas fa-user-tie clase-info-icon"></i>
+                                                    <span class="clase-info-label">Instructor:</span>
+                                                    <span><strong>{{
+                                                        getInstructorNombre(deporteData.clasesPorCategoria[categoria][0].id_instructor)
+                                                        }}</strong></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -185,27 +190,32 @@
                                 <div *ngIf="tieneClases(deporteData)" class="clases-grid">
                                     <div class="clase-card" *ngFor="let categoria of getCategorias(deporteData)">
                                         <div class="clase-cat-title">{{ categoria }}</div>
-                                        <div class="clase-info-row">
-                                            <i class="fas fa-calendar clase-info-icon actividad"></i>
-                                            <span class="clase-info-label">Días:</span>
-                                            <span>{{ getDiasClase(deporteData.clasesPorCategoria[categoria]) }}</span>
-                                        </div>
-                                        <div class="clase-info-row">
-                                            <i class="fas fa-clock clase-info-icon actividad"></i>
-                                            <span class="clase-info-label">Horarios:</span>
-                                            <span>{{ getHorariosClase(deporteData.clasesPorCategoria[categoria])
-                                                }}</span>
-                                        </div>
-                                        <div class="clase-info-row">
-                                            <i class="fas fa-map-marker-alt clase-info-icon actividad"></i>
-                                            <span class="clase-info-label">Predio:</span>
-                                            <span>Sede del Club</span>
-                                        </div>
-                                        <div class="clase-info-row"
-                                            *ngFor="let clase of deporteData.clasesPorCategoria[categoria]">
-                                            <i class="fas fa-user-tie clase-info-icon actividad"></i>
-                                            <span class="clase-info-label">Instructor:</span>
-                                            <span>{{ getInstructorNombre(clase.id_instructor) }}</span>
+
+                                        <div class="row g-0">
+                                            <div class="col-6">
+                                                <div class="clase-info-row"
+                                                    *ngFor="let clase of deporteData.clasesPorCategoria[categoria]">
+                                                    <i class="fas fa-calendar clase-info-icon"></i>
+                                                    <span class="clase-info-label">{{ clase.dia }}:</span>
+                                                    <span>{{ formatearHora(clase.hora_inicio) }} - {{
+                                                        formatearHora(clase.hora_fin) }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="clase-info-row">
+                                                    <i class="fas fa-map-marker-alt clase-info-icon"></i>
+                                                    <span class="clase-info-label">Predio:</span>
+                                                    <span>Sede del Club</span>
+                                                </div>
+                                                <div class="clase-info-row">
+                                                    <i class="fas fa-user-tie clase-info-icon"></i>
+                                                    <span class="clase-info-label">Instructor:</span>
+                                                    <span> <strong>{{
+                                                        getInstructorNombre(deporteData.clasesPorCategoria[categoria][0].id_instructor)
+                                                        }}</strong></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

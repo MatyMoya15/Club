@@ -54,21 +54,23 @@ export interface UpdateDeporteRequest {
 }
 
 export interface CreateClaseRequest {
-  id_instructor?: number;
   id_deporte: number;
+  id_instructor?: number | null;
   dia: string;
   hora_inicio: string;
   hora_fin: string;
-  cancha?: string;
+  cancha?: string | null;
+  activa?: boolean;
 }
 
 export interface UpdateClaseRequest {
-  id_instructor?: number;
   id_deporte?: number;
+  id_instructor?: number | null;
   dia?: string;
   hora_inicio?: string;
   hora_fin?: string;
-  cancha?: string;
+  cancha?: string | null;
+  activa?: boolean;
 }
 
 export interface CreateInstructorRequest {

@@ -13,7 +13,8 @@
 
   <!-- ==================== TABS ==================== -->
   <div class="nav-tabs-custom">
-    <button class="nav-tab-btn" [class.active]="tabActiva === 'deportes'" (click)="cambiarTab('deportes')" type="button">
+    <button class="nav-tab-btn" [class.active]="tabActiva === 'deportes'" (click)="cambiarTab('deportes')"
+      type="button">
       <i class="bi bi-trophy-fill tab-icon"></i>
       Deportes
       <span class="tab-badge">{{ deportes.length }}</span>
@@ -23,7 +24,8 @@
       Clases
       <span class="tab-badge">{{ clases.length }}</span>
     </button>
-    <button class="nav-tab-btn" [class.active]="tabActiva === 'instructores'" (click)="cambiarTab('instructores')" type="button">
+    <button class="nav-tab-btn" [class.active]="tabActiva === 'instructores'" (click)="cambiarTab('instructores')"
+      type="button">
       <i class="bi bi-person-badge-fill tab-icon"></i>
       Instructores
       <span class="tab-badge">{{ instructores.length }}</span>
@@ -44,8 +46,7 @@
     <div class="action-bar d-flex align-items-center gap-3">
       <div class="search-wrapper">
         <i class="bi bi-search search-icon"></i>
-        <input type="text" class="form-control" placeholder="Buscar deporte por nombre..."
-          [(ngModel)]="filtroDeporte">
+        <input type="text" class="form-control" placeholder="Buscar deporte por nombre..." [(ngModel)]="filtroDeporte">
       </div>
       <button class="btn btn-primary flex-shrink-0" (click)="abrirModalDeporte('crear')">
         <i class="bi bi-plus-lg"></i>
@@ -115,7 +116,7 @@
       <div class="search-wrapper">
         <i class="bi bi-search search-icon"></i>
         <input type="text" class="form-control" placeholder="Buscar clase por deporte o día..."
-          [(ngModel)]="filtroClase">
+          [(ngModel)]="filtroClase" (ngModelChange)="aplicarFiltroClases()">
       </div>
       <button class="btn btn-success flex-shrink-0" (click)="abrirModalClase('crear')">
         <i class="bi bi-plus-lg"></i>
@@ -129,8 +130,7 @@
           <thead>
             <tr>
               <th class="px-4">Deporte</th>
-              <th>Día</th>
-              <th>Horario</th>
+              <th>Día y Horario</th>
               <th>Instructor</th>
               <th>Cancha</th>
               <th>Estado</th>
@@ -148,13 +148,14 @@
                 </div>
               </td>
               <td>
-                <span class="badge badge-day">{{ clase.dia }}</span>
-              </td>
-              <td>
-                <span class="d-flex align-items-center gap-1 text-muted">
-                  <i class="bi bi-clock"></i>
-                  {{ formatearHora(clase.hora_inicio) }} – {{ formatearHora(clase.hora_fin) }}
-                </span>
+                <!-- Días con sus horarios -->
+                <div *ngFor="let h of clase.horarios" class="d-flex align-items-center gap-2 mb-1">
+                  <span class="badge badge-day">{{ h.dia }}</span>
+                  <span class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    {{ formatearHora(h.hora_inicio) }} – {{ formatearHora(h.hora_fin) }}
+                  </span>
+                </div>
               </td>
               <td>
                 <span class="d-flex align-items-center gap-2">
@@ -169,23 +170,20 @@
                 <span *ngIf="!clase.cancha">–</span>
               </td>
               <td>
-                <span class="badge cursor-pointer"
-                  [class.badge-active]="clase.activa"
-                  [class.badge-inactive]="!clase.activa"
-                  (click)="toggleEstadoClase(clase)" title="Click para cambiar">
-                  <i class="bi" [class.bi-check-circle-fill]="clase.activa" [class.bi-x-circle-fill]="!clase.activa"></i>
+                <span class="badge cursor-pointer" [class.badge-active]="clase.activa"
+                  [class.badge-inactive]="!clase.activa" (click)="toggleEstadoClaseGrupo(clase)"
+                  title="Click para cambiar">
+                  <i class="bi" [class.bi-check-circle-fill]="clase.activa"
+                    [class.bi-x-circle-fill]="!clase.activa"></i>
                   {{ clase.activa ? 'Activa' : 'Inactiva' }}
                 </span>
               </td>
               <td class="text-end px-4">
                 <div class="btn-group">
-                  <button class="btn btn-action-view" (click)="abrirModalClase('ver', clase)" title="Ver detalles">
-                    <i class="bi bi-eye-fill"></i>
-                  </button>
                   <button class="btn btn-action-edit" (click)="abrirModalClase('editar', clase)" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </button>
-                  <button class="btn btn-action-delete" (click)="confirmarEliminarClase(clase)" title="Eliminar">
+                  <button class="btn btn-action-delete" (click)="confirmarEliminarClaseGrupo(clase)" title="Eliminar">
                     <i class="bi bi-trash-fill"></i>
                   </button>
                 </div>
@@ -252,23 +250,26 @@
                 </span>
               </td>
               <td>
-                <span class="badge cursor-pointer"
-                  [class.badge-active]="instructor.activo"
-                  [class.badge-inactive]="!instructor.activo"
-                  (click)="toggleEstadoInstructor(instructor)" title="Click para cambiar">
-                  <i class="bi" [class.bi-check-circle-fill]="instructor.activo" [class.bi-x-circle-fill]="!instructor.activo"></i>
+                <span class="badge cursor-pointer" [class.badge-active]="instructor.activo"
+                  [class.badge-inactive]="!instructor.activo" (click)="toggleEstadoInstructor(instructor)"
+                  title="Click para cambiar">
+                  <i class="bi" [class.bi-check-circle-fill]="instructor.activo"
+                    [class.bi-x-circle-fill]="!instructor.activo"></i>
                   {{ instructor.activo ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
               <td class="text-end px-4">
                 <div class="btn-group">
-                  <button class="btn btn-action-view" (click)="abrirModalInstructor('ver', instructor)" title="Ver detalles">
+                  <button class="btn btn-action-view" (click)="abrirModalInstructor('ver', instructor)"
+                    title="Ver detalles">
                     <i class="bi bi-eye-fill"></i>
                   </button>
-                  <button class="btn btn-action-edit" (click)="abrirModalInstructor('editar', instructor)" title="Editar">
+                  <button class="btn btn-action-edit" (click)="abrirModalInstructor('editar', instructor)"
+                    title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </button>
-                  <button class="btn btn-action-delete" (click)="confirmarEliminarInstructor(instructor)" title="Desactivar">
+                  <button class="btn btn-action-delete" (click)="confirmarEliminarInstructor(instructor)"
+                    title="Desactivar">
                     <i class="bi bi-person-dash-fill"></i>
                   </button>
                 </div>
@@ -309,15 +310,15 @@
             <h5 class="modal-title text-white">
               <span *ngIf="tipoModal === 'deporte'">
                 {{ accionModal === 'crear' ? 'Nuevo Deporte' : accionModal === 'ver' ? 'Detalles del Deporte' :
-                   accionModal === 'editar' ? 'Editar Deporte' : 'Eliminar Deporte' }}
+                accionModal === 'editar' ? 'Editar Deporte' : 'Eliminar Deporte' }}
               </span>
               <span *ngIf="tipoModal === 'clase'">
                 {{ accionModal === 'crear' ? 'Nueva Clase' : accionModal === 'ver' ? 'Detalles de la Clase' :
-                   accionModal === 'editar' ? 'Editar Clase' : 'Eliminar Clase' }}
+                accionModal === 'editar' ? 'Editar Clase' : 'Eliminar Clase' }}
               </span>
               <span *ngIf="tipoModal === 'instructor'">
                 {{ accionModal === 'crear' ? 'Nuevo Instructor' : accionModal === 'ver' ? 'Detalles del Instructor' :
-                   accionModal === 'editar' ? 'Editar Instructor' : 'Desactivar Instructor' }}
+                accionModal === 'editar' ? 'Editar Instructor' : 'Desactivar Instructor' }}
               </span>
             </h5>
             <small class="text-white opacity-75" *ngIf="accionModal !== 'eliminar' && accionModal !== 'ver'">
@@ -332,7 +333,8 @@
       <div class="modal-body">
 
         <!-- FORM DEPORTE -->
-        <form [formGroup]="deporteForm" *ngIf="tipoModal === 'deporte' && accionModal !== 'eliminar' && accionModal !== 'ver'">
+        <form [formGroup]="deporteForm"
+          *ngIf="tipoModal === 'deporte' && accionModal !== 'eliminar' && accionModal !== 'ver'">
           <div class="mb-4">
             <label class="form-label">
               <i class="bi bi-trophy text-danger"></i> Nombre del Deporte *
@@ -390,7 +392,8 @@
         </div>
 
         <!-- FORM CLASE -->
-        <form [formGroup]="claseForm" *ngIf="tipoModal === 'clase' && accionModal !== 'eliminar' && accionModal !== 'ver'">
+        <form [formGroup]="claseForm"
+          *ngIf="tipoModal === 'clase' && accionModal !== 'eliminar' && accionModal !== 'ver'">
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">
@@ -491,7 +494,8 @@
                 <div class="detail-icon"><i class="bi bi-clock-fill text-success"></i></div>
                 <div class="detail-content">
                   <small>Horario</small>
-                  <p class="mb-0 fw-bold">{{ formatearHora(claseSeleccionada.hora_inicio) }} – {{ formatearHora(claseSeleccionada.hora_fin) }}</p>
+                  <p class="mb-0 fw-bold">{{ formatearHora(claseSeleccionada.hora_inicio) }} – {{
+                    formatearHora(claseSeleccionada.hora_fin) }}</p>
                 </div>
               </div>
             </div>
@@ -513,7 +517,8 @@
                 <div class="detail-content">
                   <small>Estado</small>
                   <p class="mb-0">
-                    <span class="badge" [class.badge-active]="claseSeleccionada.activa" [class.badge-inactive]="!claseSeleccionada.activa">
+                    <span class="badge" [class.badge-active]="claseSeleccionada.activa"
+                      [class.badge-inactive]="!claseSeleccionada.activa">
                       {{ claseSeleccionada.activa ? 'Activa' : 'Inactiva' }}
                     </span>
                   </p>
@@ -524,7 +529,8 @@
         </div>
 
         <!-- FORM INSTRUCTOR -->
-        <form [formGroup]="instructorForm" *ngIf="tipoModal === 'instructor' && accionModal !== 'eliminar' && accionModal !== 'ver'">
+        <form [formGroup]="instructorForm"
+          *ngIf="tipoModal === 'instructor' && accionModal !== 'eliminar' && accionModal !== 'ver'">
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">
@@ -565,8 +571,10 @@
               <i class="bi bi-person-fill"></i>
             </div>
             <h4 class="mb-2">{{ instructorSeleccionado.nombre }} {{ instructorSeleccionado.apellido }}</h4>
-            <span class="badge" [class.badge-active]="instructorSeleccionado.activo" [class.badge-inactive]="!instructorSeleccionado.activo">
-              <i class="bi" [class.bi-check-circle-fill]="instructorSeleccionado.activo" [class.bi-x-circle-fill]="!instructorSeleccionado.activo"></i>
+            <span class="badge" [class.badge-active]="instructorSeleccionado.activo"
+              [class.badge-inactive]="!instructorSeleccionado.activo">
+              <i class="bi" [class.bi-check-circle-fill]="instructorSeleccionado.activo"
+                [class.bi-x-circle-fill]="!instructorSeleccionado.activo"></i>
               {{ instructorSeleccionado.activo ? 'Activo' : 'Inactivo' }}
             </span>
           </div>
@@ -607,10 +615,12 @@
             ¿Eliminar el deporte <strong class="text-danger">{{ deporteSeleccionado.nombre }}</strong>?
           </p>
           <p class="fs-5 mt-2" *ngIf="tipoModal === 'clase' && claseSeleccionada">
-            ¿Eliminar esta clase de <strong class="text-danger">{{ getDeporteNombre(claseSeleccionada.id_deporte) }}</strong>?
+            ¿Eliminar esta clase de <strong class="text-danger">{{ getDeporteNombre(claseSeleccionada.id_deporte)
+              }}</strong>?
           </p>
           <p class="fs-5 mt-2" *ngIf="tipoModal === 'instructor' && instructorSeleccionado">
-            ¿Desactivar a <strong class="text-danger">{{ instructorSeleccionado.nombre }} {{ instructorSeleccionado.apellido }}</strong>?
+            ¿Desactivar a <strong class="text-danger">{{ instructorSeleccionado.nombre }} {{
+              instructorSeleccionado.apellido }}</strong>?
           </p>
           <p class="text-muted small">Esta acción desactivará el registro pero no lo eliminará permanentemente.</p>
         </div>
