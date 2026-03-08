@@ -129,7 +129,7 @@ imprimirCarnet(): void {
           <div class="carnet-header">
             <div class="club-badge">
               <div class="badge-icon">
-                <img src="${window.location.origin}/assets/Fondo Club.png" alt="Escudo">
+                <img src="${window.location.origin}/assets/Fondo-Club.png" alt="Escudo">
               </div>
               <div class="badge-text">
                 <h2>CLUB SOCIAL Y DEPORTIVO</h2>
