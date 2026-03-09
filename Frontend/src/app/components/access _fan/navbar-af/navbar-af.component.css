@@ -73,6 +73,37 @@
   cursor: pointer;
 }
 
+.back-btn {
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Mobile: ocultar texto, solo ícono */
+@media (max-width: 767.98px) {
+  .back-btn {
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+
+  .back-btn span {
+    display: none;
+  }
+}
+
 /* Mobile */
 @media (max-width: 767.98px) {
   .hamburger-btn {

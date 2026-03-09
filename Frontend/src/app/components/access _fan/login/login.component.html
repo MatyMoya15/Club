@@ -1,4 +1,4 @@
-<app-navbar-af [isLoggedIn]="false" [showBackButton]="false">
+<app-navbar-af [isLoggedIn]="false" [showBackButton]="true" (goBack)="onGoBack()">
 </app-navbar-af>
 
 <div class="login-content">
@@ -41,15 +41,9 @@
                         <label class="form-label">DNI o Email</label>
                         <div class="input-group">
                             <i class="fas fa-id-card input-group-icon"></i>
-                            <input 
-                                type="text" 
-                                id="identifier" 
-                                class="form-control"
-                                formControlName="identifier" 
-                                placeholder="Ingresá tu DNI o Email"
-                                [class.is-invalid]="isFieldInvalid('identifier')"
-                                [disabled]="isLoading"
-                            />
+                            <input type="text" id="identifier" class="form-control" formControlName="identifier"
+                                placeholder="Ingresá tu DNI o Email" [class.is-invalid]="isFieldInvalid('identifier')"
+                                [disabled]="isLoading" />
                         </div>
                         <div class="invalid-feedback" *ngIf="isFieldInvalid('identifier')">
                             {{ getFieldError('identifier') }}

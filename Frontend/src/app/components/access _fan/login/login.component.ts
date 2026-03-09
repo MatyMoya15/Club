@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
+import { Location } from '@angular/common';
 
 interface Alert
 {
@@ -30,7 +31,8 @@ export class LoginComponent implements OnInit
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   )
   {
     if (this.authService.isLoggedIn())
@@ -252,5 +254,10 @@ export class LoginComponent implements OnInit
   get resetButtonText(): string
   {
     return this.isLoading ? 'Enviando...' : 'Enviar Instrucciones';
+  }
+
+  onGoBack()
+  {
+    this.location.back();
   }
 }
