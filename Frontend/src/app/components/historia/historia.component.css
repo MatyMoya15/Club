@@ -178,6 +178,15 @@
     .section-title {
         font-size: 2rem;
     }
+
+    .gallery-image{
+        height: 250px;
+        transition: none;
+    }
+    .slide-in-right, .slide-in-left{
+        transform: none !important;
+        transition: none !important;
+    }
 }
 @media (max-width: 768px) {
     .hero-title {
