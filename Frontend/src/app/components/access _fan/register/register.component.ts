@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, RegisterRequest } from 'src/app/service/auth.service';
+import { Location } from '@angular/common';
 
 interface RegistrationData
 {
@@ -53,7 +54,8 @@ export class RegisterComponent implements OnInit
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private location: Location
   )
   {
     this.createForm();
@@ -468,5 +470,10 @@ export class RegisterComponent implements OnInit
   goHome(): void
   {
     this.router.navigate(['/']);
+  }
+  
+  onGoBack()
+  {
+    this.location.back();
   }
 }

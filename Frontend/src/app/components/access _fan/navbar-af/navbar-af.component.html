@@ -3,22 +3,23 @@
 
     <!-- IZQUIERDA -->
     <div class="nav-left">
-      <button 
-        class="hamburger-btn"
-        *ngIf="isLoggedIn"
-        (click)="onToggleMenu()">
+
+      <!-- HAMBURGUESA (solo si logueado) -->
+      <button class="hamburger-btn" *ngIf="isLoggedIn" (click)="onToggleMenu()">
         <i class="fas fa-bars"></i>
       </button>
+
+      <!-- VOLVER (independiente, permanente cuando se pasa el input) -->
+      <button class="back-btn" *ngIf="showBackButton" (click)="onGoBack()">
+        <i class="fas fa-arrow-left"></i>
+        <span>Volver</span>
+      </button>
+
     </div>
 
     <!-- CENTRO -->
     <div class="nav-center">
-      <img 
-        src="assets/Fondo-Club.png" 
-        alt="Escudo" 
-        class="brand-logo"
-        (click)="onGoHome()"
-      >
+      <img src="assets/Fondo-Club.png" alt="Escudo" class="brand-logo" (click)="onGoHome()">
     </div>
 
     <!-- DERECHA -->

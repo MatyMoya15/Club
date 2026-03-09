@@ -523,6 +523,7 @@
         .form-control.is-invalid, .form-select.is-invalid {
             border-color: var(--principal);
             box-shadow: 0 0 0 0.25rem rgba(221, 10, 10, 0.25);
+            background-image: none !important;
         }
 
 
