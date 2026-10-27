@@ -50,7 +50,7 @@ export class DeportesComponent implements OnInit
   deportesPrincipales: DeporteConClases[] = [];
   actividades: DeporteConClases[] = [];
 
-  openDeportes = new Set<number>();
+  abiertos = new Set<number>();
 
   seccionActiva = '';
 
@@ -60,7 +60,10 @@ export class DeportesComponent implements OnInit
     private viewportScroller: ViewportScroller,
     private route: ActivatedRoute,
     private deporteService: DeporteService
-  ) { }
+  )
+  {
+    this.viewportScroller.setOffset([0, 150]);
+  }
 
   ngOnInit()
   {
@@ -79,7 +82,7 @@ export class DeportesComponent implements OnInit
           );
           if (deporteData)
           {
-            this.openDeportes.add(deporteData.deporte.id_deportes);
+            this.abiertos.add(Number(deporteData.deporte.id_deportes));
           }
         }, 300);
       }
@@ -161,14 +164,11 @@ export class DeportesComponent implements OnInit
     this.deportesPrincipales = this.deportes.filter(d => !this.esActividad(d.deporte.nombre));
     this.actividades = this.deportes.filter(d => this.esActividad(d.deporte.nombre));
 
-    if (this.deportesPrincipales.length > 0)
+    // Todas las cards arrancan abiertas por defecto.
+    this.deportes.forEach(d =>
     {
-      this.openDeportes.add(this.deportesPrincipales[0].deporte.id_deportes);
-    }
-    if (this.actividades.length > 0)
-    {
-      this.openDeportes.add(this.actividades[0].deporte.id_deportes);
-    }
+      this.abiertos.add(Number(d.deporte.id_deportes));
+    });
   }
 
   esActividad(nombre: string): boolean
@@ -192,25 +192,6 @@ export class DeportesComponent implements OnInit
     return 'fas fa-running';
   }
 
-  toggleDeporte(id: number): void
-  {
-    if (this.openDeportes.has(id))
-    {
-      this.openDeportes.delete(id);
-    } else
-    {
-      this.openDeportes.add(id);
-    }
-  }
-
-  isOpen(id: number): boolean
-  {
-    if (window.innerWidth >= 901)
-    {
-      return true; // Siempre abierto en desktop
-    }
-    return this.openDeportes.has(id); // Acordeón en mobile
-  }
   scrollToTop(): void
   {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -267,5 +248,22 @@ export class DeportesComponent implements OnInit
   getCategorias(d: DeporteConClases): string[]
   {
     return Object.keys(d.clasesPorCategoria);
+  }
+
+  toggleDeporte(id: number): void
+  {
+    const idNum = Number(id);
+    if (this.abiertos.has(idNum))
+    {
+      this.abiertos.delete(idNum);
+    } else
+    {
+      this.abiertos.add(idNum);
+    }
+  }
+
+  isOpen(id: number): boolean
+  {
+    return this.abiertos.has(Number(id));
   }
 }

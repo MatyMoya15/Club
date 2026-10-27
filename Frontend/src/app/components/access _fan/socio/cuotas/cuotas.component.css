@@ -2,17 +2,43 @@
 .cuotas-container {
   padding: 0;
   background: #f8fafc;
-  min-height: calc(100vh - 224px);
-  max-height: calc(100vh - 224px);
-  overflow-y: auto;
+}
+
+/* El layout padre (:host → .container-fluid → .row → .main-content) ya
+   entrega una altura DEFINIDA vía flexbox (stretch), sin necesidad de
+   calcular vh a mano. Acá solo la heredamos con height:100% y agregamos
+   el scroll propio de esta página — así el scroll queda contenido en
+   .cuotas-container y no en toda la página. Solo en desktop: en mobile
+   preferimos que la página entera scrollee (ver media query al final). */
+@media (min-width: 768px) {
+  .cuotas-container {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar consistente con la del sidebar */
+  .cuotas-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  .cuotas-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .cuotas-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  .cuotas-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
 }
 
 /* Reutilizamos los estilos del header del perfil */
 .perfil-header {
   background: white;
-  padding: 1.5rem 0;
+  padding: 1.1rem 0;
   border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.15rem;
 }
 
 .header-content {
@@ -25,7 +51,7 @@
 }
 
 .page-title {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #1e293b;
   margin: 0;
@@ -33,8 +59,8 @@
 
 .page-subtitle {
   color: #64748b;
-  margin: 0.25rem 0 0 0;
-  font-size: 0.9rem;
+  margin: 0.2rem 0 0 0;
+  font-size: 0.85rem;
 }
 
 .btn-edit {
@@ -54,32 +80,33 @@
 /* Estadísticas Compactas */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.85rem;
   max-width: 1200px;
-  margin: 0 auto 1.5rem auto;
+  margin: 0 auto 1.15rem auto;
   padding: 0 1rem;
 }
 
 .stat-card {
   background: white;
-  padding: 1.25rem;
+  padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
+  flex-shrink: 0;
 }
 
 .stat-icon.success {
@@ -108,13 +135,13 @@
 
 .stat-label {
   color: #64748b;
-  font-size: 0.875rem;
-  margin: 0 0 0.25rem 0;
+  font-size: 0.8rem;
+  margin: 0 0 0.2rem 0;
 }
 
 .stat-value {
   color: #1e293b;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
 }
@@ -126,7 +153,7 @@
 /* Alerta Compacta */
 .alert-compact {
   max-width: 1200px;
-  margin: 0 auto 1.5rem auto;
+  margin: 0 auto 1.15rem auto;
   padding: 0 1rem;
 }
 
@@ -134,26 +161,26 @@
   background: #fef2f2;
   border: 1px solid #fecaca;
   color: #dc2626;
-  padding: 1rem;
+  padding: 0.85rem 1rem;
   border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .alert-icon {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
 }
 
 .alert-content {
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 /* Tabla de Pagos Compacta */
 .section-card {
   max-width: 1200px;
-  margin: 0 auto 1.5rem auto;
+  margin: 0 auto 1.15rem auto;
   padding: 0 1rem;
 }
 
@@ -162,21 +189,21 @@
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
-  padding: 1.5rem;
+  padding: 1.15rem;
 }
 
 .section-header {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .section-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #1e293b;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .payments-table {
@@ -189,9 +216,9 @@
   display: grid;
   grid-template-columns: 1.5fr 1fr 1.2fr 1.2fr 0.8fr;
   background: #f8fafc;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.85rem;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   color: #475569;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -203,10 +230,11 @@
 .payment-row {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1.2fr 1.2fr 0.8fr;
-  padding: 1rem;
+  padding: 0.75rem 0.85rem;
   align-items: center;
   border-bottom: 1px solid #f1f5f9;
   transition: background 0.2s;
+  font-size: 0.9rem;
 }
 
 .payment-row:hover {
@@ -238,9 +266,9 @@
 }
 
 .status-badge {
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.45rem;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
@@ -263,7 +291,7 @@
 }
 
 .date-text {
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   color: #64748b;
 }
 
@@ -290,9 +318,9 @@
   background: var(--principal);
   color: white;
   border: none;
-  padding: 0.375rem 0.75rem;
+  padding: 0.3rem 0.65rem;
   border-radius: 4px;
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
@@ -305,8 +333,8 @@
 /* Información Adicional Compacta */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.85rem;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
@@ -335,9 +363,9 @@
 .modal-pago {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.25rem;
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 
@@ -489,26 +517,17 @@
   color: #1e293b;
 }
 
-/* Reemplazar el bloque completo de responsive */
-
 @media (max-width: 767.98px) {
 
-  /* Quitar altura fija en mobile */
-  .cuotas-container {
-    min-height: auto;
-    max-height: none;
-    overflow-y: visible;
-  }
-
   .header-content {
-    flex-direction: row;          /* ← una sola línea */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: 0;
   }
 
   .header-content .d-flex {
-    width: auto;                  /* ← no ocupa todo el ancho */
+    width: auto;
   }
 
   .page-title {
@@ -517,8 +536,9 @@
   }
 
   .page-subtitle {
-    display: none;                /* ← ocultar subtítulo en mobile para que entre en una línea */
+    display: none;
   }
+
   /* Stats en 2 columnas en mobile */
   .stats-grid {
     grid-template-columns: 1fr 1fr;
@@ -612,7 +632,7 @@
     justify-content: space-between;
     align-items: center;
     min-height: 28px;
-    gap: 1.5rem;                  /* ← espacio entre label y valor */
+    gap: 1.5rem;
   }
 
   .col-period::before,
@@ -620,7 +640,7 @@
   .col-status::before,
   .col-date::before,
   .col-actions::before {
-    min-width: 70px;              /* ← ancho fijo para que los valores queden alineados */
+    min-width: 70px;
     flex-shrink: 0;
   }
 
@@ -658,14 +678,5 @@
 
   .metodo-btn {
     padding: 1rem 0.5rem;
-  }
-}
-
-/* Solo en desktop mantenemos altura fija */
-@media (min-width: 768px) {
-  .cuotas-container {
-    min-height: calc(100vh - 224px);
-    max-height: calc(100vh - 224px);
-    overflow-y: auto;
   }
 }
