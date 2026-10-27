@@ -39,7 +39,7 @@ header {
 header .banner-container {
     position: fixed;
     top: 0;
-    height: 80px;
+    height: 70px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -95,13 +95,13 @@ header .banner-container .main-escudo img {
 }
 /* Navbar principal mejorado */
 header .navbar-container {
-    max-height: 140px;
+    max-height: 90px;
     height: 100%;
     position: fixed;
     width: 100%;
     color: white !important;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    top: 80px;
+    top: 70px;
     z-index: 1000000;
     backdrop-filter: blur(10px);
     border-bottom: 2px solid var(--gold);
@@ -139,7 +139,7 @@ nav ul {
 header .main-navigation ul li {
     display: inline;
     padding: 0px 20px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     position: relative;
     transition: all 0.3s ease;
@@ -181,7 +181,7 @@ header .main-navigation ul li:hover > a {
     box-shadow: var(--shadow-lg);
     border: 1px solid rgba(217, 119, 6, 0.3);
     backdrop-filter: blur(10px);
-    margin-top: 10px;
+    margin-top: 5px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
@@ -208,7 +208,7 @@ header .main-navigation ul li:hover > a {
 }
 .dropdown-item {
     font-weight: 600;
-    padding: 12px 20px;
+    padding: 9px 10px;
     color: #e5e7eb;
     transition: all 0.3s ease;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -220,7 +220,7 @@ header .main-navigation ul li:hover > a {
 .dropdown-item:hover {
     background: linear-gradient(90deg, var(--principal) 0%, var(--secondary-red) 100%);
     color: white;
-    transform: translateX(5px);
+    transform: translateX(2px);
     padding-left: 25px;
 }
 /* Botón asociarse mejorado */
@@ -250,7 +250,7 @@ header .navbar-container .data .asociate-texto:hover i {
 }
 .radius-button {
     border-radius: 65px;
-    padding: 12px 32px;
+    padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,7 +260,7 @@ header .navbar-container .data .asociate-texto:hover i {
 }
 /* Separador */
 .header-separator {
-    margin-top: 220px;
+    margin-top: 160px;
     transition: margin-top 1s ease;
 }
 /* Iconos */
@@ -347,6 +347,7 @@ a, a:hover, a:visited, a:active {
     header .main-navigation ul {
         flex-direction: column;
         width: 100%;
+        margin-left: 9px;
     }
     header .main-navigation ul li {
         display: block;
