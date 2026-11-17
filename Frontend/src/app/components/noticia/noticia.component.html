@@ -1,5 +1,5 @@
 <div class="content">
-    
+
     <!-- Loading State -->
     <div *ngIf="isLoading" class="loading-container">
         <div class="spinner-border text-danger" role="status">
@@ -13,7 +13,7 @@
         <i class="fas fa-exclamation-triangle"></i>
         <h2>Noticia no encontrada</h2>
         <p>Lo sentimos, la noticia que buscas no existe o ha sido eliminada.</p>
-        <button class="btn-new" (click)="volver()">
+        <button type="button" class="btn-new" (click)="volver()">
             <i class="fa-solid fa-angle-left"></i>
             Volver al inicio
         </button>
@@ -21,69 +21,55 @@
 
     <!-- Noticia Content -->
     <article class="post" *ngIf="noticia && !isLoading">
-        <div class="img-new">
-            <div class="img-new-slide">
-                <div>
-                    <div class="slide">
-                        <img [src]="getImageUrl()" 
-                             width="100%" 
-                             height="500px" 
-                             [alt]="noticia.titulo">
-                    </div>
+
+        <!-- Imagen principal (solo si existe y carga bien) -->
+        <figure class="post-hero" *ngIf="mostrarImagen">
+            <img [src]="noticia.imagen" [alt]="noticia.titulo" (error)="imagenError = true">
+        </figure>
+
+        <!-- Encabezado -->
+        <header class="post-header">
+            <div class="post-meta">
+                <span class="post-chip">{{ getCategoria() }}</span>
+                <span class="post-date">
+                    <i class="far fa-calendar-alt"></i>
+                    {{ formatearFecha(noticia.publicacion || noticia.creacion) }}
+                </span>
+
+                <div class="post-share">
+                    <span class="share-label">Compartir</span>
+                    <button type="button" class="share-btn share-facebook" (click)="compartirFacebook()"
+                        title="Compartir en Facebook" aria-label="Compartir en Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button type="button" class="share-btn share-twitter" (click)="compartirTwitter()"
+                        title="Compartir en Twitter" aria-label="Compartir en Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button type="button" class="share-btn share-whatsapp" (click)="compartirWhatsApp()"
+                        title="Compartir en WhatsApp" aria-label="Compartir en WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-        <div class="triangle-bottom-left" style="border-right-width: 1106px;"></div>
-        
-        <div class="single-top">
-            <div class="single-fecha">
-                <h6>{{ getCategoria() }} • {{ formatearFecha(noticia.publicacion || noticia.creacion) }}</h6>
-            </div>
-            <h1 class="entry-title">
-                {{ noticia.titulo }}
-            </h1>
-            <div class="subtitulo" *ngIf="noticia.subtitulo">
-                {{ noticia.subtitulo }}
-            </div>
-        </div>
-        
-        <div class="entry-content">
-            <div class="single-sidebar">
-                <div class="single-share">
-                    <div class="single-share-title">
-                        COMPARTIR
-                        <i class="fas fa-share-alt"></i>
-                    </div>
-                    <div class="single-share-div">
-                        <a (click)="compartirFacebook()" 
-                           style="cursor: pointer;" 
-                           title="Compartir en Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                    </div>
-                    <div class="single-share-div">
-                        <a (click)="compartirTwitter()" 
-                           style="cursor: pointer;" 
-                           title="Compartir en Twitter">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ⬇️ ARREGLADO: Agregar wrapper <p> y usar nl2br pipe -->
-            <p [innerHTML]="noticia.cuerpo | nl2br"></p>
-        </div>
-        
-        <h5 class="fin-text">
-            <strong>Para leer más noticias como esta, vuelve al inicio y mantente al día con todas las novedades del club.</strong>
-        </h5>
-        
-        <div class="button-container">
-            <button class="btn-new" (click)="volver()">
+
+            <h1 class="entry-title">{{ noticia.titulo }}</h1>
+
+            <p class="subtitulo" *ngIf="noticia.subtitulo">{{ noticia.subtitulo }}</p>
+        </header>
+
+        <!-- Cuerpo -->
+        <div class="post-body" [innerHTML]="noticia.cuerpo | nl2br"></div>
+
+        <!-- Pie -->
+        <footer class="post-footer">
+            <p class="fin-text">
+                <strong>Para leer más noticias como esta, vuelve al inicio y mantente al día con todas las novedades del club.</strong>
+            </p>
+            <button type="button" class="btn-new" (click)="volver()">
                 <i class="fa-solid fa-angle-left"></i>
                 Volver
             </button>
-        </div>
+        </footer>
     </article>
 </div>
