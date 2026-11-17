@@ -1,9 +1,38 @@
-.container-fluid {
-  padding: 0;
+/* ===========================
+   LAYOUT DE PÁGINA COMPLETA
+   navbar (arriba) + contenido (flex, crece) + footer (abajo)
+   =========================== */
+:host {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
+
+/* El navbar se queda pegado arriba al hacer scroll */
+app-navbar-af {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  flex-shrink: 0;
+}
+
+/* El footer nunca se "encoge" y queda al fondo real de la página */
+app-footer-af {
+  flex-shrink: 0;
+}
+
+.container-fluid {
+  padding: 0;
+  flex: 1 0 auto;   /* ocupa todo el espacio libre entre navbar y footer */
+  min-height: 0;    /* permite que los hijos flex calculen bien su alto */
+  display: flex;
+  flex-direction: column;
+}
+
 .row {
   margin: 0;
+  flex: 1 0 auto;   /* la fila (sidebar + main-content) también crece */
+  min-height: 0;
 }
 
 /* Sidebar Styles */
@@ -16,8 +45,7 @@
 
   display: flex;
   flex-direction: column;
-
-  height: calc(100vh - 80px); /* altura real debajo del navbar */
+  /* Sin altura fija: se estira solo para llenar el alto de .row */
 }
 
 .sidebar-header {
@@ -209,7 +237,7 @@ img{
   margin-left: 0;
   padding: 0;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  min-height: auto;
+  min-height: 0;
   position: relative;
 }
 
@@ -223,46 +251,54 @@ img{
   background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.3) 50%, transparent 100%);
 }
 
-/* Responsive Design */
-@media (min-width: 768px) {
-  .main-content {
-    margin-left: 25%;
-  }
-}
-
-@media (min-width: 992px) {
-  .main-content {
-    margin-left: 16.66667%;
-  }
-}
+/* Responsive Design
+   Nota: ya NO hace falta margin-left en desktop. Antes el sidebar era
+   position:fixed (fuera del flujo) y había que empujar el contenido a
+   mano; ahora el sidebar es una columna flex normal (col-md-3/col-lg-2)
+   y Bootstrap ya lo posiciona correctamente al lado. Agregar margin-left
+   encima duplicaba el desplazamiento y hacía que .main-content no
+   entrara en el ancho disponible, mandándolo a una segunda línea del
+   flex (el hueco en blanco que aparecía). */
 
 @media (max-width: 767.98px) {
   .sidebar {
     position: fixed;
     left: -100%;
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    top: 0;
+    height: 100vh;
     width: 300px;
     z-index: 1050;
+    overflow-y: auto;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
   }
-  
+
   .sidebar.show {
     left: 0;
   }
-  
+
+  /* El footer del sidebar se queda pegado abajo */
+  .sidebar-footer {
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+  }
+
   .main-content {
     margin-left: 0;
     width: 100%;
   }
-  
+
   .nav-item {
     padding: 0 0.5rem;
   }
-  
+
   .nav-link {
     padding: 0.75rem 1rem;
   }
-  
+
   .user-profile-card {
     margin: 0.5rem;
     padding: 1rem;
@@ -337,51 +373,6 @@ img{
   padding: 8px 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-@media (min-width: 768px) {
-  .container-fluid {
-    max-height: calc(100vh - 224px);
-    min-height: calc(100vh - 224px);
-  }
-
-  .sidebar {
-        max-height: calc(100vh - 223px);
-        position: absolute;
-        overflow-y: auto;
-  }
-}
-
-@media (max-width: 767.98px) {
-  .sidebar {
-    position: fixed;
-    left: -100%;
-    top: 0;           /* ← desde el top */
-    height: 100vh;    /* ← altura completa del viewport */
-    width: 300px;
-    z-index: 1050;
-    overflow-y: auto; /* ← scroll interno */
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .sidebar.show {
-    left: 0;
-  }
-
-  /* El footer del sidebar se queda pegado abajo */
-  .sidebar-footer {
-    position: sticky; /* ← sticky en lugar de absolute */
-    bottom: 0;
-    margin-top: auto;
-  }
-
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-    min-height: auto;  /* sin altura fija en mobile */
-  }
-}
 
 .btn-close-sidebar {
   display: none; /* oculto por defecto en desktop */
@@ -411,5 +402,17 @@ img{
     background: rgba(239, 68, 68, 0.3);
     border-color: rgba(239, 68, 68, 0.5);
     transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-item,
+  .nav-link,
+  .nav-link::before,
+  .btn-logout,
+  .btn-logout::before,
+  .logo-circle {
+    animation: none !important;
+    transition: none !important;
   }
 }

@@ -1,381 +1,371 @@
+/* ============================================================
+   Carnet digital
+   - Desktop (>=1025px): la página no scrollea; el carnet se escala
+     solo para entrar en el espacio disponible.
+   - El carnet usa unidades de contenedor (cqw): todo lo de adentro
+     escala proporcionalmente al ancho de la tarjeta.
+   ============================================================ */
+
 .carnet-container {
   padding: 0;
   background: #f8fafc;
-  max-height: calc(100vh - 224px);
-  min-height: calc(100vh - 224px);
+  display: flex;
+  flex-direction: column;
 }
 
-/* Header (reutilizado del perfil) */
+/* ---------- Header ---------- */
 .perfil-header {
   background: white;
-  padding: 1.5rem 0;
+  padding: 0.6rem 0;
   border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 1.5rem;
-}
-
-.header-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.btn-secondary {
-  background: #64748b;
-}
-
-.btn-secondary:hover {
-  background: #475569;
-}
-
-/* Contenido Principal */
-.carnet-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: grid;
-  grid-template-columns: 1fr 350px;
-  gap: 2rem;
-}
-
-/* Carnet Principal */
-.carnet-card {
-  background: linear-gradient(135deg, #1e293b 0%, #374151 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  color: white;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border: 1px solid #334155;
-  position: relative;
-  overflow: hidden;
-  height: max-content;
-}
-
-.carnet-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
-  border-radius: 50%;
-}
-
-/* Encabezado del Carnet */
-.carnet-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  position: relative;
-  z-index: 2;
-}
-
-.club-badge {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.badge-icon {
-  width: 60px;
-  height: 60px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-}
-
-.escudo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
-}
-
-.badge-text h2 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin: 0;
-  color: #fbbf24;
-  letter-spacing: 1px;
-}
-
-.badge-text h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin: 0.25rem 0 0 0;
-  color: white;
-}
-
-.type-badge {
-  background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-/* Cuerpo del Carnet */
-.carnet-body {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2rem;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-}
-
-.socio-info {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-}
-
-.socio-avatar {
+  margin-bottom: 0.75rem;
   flex-shrink: 0;
 }
 
-.avatar-iniciales-large {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--principal) 0%, var(--secondary-red) 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.75rem;
-  font-weight: 700;
-  border: 3px solid rgba(255, 255, 255, 0.2);
-}
-
-.socio-details {
-  flex: 1;
-}
-
-.socio-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 1.5rem 0;
-  color: white;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.info-label {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.info-value {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: white;
-}
-
-/* Sección QR */
-.qr-section {
-  text-align: center;
-}
-
-.qr-container {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-}
-
-.qr-placeholder {
-  width: 120px;
-  height: 120px;
-  background: #f8fafc;
-  border: 2px dashed #cbd5e1;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
-  font-size: 0.8rem;
-  gap: 0.5rem;
-}
-
-.qr-placeholder i {
-  font-size: 2rem;
-  color: #94a3b8;
-}
-
-.qr-note {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  margin: 0;
-}
-
-/* Pie del Carnet */
-.carnet-footer {
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #374151;
+}
+
+.page-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  color: #64748b;
+  margin: 0.1rem 0 0 0;
+  font-size: 0.78rem;
+}
+
+/* ---------- Layout (base: una columna, flujo normal) ---------- */
+.carnet-content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.carnet-stage {
+  display: grid;
+  place-items: center;
+}
+
+/* ============================================================
+   CARNET
+   ============================================================ */
+.carnet-card {
   position: relative;
+  container-type: inline-size;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 8 / 5;
+  /* radio circular: 2.4% del ancho = 3.84% del alto */
+  border-radius: 2.4% / 3.84%;
+  border: 2px solid #e9a63b;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(234, 88, 12, 0.22) 0%, transparent 45%),
+    linear-gradient(160deg, #1c2236 0%, #121729 55%, #0d1120 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 190, 90, 0.25),
+    0 0 26px rgba(255, 125, 30, 0.35),
+    0 16px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  color: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.carnet-card.inactivo {
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.25), 0 16px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Textura de hexágonos */
+.carnet-hex {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13.856' height='24' viewBox='0 0 13.856 24'%3E%3Cpath d='M0 8 L6.928 4 L13.856 8 M0 16 L6.928 20 L13.856 16 M0 8 V16 M13.856 8 V16 M6.928 0 V4 M6.928 20 V24' fill='none' stroke='white' stroke-opacity='.07' stroke-width='.6'/%3E%3C/svg%3E");
+  background-size: 2.2cqw auto;
+}
+
+/* Curva dorada + zona roja inferior */
+.carnet-swoosh {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Contenido */
+.carnet-inner {
+  position: absolute;
+  inset: 0;
   z-index: 2;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 5cqw 4cqw 4cqw 5.5cqw;
+}
+
+/* ----- Encabezado ----- */
+.carnet-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2cqw;
+}
+
+.club-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4cqw;
+}
+
+.club-line1 {
+  font-size: max(9px, 2.3cqw);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #e9b04c;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.club-line2 {
+  font-size: max(11px, 3.1cqw);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #e5e7eb;
+  line-height: 1.2;
+}
+
+.type-badge {
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  color: #fff7e6;
+  padding: 0.9cqw 2.6cqw;
+  border-radius: 999px;
+  font-size: max(9px, 2.1cqw);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  box-shadow: 0 0 1.6cqw rgba(245, 158, 11, 0.45);
+}
+
+.carnet-card.inactivo .type-badge {
+  background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+  box-shadow: none;
+}
+
+/* ----- Cuerpo ----- */
+.carnet-main {
+  display: grid;
+  grid-template-columns: 1fr 34cqw;
+  align-items: center;
+  min-height: 0;
+}
+
+.socio-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2.6cqw;
+  min-width: 0;
+}
+
+.socio-id {
+  display: flex;
+  align-items: center;
+  gap: 2.6cqw;
+}
+
+.avatar-iniciales-large {
+  flex-shrink: 0;
+  width: 13.5cqw;
+  height: 13.5cqw;
+  border-radius: 2cqw;
+  background: linear-gradient(145deg, #ec3b2f 0%, #b3201a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 2cqw rgba(220, 38, 38, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: max(16px, 5.5cqw);
+  font-weight: 700;
+  color: #fff;
+}
+
+.socio-name-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.socio-name {
+  margin: 0 0 0.9cqw 0;
+  font-size: max(14px, 4cqw);
+  font-weight: 600;
+  line-height: 1.1;
+  color: #fff;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.info-label {
+  font-size: max(9.5px, 1.8cqw);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #b4bccb;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.info-value {
+  font-size: max(11px, 2.4cqw);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+}
+
+/* Afiliación / vencimiento: dos columnas para que los valores queden alineados */
+.fechas {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  column-gap: 2.2cqw;
+  row-gap: 1cqw;
+  align-items: baseline;
+}
+
+/* Escudo */
+.escudo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.escudo-img {
+  width: 30cqw;
+  height: 30cqw;
+  object-fit: contain;
+  filter: drop-shadow(0 1cqw 1.6cqw rgba(0, 0, 0, 0.55));
+}
+
+/* ----- Pie ----- */
+.carnet-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 .footer-seal {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
 }
 
 .seal-text {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #fbbf24;
-  letter-spacing: 1px;
+  font-size: max(9.5px, 2.2cqw);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #e9b04c;
 }
 
 .seal-year {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: white;
+  font-size: max(15px, 4cqw);
+  font-weight: 700;
+  color: #e9b04c;
 }
 
-.footer-contact p {
-  font-size: 0.8rem;
-  color: #94a3b8;
+.footer-url {
   margin: 0;
+  padding-right: 3.5cqw;
+  font-size: max(10px, 2.7cqw);
+  font-weight: 500;
+  color: #e5e7eb;
 }
 
-/* Sidebar de Información */
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
 .info-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.65rem;
 }
 
-/* Tarjetas Compactas (reutilizadas) */
 .compact-card {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   border: 1px solid #e2e8f0;
-  padding: 1.5rem;
+  padding: 0.7rem 0.9rem;
 }
 
 .card-header-sm h5 {
-  margin: 0 0 1rem 0;
-  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: #1e293b;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
-/* Estado de Validez */
+/* Estado */
 .status-indicator {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem;
+  padding: 0.4rem 0.7rem;
   border-radius: 6px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
-.status-indicator.valid {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status-indicator.expired {
-  background: #fecaca;
-  color: #dc2626;
-}
+.status-indicator.valid { background: #dcfce7; color: #166534; }
+.status-indicator.expired { background: #fecaca; color: #dc2626; }
 
 .status-note {
-  font-size: 0.875rem;
+  font-size: 0.78rem;
   color: #64748b;
   margin: 0;
-  line-height: 1.5;
-}
-
-.status-note.expired {
-  color: #dc2626;
-}
-
-/* Instrucciones */
-.instructions-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.instruction-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.instruction-icon {
-  width: 32px;
-  height: 32px;
-  background: #f1f5f9;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--principal);
-  flex-shrink: 0;
-}
-
-.instruction-text {
-  flex: 1;
-  font-size: 0.875rem;
-  color: #475569;
   line-height: 1.4;
 }
 
-/* Acciones Rápidas */
+.status-note.expired { color: #dc2626; }
+
+/* Acciones */
 .actions-grid-sm {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .action-btn-sm {
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 0.75rem;
+  padding: 0.45rem 0.5rem;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.45rem;
   cursor: pointer;
   transition: all 0.2s;
   color: #475569;
@@ -387,189 +377,121 @@
   transform: translateY(-1px);
 }
 
-.action-btn-sm i {
-  font-size: 1.25rem;
-}
+.action-btn-sm i { font-size: 0.95rem; }
 
 .action-btn-sm span {
   font-size: 0.8rem;
   font-weight: 500;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .carnet-content {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .info-sidebar {
-    order: -1;
-  }
+/* Información del club */
+.club-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-@media (max-width: 767.98px) {
+.club-info-item {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+}
 
-  /* Quitar altura fija */
+.club-info-item i {
+  width: 16px;
+  text-align: center;
+  color: #64748b;
+}
+
+.club-info-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+.club-info-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Recordatorio */
+.recordatorio {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.recordatorio p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #1d4ed8;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   DESKTOP: sin scroll de página, el carnet se adapta al espacio
+   ============================================================ */
+@media (min-width: 1025px) {
   .carnet-container {
-    min-height: auto;
-    max-height: none;
-    overflow-y: visible;
+    height: 100%;
+    overflow: hidden;
   }
 
-  /* Header en una línea */
-  .header-content {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0;
-  }
-
-  .page-subtitle {
-    display: none;
-  }
-
-  .page-title {
-    font-size: 1.1rem;
-    margin: 0;
-  }
-
-  /* Contenido principal en columna, sidebar primero */
   .carnet-content {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 0 0.75rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-rows: minmax(0, 1fr);
+    padding-bottom: 0.9rem;
+  }
+
+  /* El stage mide el espacio libre; el carnet entra completo en él */
+  .carnet-stage {
+    container-type: size;
+    min-width: 0;
+    min-height: 280px;
+  }
+
+  .carnet-card {
+    width: min(100cqw, 160cqh, 780px);
+    max-width: none;
   }
 
   .info-sidebar {
-    order: 0;               /* sidebar arriba en mobile */
-    gap: 1rem;
-  }
-
-  /* Carnet compacto */
-  .carnet-card {
-    padding: 1.25rem;
-    border-radius: 12px;
-  }
-
-  /* Header del carnet en una línea, más compacto */
-  .carnet-header {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .badge-icon {
-    width: 42px;
-    height: 42px;
-  }
-
-  .badge-text h2 {
-    font-size: 0.7rem;
-  }
-
-  .badge-text h3 {
-    font-size: 0.85rem;
-  }
-
-  .type-badge {
-    font-size: 0.7rem;
-    padding: 0.35rem 0.65rem;
-    white-space: nowrap;
-  }
-
-  /* Cuerpo: avatar + datos en fila */
-  .carnet-body {
-    grid-template-columns: 1fr;
-  }
-
-  .socio-info {
-    flex-direction: row;          /* avatar a la izquierda, datos a la derecha */
-    align-items: flex-start;
-    gap: 1rem;
-    text-align: left;
-  }
-
-  .avatar-iniciales-large {
-    width: 56px;
-    height: 56px;
-    font-size: 1.25rem;
-    flex-shrink: 0;
-  }
-
-  .socio-name {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  /* Info grid en 2 columnas dentro del carnet */
-  .info-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-
-  .info-label {
-    font-size: 0.65rem;
-  }
-
-  .info-value {
-    font-size: 0.8rem;
-  }
-
-  /* Footer del carnet más compacto */
-  .carnet-footer {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1.25rem;
-    padding-top: 1rem;
-    text-align: left;
-  }
-
-  /* Cards del sidebar más compactas */
-  .compact-card {
-    padding: 1rem;
-  }
-
-  /* Acciones en 2 columnas (ya están bien) */
-  .actions-grid-sm {
-    grid-template-columns: 1fr 1fr;
+    align-self: start;
+    max-height: 100%;
+    overflow-y: auto; /* red de seguridad: solo se activa en pantallas muy bajas */
   }
 }
 
-/* Pantallas muy pequeñas */
-@media (max-width: 360px) {
-  .carnet-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+/* Pantallas bajas (notebooks 1366x768) */
+@media (min-width: 1025px) and (max-height: 800px) {
+  .page-subtitle,
+  .status-note { display: none; }
 
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
+  .perfil-header { padding: 0.4rem 0; margin-bottom: 0.5rem; }
+  .compact-card { padding: 0.5rem 0.8rem; }
+  .info-sidebar { gap: 0.5rem; }
 }
 
-@media (max-width: 480px) {
-  .carnet-card {
-    padding: 1.5rem;
-  }
-  
-  .socio-name {
-    font-size: 1.25rem;
-  }
-  
-  .avatar-iniciales-large {
-    width: 60px;
-    height: 60px;
-    font-size: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
+/* Tablet: una columna, scroll dentro del contenedor */
+@media (min-width: 768px) and (max-width: 1024.98px) {
   .carnet-container {
-    min-height: calc(100vh - 224px);
-    max-height: calc(100vh - 224px);
+    height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
   }
+}
+
+/* Móvil */
+@media (max-width: 767.98px) {
+  .page-subtitle { display: none; }
+  .page-title { font-size: 1.1rem; }
+
+  .carnet-content {
+    padding: 0 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .carnet-card { max-width: 520px; }
 }

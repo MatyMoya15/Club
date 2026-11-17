@@ -1,4 +1,4 @@
-<!-- cuotas.component.html - Versión Mejorada -->
+<!-- cuotas.component.html - Versión compacta (1920x1080) -->
 <div class="cuotas-container">
 
   <!-- Header Compacto -->
@@ -8,14 +8,20 @@
         <h1 class="page-title">Estado de Cuotas</h1>
         <p class="page-subtitle">Gestiona tus pagos y mantente al día</p>
       </div>
-      <div class="d-flex gap-2 align-items-center">
-        <!-- Selector de año -->
-        <select class="form-select" [(ngModel)]="anioSeleccionado" (change)="cambiarAnio(anioSeleccionado)"
-          style="width: auto;">
-          <option *ngFor="let anio of aniosDisponibles" [value]="anio">{{ anio }}</option>
+      <div class="header-filtro">
+        <label class="filtro-label" for="selectAnio"><i class="fas fa-calendar-alt"></i> Año</label>
+        <select id="selectAnio" class="form-select form-select-sm select-anio" [(ngModel)]="anioSeleccionado"
+          (ngModelChange)="cambiarAnio($event)" [disabled]="isLoading">
+          <option *ngFor="let anio of aniosDisponibles" [ngValue]="anio">{{ anio }}</option>
         </select>
       </div>
     </div>
+  </div>
+
+  <!-- Error -->
+  <div class="alert-compact danger" *ngIf="error">
+    <div class="alert-icon"><i class="fas fa-exclamation-circle"></i></div>
+    <div class="alert-content">{{ error }}</div>
   </div>
 
   <!-- Estadísticas Compactas -->
@@ -26,19 +32,17 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Total Pagado</p>
-        <h3 class="stat-value">{{ estadoCuenta.totalPagado | currency }}</h3>
+        <h3 class="stat-value">{{ estadoCuenta.totalPagado | currency:'ARS':'symbol-narrow':'1.0-0' }}</h3>
       </div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-card">
-        <div class="stat-icon danger">
-          <i class="fas fa-exclamation-circle"></i>
-        </div>
-        <div class="stat-content">
-          <p class="stat-label">Pendiente</p>
-          <h3 class="stat-value">{{ estadoCuenta.totalDeuda | currency }}</h3>
-        </div>
+      <div class="stat-icon danger">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Pendiente</p>
+        <h3 class="stat-value">{{ estadoCuenta.totalDeuda | currency:'ARS':'symbol-narrow':'1.0-0' }}</h3>
       </div>
     </div>
 
@@ -65,13 +69,13 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Cuota Mensual</p>
-        <h3 class="stat-value">{{ montoCuota | currency }}</h3>
+        <h3 class="stat-value">{{ montoCuota | currency:'ARS':'symbol-narrow':'1.0-0' }}</h3>
       </div>
     </div>
   </div>
 
-  <!-- Alerta Mejorada -->
-  <div class="alert-compact danger" *ngIf="!estadoCuenta.cuotasAlDia">
+  <!-- Alerta -->
+  <div class="alert-compact danger" *ngIf="!isLoading && !estadoCuenta.cuotasAlDia">
     <div class="alert-icon">
       <i class="fas fa-exclamation-triangle"></i>
     </div>
@@ -80,12 +84,13 @@
     </div>
   </div>
 
-  <!-- Historial de Pagos Compacto -->
+  <!-- Historial de Pagos (única zona con scroll) -->
   <div class="section-card compact-card">
     <div class="section-header">
       <h5 class="section-title">
         <i class="fas fa-history"></i>
         Historial de Pagos
+        <small class="section-count" *ngIf="!isLoading">{{ historialPagos.length }} cuota(s)</small>
       </h5>
     </div>
 
@@ -99,6 +104,15 @@
       </div>
 
       <div class="table-body">
+
+        <div class="table-empty" *ngIf="isLoading">
+          <i class="fas fa-spinner fa-spin"></i> Cargando cuotas...
+        </div>
+
+        <div class="table-empty" *ngIf="!isLoading && historialPagos.length === 0">
+          No hay cuotas registradas para {{ anioSeleccionado }}
+        </div>
+
         <div class="payment-row" *ngFor="let pago of historialPagos" [class.row-paid]="pago.estado === 'pagada'"
           [class.row-pending]="pago.estado === 'pendiente'" [class.row-overdue]="pago.estado === 'vencida'">
 
@@ -107,19 +121,19 @@
           </div>
 
           <div class="col-amount">
-            {{ pago.monto | currency }}
+            {{ pago.monto | currency:'ARS':'symbol-narrow':'1.0-0' }}
           </div>
 
           <div class="col-status">
             <span class="status-badge" [ngClass]="{
-'status-success': pago.estado === 'pagada',
-'status-warning': pago.estado === 'pendiente',
-'status-danger': pago.estado === 'vencida'
+              'status-success': pago.estado === 'pagada',
+              'status-warning': pago.estado === 'pendiente',
+              'status-danger': pago.estado === 'vencida'
             }">
               <i class="fas" [ngClass]="{
-'fa-check-circle': pago.estado === 'pagada',
-'fa-clock': pago.estado === 'pendiente',
-'fa-exclamation-circle': pago.estado === 'vencida'
+                'fa-check-circle': pago.estado === 'pagada',
+                'fa-clock': pago.estado === 'pendiente',
+                'fa-exclamation-circle': pago.estado === 'vencida'
               }"></i>
               {{ pago.estado | titlecase }}
             </span>
@@ -129,8 +143,7 @@
             <span *ngIf="pago.fecha_pago" class="date-text">
               {{ pago.fecha_pago | date:'dd/MM/yyyy' }}
             </span>
-            <span *ngIf="!pago.fecha_pago">Vence 10/{{ pago.mes | number:'2.0-0' }}/{{ pago.anio }}</span>
-
+            <span *ngIf="!pago.fecha_pago" class="date-text">Vence 10/{{ pago.mes | number:'2.0-0' }}/{{ pago.anio }}</span>
           </div>
 
           <div class="col-actions">
@@ -138,7 +151,6 @@
               (click)="pagarCuota(pago)">
               Pagar
             </button>
-            <!-- Si está pagada, no mostrar nada por ahora -->
           </div>
         </div>
       </div>
@@ -184,7 +196,6 @@
 <div class="modal-overlay" *ngIf="showPagoModal" (click)="cerrarPagoModal()">
   <div class="modal-pago" (click)="$event.stopPropagation()">
 
-    <!-- Header -->
     <div class="modal-pago-header">
       <h5><i class="fas fa-dollar-sign"></i> Pagar Cuota</h5>
       <button class="btn-close-modal" (click)="cerrarPagoModal()" [disabled]="isProcessingPago">
@@ -192,13 +203,11 @@
       </button>
     </div>
 
-    <!-- Info cuota -->
     <div class="modal-pago-info" *ngIf="cuotaAPagar">
       <span><strong>{{ getNombreMes(cuotaAPagar.mes) }} {{ cuotaAPagar.anio }}</strong></span>
       <span class="pago-monto">${{ cuotaAPagar.monto | number:'1.0-0' }}</span>
     </div>
 
-    <!-- Error -->
     <div class="pago-error" *ngIf="pagoError">
       <i class="fas fa-exclamation-circle"></i> {{ pagoError }}
     </div>

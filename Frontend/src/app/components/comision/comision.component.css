@@ -1,169 +1,253 @@
+/* Autoridades - versión compacta para 1920x1080 */
+
 .authorities-section {
-    padding: 4rem 0;
+    padding: 2rem 0 2.5rem;
     background: linear-gradient(135deg, var(--warm-gray) 0%, #ffffff 100%);
 }
+
+/* ---------- Título de sección ---------- */
 .section-title {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
+
 .section-title h2 {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--principal);
     text-transform: uppercase;
-    letter-spacing: -1px;
-    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.6rem;
     position: relative;
 }
+
 .section-title h2::after {
     content: '';
     position: absolute;
-    bottom: -10px;
+    bottom: -8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
+    width: 64px;
+    height: 3px;
     background: linear-gradient(90deg, var(--principal), var(--gold));
     border-radius: 2px;
 }
+
 .section-title p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--text-dark);
     opacity: 0.8;
-    margin-top: 1.5rem;
+    margin-top: 1.1rem;
+    margin-bottom: 0;
 }
+
 .authorities-container {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 1rem;
 }
+
+/* ---------- Subsecciones ---------- */
 .subsection {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
+
+.subsection:last-child {
+    margin-bottom: 0;
+}
+
 .subsection-title {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.25rem;
 }
+
 .subsection-title h3 {
-    font-size: 2rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--dark-bg);
     position: relative;
     display: inline-block;
-    padding: 0.5rem 2rem;
+    padding: 0.3rem 1.4rem;
+    margin: 0;
     background: linear-gradient(135deg, rgba(221, 10, 10, 0.1), rgba(217, 119, 6, 0.1));
     border-radius: 50px;
     border: 2px solid var(--principal);
 }
+
+/* ---------- Grillas ---------- */
 .authorities-grid {
     display: grid;
-    gap: 1.5rem;
+    gap: 1rem;
 }
+
 .grid-main {
     grid-template-columns: 1fr;
 }
+
+/* min(100%, 300px) evita desborde en celulares muy angostos */
 .grid-dual {
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
 }
+
+/* ---------- Cards ---------- */
 .authority-card {
     background: #ffffff;
-    border-radius: 20px;
-    padding: 2rem;
+    border-radius: 14px;
+    padding: 1.1rem 1rem 1rem;
     box-shadow: var(--shadow-lg);
     border: 1px solid rgba(221, 10, 10, 0.1);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
+
 .authority-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
+    height: 3px;
     background: linear-gradient(90deg, var(--principal), var(--gold));
 }
+
 .authority-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 25px 35px rgba(221, 10, 10, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 24px rgba(221, 10, 10, 0.15);
     border-color: var(--principal);
 }
+
 .authority-card.main-position {
     background: linear-gradient(135deg, #ffffff 0%, rgba(221, 10, 10, 0.02) 100%);
     border: 2px solid var(--principal);
+    padding: 1.25rem 1rem 1.1rem;
 }
+
 .authority-card.main-position::before {
-    height: 6px;
+    height: 4px;
 }
+
 .authority-info {
     text-align: center;
 }
+
 .authority-name {
-    font-size: 1.8rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--dark-bg);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.1rem;
     line-height: 1.2;
 }
+
 .authority-surname {
-    font-size: 2rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--principal);
     text-transform: uppercase;
-    margin-bottom: 1rem;
-    letter-spacing: 1px;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
+
+/* El presidente destaca un poco más que el resto */
+.main-position .authority-name { font-size: 1.3rem; }
+.main-position .authority-surname { font-size: 1.6rem; }
+
 .authority-position {
     display: inline-block;
     background: linear-gradient(135deg, var(--principal), var(--secondary-red));
     color: white;
-    padding: 0.5rem 1.5rem;
+    padding: 0.25rem 1rem;
     border-radius: 25px;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
+    letter-spacing: 0.4px;
+    margin-bottom: 0.6rem;
     box-shadow: var(--shadow);
 }
+
 .authority-member {
     background: var(--warm-gray);
     color: var(--text-dark);
-    padding: 0.3rem 1rem;
+    padding: 0.2rem 0.8rem;
     border-radius: 15px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    display: inline-block;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
 }
+
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
+    .authorities-section {
+        padding: 1.5rem 0 2rem;
+    }
+
+    .section-title {
+        margin-bottom: 1.5rem;
+    }
+
     .section-title h2 {
-        font-size: 2.5rem;
+        font-size: 1.6rem;
     }
+
+    .section-title p {
+        font-size: 0.9rem;
+    }
+
+    .subsection {
+        margin-bottom: 1.5rem;
+    }
+
+    .subsection-title {
+        margin-bottom: 1rem;
+    }
+
     .subsection-title h3 {
-        font-size: 1.5rem;
-        padding: 0.5rem 1rem;
+        font-size: 1.1rem;
+        padding: 0.3rem 1rem;
     }
-    .authority-card {
-        padding: 1.5rem;
+
+    .authorities-grid {
+        gap: 0.75rem;
     }
+
+    .authority-card,
+    .authority-card.main-position {
+        padding: 1rem 0.85rem 0.9rem;
+    }
+
     .authority-name {
-        font-size: 1.5rem;
+        font-size: 1.05rem;
     }
+
     .authority-surname {
-        font-size: 1.7rem;
+        font-size: 1.2rem;
     }
+
+    .main-position .authority-name { font-size: 1.1rem; }
+    .main-position .authority-surname { font-size: 1.3rem; }
 }
+
+/* ---------- Animación ---------- */
 .fade-in {
-    animation: fadeInUp 0.8s ease-out;
+    animation: fadeInUp 0.6s ease-out;
 }
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(16px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fade-in { animation: none; }
+    .authority-card { transition: none; }
 }

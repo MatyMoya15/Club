@@ -1,7 +1,12 @@
 .perfil-container {
   padding: 0;
   background: #f8fafc;
-  min-height: calc(100vh - 224px);
+  /* Antes: min-height: calc(100vh - 224px);
+     Ese cálculo asumía un navbar+footer de alto fijo (el viejo layout
+     con calc(100vh - Npx) en cascada). Ahora el layout padre ya resuelve
+     "el contenido llena el espacio y el footer queda al fondo" con
+     flexbox, así que esta página no necesita adivinar esa altura. */
+  min-height: 100%;
 }
 
 /* Header Compacto */

@@ -24,9 +24,14 @@ export class CuotasComponent implements OnInit
     cuotasAlDia: true,
     proximoVencimiento: null
   };
-  anioSeleccionado: number = 2026;
-  aniosDisponibles: number[] = [2026];
+
+  anioSeleccionado: number = new Date().getFullYear();
+  aniosDisponibles: number[] = [new Date().getFullYear()];
+
+  // Todas las cuotas del socio (sin filtrar); historialPagos es la vista del año elegido
+  private todasLasCuotas: Cuota[] = [];
   historialPagos: Cuota[] = [];
+
   montoCuota: number = 8000;
   isLoading: boolean = true;
   error: string = '';
@@ -63,18 +68,50 @@ export class CuotasComponent implements OnInit
     this.cuotaService.getCuotasBySocio(user.id_socio).subscribe({
       next: (cuotas) =>
       {
-        this.historialPagos = cuotas
-          .filter(c => c.anio === this.anioSeleccionado)
-          .sort((a, b) => a.mes - b.mes);
-        this.calcularEstadoCuenta();
+        this.todasLasCuotas = cuotas;
+        this.actualizarAniosDisponibles();
+        this.aplicarAnio();
         this.isLoading = false;
       },
-      error: (err) =>
+      error: () =>
       {
         this.error = 'Error al cargar las cuotas';
         this.isLoading = false;
       }
     });
+  }
+
+  // Años según las cuotas reales del socio (más nuevo primero).
+  // Si el año elegido no existe, usa el año actual, o el más reciente que haya.
+  private actualizarAniosDisponibles(): void
+  {
+    const anioActual = new Date().getFullYear();
+    const anios = Array.from(new Set(this.todasLasCuotas.map(c => Number(c.anio))))
+      .sort((a, b) => b - a);
+
+    this.aniosDisponibles = anios.length > 0 ? anios : [anioActual];
+
+    if (!this.aniosDisponibles.includes(this.anioSeleccionado))
+    {
+      this.anioSeleccionado = this.aniosDisponibles.includes(anioActual)
+        ? anioActual
+        : this.aniosDisponibles[0];
+    }
+  }
+
+  // Filtra en memoria: cambiar de año ya no vuelve a llamar al servidor
+  private aplicarAnio(): void
+  {
+    this.historialPagos = this.todasLasCuotas
+      .filter(c => Number(c.anio) === this.anioSeleccionado)
+      .sort((a, b) => a.mes - b.mes);
+    this.calcularEstadoCuenta();
+  }
+
+  cambiarAnio(anio: number | string): void
+  {
+    this.anioSeleccionado = Number(anio);
+    this.aplicarAnio();
   }
 
   getNombreMes(mes: number): string
@@ -88,7 +125,6 @@ export class CuotasComponent implements OnInit
   {
     alert(`Comprobante: ${cuota.comprobante || 'No disponible'}`);
   }
-
 
   pagarCuota(cuota: Cuota): void
   {
@@ -125,12 +161,6 @@ export class CuotasComponent implements OnInit
         this.pagoError = err.error?.error || 'Error al conectar con MercadoPago';
       }
     });
-  }
-
-  cambiarAnio(anio: number): void
-  {
-    this.anioSeleccionado = anio;
-    this.cargarCuotas();
   }
 
   calcularEstadoCuenta(): void
