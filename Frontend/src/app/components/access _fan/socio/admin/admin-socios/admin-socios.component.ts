@@ -3,6 +3,7 @@ import { SocioService, Socio, UpdateSocioRequest } from 'src/app/service/socio.s
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { CuotaService, Cuota, PagarCuotaRequest } from 'src/app/service/cuota.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-admin-socios',
@@ -41,35 +42,35 @@ export class AdminSociosComponent implements OnInit
     password: ''
   };
 
-showCuotasModal: boolean = false;
-socioVerCuotas: Socio | null = null;
-cuotas: Cuota[] = [];
-isLoadingCuotas: boolean = false;
-errorCuotas: string = '';
+  showCuotasModal: boolean = false;
+  socioVerCuotas: Socio | null = null;
+  cuotas: Cuota[] = [];
+  isLoadingCuotas: boolean = false;
+  errorCuotas: string = '';
+  anioSeleccionado: number | 'todos' = 'todos';
 
-showPagoModal: boolean = false;
-cuotaAPagar: Cuota | null = null;
-isSubmittingPago: boolean = false;
-pagoForm = {
-  metodo: 'efectivo' as 'efectivo' | 'transferencia' | 'tarjeta' | 'mercadopago',
-  monto: 8000,
-  comprobante: ''
-};
-hoy: Date = new Date();
+  showPagoModal: boolean = false;
+  cuotaAPagar: Cuota | null = null;
+  isSubmittingPago: boolean = false;
+  pagoForm = {
+    metodo: 'efectivo' as 'efectivo' | 'transferencia' | 'tarjeta' | 'mercadopago',
+    monto: 8000,
+    comprobante: ''
+  };
+  hoy: Date = new Date();
 
-
-constructor(
-  private socioService: SocioService,
-  private authService: AuthService,
-  private cuotaService: CuotaService,  
-  private router: Router
+  constructor(
+    private socioService: SocioService,
+    private authService: AuthService,
+    private cuotaService: CuotaService,
+    private router: Router
   ) { }
 
   ngOnInit(): void
   {
     if (!this.authService.isAdmin())
     {
-      console.warn(' Acceso denegado: Se requieren permisos de administrador');
+      console.warn('Acceso denegado: Se requieren permisos de administrador');
       this.router.navigate(['/socio']);
       return;
     }
@@ -94,12 +95,14 @@ constructor(
     this.socioService.getAllSocios(activoFilter, this.busquedaSocio).subscribe({
       next: (socios) =>
       {
-        this.socios = socios.sort((a, b) => Number(a.numero_socio) - Number(b.numero_socio)); this.sociosFiltrados = this.socios;
+        this.socios = socios.sort((a, b) => Number(a.numero_socio) - Number(b.numero_socio));
+        this.sociosFiltrados = this.socios;
+        this.hoy = new Date();
         this.isLoading = false;
       },
       error: (error) =>
       {
-        console.error('❌ Error al cargar socios:', error);
+        console.error('Error al cargar socios:', error);
         this.error = this.getErrorMessage(error);
         this.isLoading = false;
       }
@@ -119,14 +122,14 @@ constructor(
     }
 
     this.socioService.activateSocio(socio.id_socio).subscribe({
-      next: (response) =>
+      next: () =>
       {
         this.showSuccess('Socio activado exitosamente');
         this.cargarSocios();
       },
       error: (error) =>
       {
-        console.error('❌ Error al activar socio:', error);
+        console.error('Error al activar socio:', error);
         this.showError('Error al activar socio');
       }
     });
@@ -140,38 +143,39 @@ constructor(
     }
 
     this.socioService.deleteSocio(socio.id_socio).subscribe({
-      next: (response) =>
+      next: () =>
       {
         this.showSuccess('Socio desactivado exitosamente');
         this.cargarSocios();
       },
       error: (error) =>
       {
-        console.error('❌ Error al desactivar socio:', error);
+        console.error('Error al desactivar socio:', error);
         this.showError('Error al desactivar socio');
       }
     });
   }
 
-verDetalle(socio: Socio): void {
-  this.isViewMode = true;
-  this.editarSocio(socio);
-  console.log(socio, 'Hola')
-}
+  verDetalle(socio: Socio): void
+  {
+    this.isViewMode = true;
+    this.editarSocio(socio);
+  }
 
-editarSocio(socio: Socio): void {
-  this.socioEnEdicion = socio;
-  this.editForm = {
-    nombre: socio.nombre,
-    apellido: socio.apellido,
-    telefono: socio.telefono || '',
-    email: socio.email,
-    direccion: socio.direccion || '',
-    password: ''
-  };
-  this.formErrors = { nombre: '', apellido: '', email: '', password: '' };
-  this.showEditModal = true;
-}
+  editarSocio(socio: Socio): void
+  {
+    this.socioEnEdicion = socio;
+    this.editForm = {
+      nombre: socio.nombre,
+      apellido: socio.apellido,
+      telefono: socio.telefono || '',
+      email: socio.email,
+      direccion: socio.direccion || '',
+      password: ''
+    };
+    this.formErrors = { nombre: '', apellido: '', email: '', password: '' };
+    this.showEditModal = true;
+  }
 
   cerrarModal(): void
   {
@@ -181,6 +185,7 @@ editarSocio(socio: Socio): void {
     this.isViewMode = false;
     this.resetForm();
   }
+
   guardarCambios(): void
   {
     if (!this.socioEnEdicion || !this.validarFormulario())
@@ -212,7 +217,7 @@ editarSocio(socio: Socio): void {
     }
 
     this.socioService.updateSocio(this.socioEnEdicion.id_socio, updateData).subscribe({
-      next: (response) =>
+      next: () =>
       {
         this.isSubmitting = false;
         this.showSuccess('Socio actualizado exitosamente');
@@ -221,7 +226,7 @@ editarSocio(socio: Socio): void {
       },
       error: (error) =>
       {
-        console.error('❌ Error al actualizar socio:', error);
+        console.error('Error al actualizar socio:', error);
         this.isSubmitting = false;
         this.showError(this.getErrorMessage(error));
       }
@@ -232,14 +237,8 @@ editarSocio(socio: Socio): void {
   {
     let isValid = true;
 
-    this.formErrors = {
-      nombre: '',
-      apellido: '',
-      email: '',
-      password: ''
-    };
+    this.formErrors = { nombre: '', apellido: '', email: '', password: '' };
 
-    // Validar nombre
     if (!this.editForm.nombre || this.editForm.nombre.trim().length === 0)
     {
       this.formErrors.nombre = 'El nombre es requerido';
@@ -250,7 +249,6 @@ editarSocio(socio: Socio): void {
       isValid = false;
     }
 
-    // Validar apellido
     if (!this.editForm.apellido || this.editForm.apellido.trim().length === 0)
     {
       this.formErrors.apellido = 'El apellido es requerido';
@@ -261,7 +259,6 @@ editarSocio(socio: Socio): void {
       isValid = false;
     }
 
-    // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!this.editForm.email || this.editForm.email.trim().length === 0)
     {
@@ -273,7 +270,6 @@ editarSocio(socio: Socio): void {
       isValid = false;
     }
 
-    // Validar password (solo si se ingresó uno)
     if (this.editForm.password && this.editForm.password.length < 6)
     {
       this.formErrors.password = 'La contraseña debe tener al menos 6 caracteres';
@@ -285,20 +281,8 @@ editarSocio(socio: Socio): void {
 
   resetForm(): void
   {
-    this.editForm = {
-      nombre: '',
-      apellido: '',
-      telefono: '',
-      email: '',
-      direccion: '',
-      password: ''
-    };
-    this.formErrors = {
-      nombre: '',
-      apellido: '',
-      email: '',
-      password: ''
-    };
+    this.editForm = { nombre: '', apellido: '', telefono: '', email: '', direccion: '', password: '' };
+    this.formErrors = { nombre: '', apellido: '', email: '', password: '' };
     this.isSubmitting = false;
   }
 
@@ -309,9 +293,47 @@ editarSocio(socio: Socio): void {
     this.cargarSocios();
   }
 
+  // ===== Exportar a Excel =====
   exportarSocios(): void
   {
-    alert('Función de exportar - Por implementar');
+    if (this.sociosFiltrados.length === 0)
+    {
+      this.showError('No hay socios para exportar');
+      return;
+    }
+
+    const filas = this.sociosFiltrados.map(s => ({
+      'N° Socio': s.numero_socio,
+      'Nombre': s.nombre,
+      'Apellido': s.apellido,
+      'DNI': s.dni,
+      'Email': s.email,
+      'Teléfono': s.telefono || '',
+      'Dirección': s.direccion || '',
+      'Fecha de Alta': s.fecha_alta ? this.formatearFecha(s.fecha_alta) : '',
+      'Estado': s.activo ? 'Activo' : 'Inactivo'
+    }));
+
+    const hoja = XLSX.utils.json_to_sheet(filas);
+
+    // Ancho de columnas según el contenido
+    const claves = Object.keys(filas[0]);
+    hoja['!cols'] = claves.map(k => ({
+      wch: Math.min(
+        40,
+        Math.max(k.length, ...filas.map(f => String((f as any)[k] ?? '').length)) + 2
+      )
+    }));
+
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, 'Socios');
+
+    const f = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const nombreArchivo = `socios_${f.getFullYear()}-${pad(f.getMonth() + 1)}-${pad(f.getDate())}.xlsx`;
+
+    XLSX.writeFile(libro, nombreArchivo);
+    this.showSuccess(`Se exportaron ${filas.length} socio(s)`);
   }
 
   // Helpers
@@ -339,19 +361,13 @@ editarSocio(socio: Socio): void {
   private showSuccess(message: string): void
   {
     this.successMessage = message;
-    setTimeout(() =>
-    {
-      this.successMessage = '';
-    }, 3000);
+    setTimeout(() => { this.successMessage = ''; }, 3000);
   }
 
   private showError(message: string): void
   {
     this.error = message;
-    setTimeout(() =>
-    {
-      this.error = '';
-    }, 3000);
+    setTimeout(() => { this.error = ''; }, 3000);
   }
 
   formatearFecha(fecha: string): string
@@ -380,93 +396,134 @@ editarSocio(socio: Socio): void {
     return this.sociosFiltrados.filter(s => !s.activo).length;
   }
 
-  verCuotas(socio: Socio): void {
-  this.socioVerCuotas = socio;
-  this.showCuotasModal = true;
-  this.cuotas = [];
-  this.isLoadingCuotas = true;
-  this.errorCuotas = '';
+  // ===== Cuotas =====
+  verCuotas(socio: Socio): void
+  {
+    this.socioVerCuotas = socio;
+    this.showCuotasModal = true;
+    this.cuotas = [];
+    this.isLoadingCuotas = true;
+    this.errorCuotas = '';
 
-  this.cuotaService.getCuotasBySocio(socio.id_socio).subscribe({
-    next: (cuotas) => {
-      this.cuotas = cuotas.sort((a, b) => {
-        if (a.anio !== b.anio) return a.anio - b.anio;
-        return a.mes - b.mes;
-      });
-      this.isLoadingCuotas = false;
-    },
-    error: (error) => {
-      this.errorCuotas = 'Error al cargar las cuotas';
-      this.isLoadingCuotas = false;
-    }
-  });
-}
-
-cerrarCuotasModal(): void {
-  this.showCuotasModal = false;
-  this.socioVerCuotas = null;
-  this.cuotas = [];
-}
-
-abrirPagoModal(cuota: Cuota): void {
-  this.cuotaAPagar = cuota;
-  const totalPagado = Number((cuota as any).total_pagado || 0);
-  const restante = Number(cuota.monto) - totalPagado;
-  
-  this.pagoForm = {
-    metodo: 'efectivo',
-    monto: restante,
-    comprobante: ''
-  };
-  this.showPagoModal = true;
-}
-
-cerrarPagoModal(): void {
-  if (this.isSubmittingPago) return;
-  this.showPagoModal = false;
-  this.cuotaAPagar = null;
-}
-
-confirmarPago(): void {
-  if (!this.cuotaAPagar) return;
-  this.isSubmittingPago = true;
-
-  const data: PagarCuotaRequest = {
-    metodo: this.pagoForm.metodo,
-    monto: this.pagoForm.monto,
-    comprobante: this.pagoForm.comprobante || undefined
-  };
-
-  this.cuotaService.pagarCuota(this.cuotaAPagar.id_cuota, data).subscribe({
-    next: () => {
-      this.isSubmittingPago = false;
-      this.showSuccess('Cuota marcada como pagada');
-      this.cerrarPagoModal();
-      if (this.socioVerCuotas) this.verCuotas(this.socioVerCuotas);
-    },
-    error: (error) => {
-      this.isSubmittingPago = false;
-      this.showError('Error al registrar el pago');
-    }
-  });
-}
-
-getNombreMes(mes: number): string {
-  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
-                  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  return meses[mes - 1];
-}
-
-getEstadoBadgeClass(estado: string): string {
-  switch (estado) {
-    case 'pagada':  return 'bg-success';
-    case 'vencida': return 'bg-danger';
-    default:        return 'bg-warning text-dark';
+    this.cuotaService.getCuotasBySocio(socio.id_socio).subscribe({
+      next: (cuotas) =>
+      {
+        this.cuotas = cuotas.sort((a, b) =>
+        {
+          if (a.anio !== b.anio) return a.anio - b.anio;
+          return a.mes - b.mes;
+        });
+        this.seleccionarAnioInicial();
+        this.isLoadingCuotas = false;
+      },
+      error: () =>
+      {
+        this.errorCuotas = 'Error al cargar las cuotas';
+        this.isLoadingCuotas = false;
+      }
+    });
   }
-}
 
+  // Si el socio tiene cuotas del año actual, arranca en ese año; si no, muestra todos.
+  // Al recargar tras un pago se respeta el año que ya estaba elegido (si sigue existiendo).
+  private seleccionarAnioInicial(): void
+  {
+    const anios = this.aniosDisponibles;
+    if (this.anioSeleccionado !== 'todos' && anios.includes(this.anioSeleccionado))
+    {
+      return;
+    }
+    const actual = new Date().getFullYear();
+    this.anioSeleccionado = anios.includes(actual) ? actual : 'todos';
+  }
 
-get cuotasPendientes(): number { return this.cuotas.filter(c => c.estado === 'pendiente').length; }
-get cuotasPagadas(): number    { return this.cuotas.filter(c => c.estado === 'pagada').length; }
-get cuotasVencidas(): number   { return this.cuotas.filter(c => c.estado === 'vencida').length; }
+  cerrarCuotasModal(): void
+  {
+    this.showCuotasModal = false;
+    this.socioVerCuotas = null;
+    this.cuotas = [];
+    this.anioSeleccionado = 'todos';
+  }
+
+  abrirPagoModal(cuota: Cuota): void
+  {
+    this.cuotaAPagar = cuota;
+    const totalPagado = Number((cuota as any).total_pagado || 0);
+    const restante = Number(cuota.monto) - totalPagado;
+
+    this.pagoForm = {
+      metodo: 'efectivo',
+      monto: restante,
+      comprobante: ''
+    };
+    this.showPagoModal = true;
+  }
+
+  cerrarPagoModal(): void
+  {
+    if (this.isSubmittingPago) return;
+    this.showPagoModal = false;
+    this.cuotaAPagar = null;
+  }
+
+  confirmarPago(): void
+  {
+    if (!this.cuotaAPagar) return;
+    this.isSubmittingPago = true;
+
+    const data: PagarCuotaRequest = {
+      metodo: this.pagoForm.metodo,
+      monto: this.pagoForm.monto,
+      comprobante: this.pagoForm.comprobante || undefined
+    };
+
+    this.cuotaService.pagarCuota(this.cuotaAPagar.id_cuota, data).subscribe({
+      next: () =>
+      {
+        this.isSubmittingPago = false;
+        this.showSuccess('Pago registrado correctamente');
+        this.cerrarPagoModal();
+        if (this.socioVerCuotas) this.verCuotas(this.socioVerCuotas);
+      },
+      error: () =>
+      {
+        this.isSubmittingPago = false;
+        this.showError('Error al registrar el pago');
+      }
+    });
+  }
+
+  getNombreMes(mes: number): string
+  {
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    return meses[mes - 1];
+  }
+
+  getEstadoBadgeClass(estado: string): string
+  {
+    switch (estado)
+    {
+      case 'pagada': return 'bg-success';
+      case 'vencida': return 'bg-danger';
+      default: return 'bg-warning text-dark';
+    }
+  }
+
+  // Años presentes en las cuotas del socio, del más nuevo al más viejo
+  get aniosDisponibles(): number[]
+  {
+    return Array.from(new Set(this.cuotas.map(c => Number(c.anio)))).sort((a, b) => b - a);
+  }
+
+  get cuotasFiltradas(): Cuota[]
+  {
+    if (this.anioSeleccionado === 'todos') return this.cuotas;
+    return this.cuotas.filter(c => Number(c.anio) === this.anioSeleccionado);
+  }
+
+  // Los contadores respetan el año elegido
+  get cuotasPendientes(): number { return this.cuotasFiltradas.filter(c => c.estado === 'pendiente').length; }
+  get cuotasPagadas(): number { return this.cuotasFiltradas.filter(c => c.estado === 'pagada').length; }
+  get cuotasVencidas(): number { return this.cuotasFiltradas.filter(c => c.estado === 'vencida').length; }
 }

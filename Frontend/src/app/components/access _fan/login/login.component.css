@@ -1,27 +1,82 @@
-.login-content {
-    min-height: calc(100vh - 316px);
-
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
-.login-container {
-    max-width: 480px;
+app-navbar-af,
+app-footer-af {
+    display: block;
+    flex-shrink: 0;
+}
+
+.login-content {
+    position: relative;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem 1rem;
+}
+
+/* ---------- Banda superior con diagonal ---------- */
+.content-header {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    margin: 0 auto;
+    height: 40vh;
+    z-index: 0;
+    background-image: url(https://portalsocios.estudiantesdelaplata.com/template_edelp/css/../imgs/socios.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #de1d22;
+    /* Borde diagonal */
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+}
+
+.content-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 35px;
+    opacity: 0.12;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.triangle-bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-left: 100vw solid transparent;
+    border-bottom: 50px solid #ededed;
+}
+
+/* ---------- Tarjeta ---------- */
+.login-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    margin: clamp(0.75rem, 6vh, 4rem) auto 0;
     background: white;
-    border-radius: 24px;
+    border-radius: 18px;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
-    position: relative;
-    margin-top: 3%;
 }
 
 .login-header {
-    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--principal) 100%);
-    color: white;
-    padding: 3rem 2rem 2rem;
-    text-align: center;
     position: relative;
     overflow: hidden;
+    padding: 1.25rem 1.5rem 1rem;
+    text-align: center;
+    color: white;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--principal) 100%);
 }
 
 .login-header::before {
@@ -40,165 +95,130 @@
 }
 
 @keyframes slide {
-    0% {
-        transform: translateX(-50px);
-    }
-
-    100% {
-        transform: translateX(50px);
-    }
-}
-
-.club-logo {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 2;
+    0% { transform: translateX(-50px); }
+    100% { transform: translateX(50px); }
 }
 
 .login-title {
-    font-size: 2.2rem;
-    font-weight: 900;
-    margin-bottom: 0.5rem;
     position: relative;
     z-index: 2;
+    margin: 0 0 0.2rem;
+    font-size: 1.6rem;
+    font-weight: 800;
 }
 
 .login-subtitle {
-    font-size: 1.1rem;
-    opacity: 0.9;
     position: relative;
     z-index: 2;
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
 }
 
 .login-form {
-    padding: 3rem 2.5rem;
+    padding: 1.5rem 2rem 1.25rem;
 }
 
-.user-type-selector {
-    margin-bottom: 2rem;
-}
-
-.user-type-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.user-type-option {
-    padding: 1rem;
-    border: 2px solid #e9ecef;
-    border-radius: 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: #fafbfc;
-    position: relative;
-    overflow: hidden;
-}
-
-.user-type-option::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(221, 10, 10, 0.1), transparent);
-    transition: left 0.5s;
-}
-
-.user-type-option:hover::before {
-    left: 100%;
-}
-
-.user-type-option:hover {
-    border-color: var(--principal);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-}
-
-.user-type-option.selected {
-    border-color: var(--principal);
-    background: rgba(221, 10, 10, 0.05);
-    transform: scale(1.02);
-}
-
-.user-type-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    color: var(--principal);
-}
-
-.user-type-title {
-    font-weight: 700;
-    color: var(--dark-bg);
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
-}
-
-.user-type-desc {
-    font-size: 0.85rem;
-    color: #6c757d;
-    line-height: 1.3;
-}
-
+/* ---------- Campos ---------- */
 .form-group {
-    margin-bottom: 1.8rem;
+    margin-bottom: 1rem;
 }
 
 .form-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--dark-bg);
-    margin-bottom: 0.8rem;
-    display: block;
-    font-size: 1rem;
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: #6c757d;
+    z-index: 3;
 }
 
 .form-control {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
     border: 2px solid #e9ecef;
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    border-radius: 10px;
     background: #fafbfc;
+    transition: all 0.3s ease;
+}
+
+/* Bootstrap le quita el radio derecho al input cuando hay un botón al lado */
+.input-group > .form-control {
+    border-radius: 10px !important;
+    padding-left: 2.6rem;
 }
 
 .form-control:focus {
     border-color: var(--principal);
-    box-shadow: 0 0 0 0.25rem rgba(221, 10, 10, 0.15);
+    box-shadow: 0 0 0 0.2rem rgba(221, 10, 10, 0.15);
     background: white;
-    transform: translateY(-1px);
 }
 
 .form-control.is-invalid {
     border-color: var(--principal);
-    box-shadow: 0 0 0 0.25rem rgba(221, 10, 10, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(221, 10, 10, 0.25);
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
 }
 
 .invalid-feedback {
     display: block;
-    color: var(--principal);
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
     font-weight: 600;
+    color: var(--principal);
 }
 
+.toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.25rem;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    color: #6c757d;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.toggle-password:hover {
+    color: var(--principal);
+}
+
+/* ---------- Opciones y botón ---------- */
 .login-options {
-    margin: 2rem 0;
+    margin: 0.5rem 0 0;
 }
 
 .forgot-password {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .forgot-password a {
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--principal);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
     transition: all 0.3s ease;
 }
 
@@ -208,19 +228,19 @@
 }
 
 .btn-login {
-    width: 100%;
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    font-weight: 800;
-    font-size: 1.1rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: none;
-    cursor: pointer;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--principal), var(--secondary-red));
+    width: 100%;
+    padding: 0.65rem 1.5rem;
+    margin-bottom: 0.75rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
     color: white;
-    margin-bottom: 1.5rem;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--principal), var(--secondary-red));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-login::before {
@@ -250,21 +270,26 @@
     transform: none !important;
 }
 
+.btn-login i {
+    margin-left: 0.4rem;
+}
+
 .register-link {
+    margin-top: 0.25rem;
+    padding: 0.9rem 0 0;
     text-align: center;
-    padding: 1.5rem 0;
+    font-size: 0.88rem;
     border-top: 1px solid #e9ecef;
-    margin-top: 1rem;
 }
 
 .register-link p {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.15rem;
     color: #6c757d;
 }
 
 .register-link a {
-    color: var(--principal);
     font-weight: 700;
+    color: var(--principal);
     text-decoration: none;
     transition: all 0.3s ease;
 }
@@ -274,28 +299,24 @@
     text-decoration: underline;
 }
 
-.loading-spinner {
-    display: inline-block;
-    margin-right: 0.5rem;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
+/* ---------- Alertas ---------- */
 .alert {
-    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    padding: 0.5rem 0.85rem;
     border: none;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    font-size: 0.82rem;
     font-weight: 600;
+}
+
+.alert .btn-close {
+    margin-left: auto;
+    flex-shrink: 0;
+    padding: 0.25rem;
+    font-size: 0.75rem;
 }
 
 .alert-success {
@@ -316,217 +337,98 @@
     border-left: 4px solid var(--blue);
 }
 
+/* ---------- Recuperar contraseña ---------- */
 .password-reset-form {
     background: white;
     color: black;
-    padding: 2rem;
+}
+
+.reset-title {
+    margin: 0 0 0.9rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark-bg);
 }
 
 .back-to-login {
+    margin-top: 0.25rem;
     text-align: center;
-    margin-top: 1rem;
 }
 
 .back-to-login a {
+    font-size: 0.88rem;
+    font-weight: 600;
     color: var(--principal);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
 }
 
 .back-to-login a:hover {
     text-decoration: underline;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@media (max-width: 576px) {
-    .login-container {
-        margin: 1rem;
-        border-radius: 16px;
+/* ---------- Pantallas bajas (notebooks 1366x768) ---------- */
+@media (min-width: 768px) and (max-height: 800px) {
+    .login-subtitle,
+    .form-text {
+        display: none;
     }
 
     .login-header {
-        padding: 2rem 1.5rem 1.5rem;
+        padding: 0.9rem 1.5rem 0.75rem;
     }
 
     .login-form {
-        padding: 2rem 1.5rem;
+        padding: 1.1rem 2rem 1rem;
     }
 
-    .user-type-options {
-        grid-template-columns: 1fr;
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    .register-link {
+        padding-top: 0.6rem;
+    }
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width: 767.98px) {
+    .login-content {
+        padding: 0 0.75rem 1.25rem;
+    }
+
+    .content-header {
+        height: 24vh;
+    }
+
+    .login-container {
+        margin-top: 4%;
+        border-radius: 12px;
+    }
+
+    .login-header {
+        padding: 1.1rem 1rem 0.9rem;
     }
 
     .login-title {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
+    }
+
+    .login-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .login-form {
+        padding: 1.25rem 1rem;
     }
 }
 
-.input-group {
-    position: relative;
-}
+@media (prefers-reduced-motion: reduce) {
+    .login-header::before {
+        animation: none;
+    }
 
-.input-group-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
-    z-index: 3;
-}
-
-.input-group .form-control {
-    padding-left: 3rem;
-}
-
-.toggle-password {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #6c757d;
-    cursor: pointer;
-    z-index: 3;
-    padding: 0.25rem;
-}
-
-.toggle-password:hover {
-    color: var(--principal);
-}
-
-.content-header {
-    height: 40%;
-    background-image: url(https://portalsocios.estudiantesdelaplata.com/template_edelp/css/../imgs/socios.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #de1d22;
-    width: 100%;
-    position: absolute;
-    z-index: 0;
-    top: 100px;
-    left: 0;
-
-    /* Esto genera el borde diagonal */
-    clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
-}
-
-
-.content-header:before {
-    height: 35px;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    opacity: 0.12;
-    background: -moz-linear-gradient(top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
-    background: -webkit-linear-gradient(top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
-}
-
-.triangle-bottom-right {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-left: 100vw solid transparent;
-    border-bottom: 50px solid #ededed;
-}
-
-@media (max-width: 767.98px) {
-
-  /* Quitar el min-height fijo */
-  .login-content {
-    min-height: auto;
-  }
-
-  /* Imagen de fondo reposicionada */
-  .content-header {
-    top: 85px;
-    height: 25%;
-  }
-
-  /* Container que no se salga de pantalla */
-  .login-container {
-    margin: 4% 1rem 2rem 1rem;
-    border-radius: 12px;
-    width: auto;          /* ← no forzar ancho */
-    max-width: 100%;      /* ← nunca más ancho que la pantalla */
-    box-sizing: border-box;
-  }
-
-  /* Header compacto */
-  .login-header {
-    padding: 1.25rem 1rem 1rem;
-  }
-
-  .login-title {
-    font-size: 1.4rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.85rem;
-  }
-
-  /* Formulario sin padding excesivo */
-  .login-form {
-    padding: 1.25rem 1rem;
-  }
-
-  .form-group {
-    margin-bottom: 1rem;
-  }
-
-  .form-label {
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .form-control {
-    padding: 0.75rem 0.875rem 0.75rem 2.75rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  .login-options {
-    margin: 1.25rem 0;
-  }
-
-  .btn-login {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-  }
-
-  .register-link {
-    padding: 1rem 0;
-    font-size: 0.875rem;
-  }
-
-  /* Alerts compactos */
-  .alert {
-    padding: 0.625rem 0.875rem;
-    font-size: 0.8rem;
-  }
-
-  /* Reset form */
-  .password-reset-form {
-    padding: 1rem;
-  }
+    .btn-login,
+    .btn-login::before {
+        transition: none;
+    }
 }
